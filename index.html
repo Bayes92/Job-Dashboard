@@ -22,6 +22,40 @@ button{border:1px solid #48527d;background:#1a2340;color:var(--text);padding:11p
 .empty{color:var(--muted);font-size:12px;text-align:center;padding:28px}.footer{text-align:center;color:#667395;font-size:10px;margin-top:22px}
 .modal{position:fixed;inset:0;background:#02040bd9;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.dialog{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111a30;border:1px solid #5d5c98;border-radius:18px;padding:22px;box-shadow:0 20px 90px #000b}.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.dialog h3{margin:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:var(--muted)}.field input,.field select,.field textarea{width:100%}.dialogactions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.detailtext{color:#c2cbe4;line-height:1.6;font-size:12px;white-space:pre-wrap}.detailtop{display:flex;justify-content:space-between;gap:12px;align-items:start}.detailmeta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start;flex-direction:column}.board{grid-template-columns:repeat(4,220px)}}@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:none}.nav{grid-template-columns:repeat(2,1fr)}.stats{gap:8px}.stat{padding:13px}.stat .num{font-size:24px}.hero{padding:21px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.job{grid-template-columns:1fr}.score{text-align:left}.panel{padding:14px}}
+
+/* LIQUID GLASS — translucent layered material */
+:root{--line:rgba(255,255,255,.16);--muted:#b5bfd3;--text:#f7f8fc;--violet:#c0b0ff;--cyan:#9beaf5;--green:#9ae9ca}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(135,111,205,.28),transparent 36%),radial-gradient(ellipse at 90% 14%,rgba(65,154,181,.22),transparent 34%),radial-gradient(ellipse at 50% 100%,rgba(75,80,140,.16),transparent 45%),#070910;background-attachment:fixed}
+.app{isolation:isolate}
+.hero,.panel,.stat,.nav button,.column,.job,.dialog,.pill,.tag,.status,.nexticon{
+ border:1px solid rgba(255,255,255,.15);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -1px 0 rgba(255,255,255,.035),0 16px 44px rgba(0,0,0,.22);
+ backdrop-filter:blur(24px) saturate(165%);-webkit-backdrop-filter:blur(24px) saturate(165%)
+}
+.hero{background:linear-gradient(115deg,rgba(145,123,218,.23),rgba(67,112,154,.15) 58%,rgba(76,173,187,.12));border-color:rgba(230,230,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 24px 70px rgba(0,0,0,.3)}
+.panel{background:linear-gradient(145deg,rgba(33,40,62,.62),rgba(15,22,38,.54))}
+.stat{background:linear-gradient(145deg,rgba(47,51,78,.57),rgba(17,23,40,.5))}
+.nav button{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.13)}
+.nav button.active{background:linear-gradient(135deg,rgba(157,133,255,.25),rgba(89,190,219,.13));border-color:rgba(203,194,255,.48)}
+.job{background:linear-gradient(115deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-color:rgba(255,255,255,.12)}
+.job:hover{background:linear-gradient(115deg,rgba(178,162,255,.16),rgba(104,205,226,.08));border-color:rgba(205,197,255,.4)}
+.column{background:rgba(14,19,33,.44)}
+button{background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.2);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 18px rgba(0,0,0,.16);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%)}
+button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 26px rgba(101,160,220,.16)}
+.primary{background:linear-gradient(130deg,rgba(163,139,255,.78),rgba(91,174,211,.65));border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 8px 26px rgba(111,105,220,.24)}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea{background:rgba(5,9,18,.48);border:1px solid rgba(255,255,255,.16);border-radius:12px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(177,164,255,.65);box-shadow:0 0 0 3px rgba(155,130,255,.13)}
+.dialog{background:linear-gradient(145deg,rgba(39,44,67,.92),rgba(13,19,34,.94));border-color:rgba(255,255,255,.22);backdrop-filter:blur(36px) saturate(170%);-webkit-backdrop-filter:blur(36px) saturate(170%)}
+.modal{background:rgba(2,5,12,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.pill,.tag,.status{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.14)}
+.next{border-bottom-color:rgba(255,255,255,.09)}
+.nexticon{background:linear-gradient(145deg,rgba(177,153,255,.18),rgba(105,208,225,.09))}
+.bar{background:rgba(255,255,255,.09)}.bar i{background:linear-gradient(90deg,#c0aaff,#91e8f2);box-shadow:0 0 14px rgba(146,203,255,.32)}
+.live{box-shadow:0 0 12px var(--green),0 0 24px rgba(140,231,197,.35)}
+.topright{display:flex}
+@media(max-width:560px){.top{align-items:flex-start}.topright{display:flex;flex-wrap:wrap;justify-content:flex-end;font-size:9px}.topright .live{flex:0 0 7px}.hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(17px) saturate(150%);-webkit-backdrop-filter:blur(17px) saturate(150%)}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.95)}}
+
 </style>
 </head>
 <body>
@@ -32,7 +66,7 @@ button{border:1px solid #48527d;background:#1a2340;color:var(--text);padding:11p
 </header>
 <section class="hero">
  <div><div class="eyebrow">MISSION CONTROL / CAREER TRACKER</div><h2>La prossima opportunità<br>parte da qui.</h2><p>Un unico spazio per monitorare candidature, valutare le opportunità e preparare i prossimi colloqui. Tutto sotto controllo, un passo alla volta.</p></div>
- <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button></div>
+ <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button></div>
 </section>
 <nav class="nav">
  <button class="active" data-tab="overview" onclick="tab('overview',this)"><strong>◈ PANORAMICA</strong><span>La tua missione, a colpo d'occhio</span></button>
@@ -137,9 +171,25 @@ function openAdd(){ $("dialog").innerHTML=`<div class="dialoghead"><h3>＋ Nuova
 <div class="field"><label>SEDE</label><input id="f-location" value="Milano"></div><div class="field"><label>MODALITÀ</label><select id="f-mode"><option>Ibrido</option><option>Remoto</option><option>In presenza</option><option>Non specificata</option></select></div>
 <div class="field"><label>COMPATIBILITÀ (1–10)</label><input id="f-score" type="number" min="1" max="10" value="7"></div><div class="field"><label>STATO</label><select id="f-status">${statuses.map(s=>`<option>${s}</option>`).join("")}</select></div>
 <div class="field full"><label>LINK ANNUNCIO</label><input id="f-url" placeholder="https://..."></div><div class="field full"><label>NOTE</label><textarea id="f-notes" rows="3" placeholder="Requisiti, RAL, dettagli..."></textarea></div></div><div class="dialogactions"><button onclick="closeModal()">Annulla</button><button class="primary" onclick="addJob()">Salva opportunità</button></div>`;$("modal").classList.add("show")}
-function addJob(){let company=$("f-company").value.trim(),role=$("f-role").value.trim();if(!company||!role){alert("Inserisci almeno azienda e ruolo.");return}jobs.unshift({company,role,dateAdded:new Date().toISOString().slice(0,10),location:$("f-location").value,mode:$("f-mode").value,score:Math.min(10,Math.max(1,Number($("f-score").value)||7)),status:$("f-status").value,protected:false,url:$("f-url").value,notes:$("f-notes").value,area:"Da classificare",next:"Definire prossima azione"});closeModal();save()}
-function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT"):"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions"><button onclick="deleteJob(${i})">Elimina</button>${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
-function updateJob(i){jobs[i].status=$("detail-status").value;jobs[i].next=$("detail-next").value;closeModal();save()}
+async function addJob(){
+ let company=$("f-company").value.trim(),role=$("f-role").value.trim();
+ if(!company||!role){alert("Inserisci almeno azienda e ruolo.");return}
+ const job={company,role,location:$("f-location").value,mode:$("f-mode").value,score:Math.min(10,Math.max(1,Number($("f-score").value)||7)),status:$("f-status").value,protected:false,url:$("f-url").value.trim(),notes:$("f-notes").value,area:"",next:"Definire prossima azione"};
+ try{
+  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"create",job})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Creazione non riuscita");
+  closeModal();await loadNotionJobs();
+ }catch(error){alert("Non sono riuscito a salvare su Notion: "+error.message)}
+}
+function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT"):"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions">${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
+async function updateJob(i){
+ const job=jobs[i];if(!job.id){alert("Questa scheda non ha un ID Notion valido: aggiornamento non disponibile.");return}
+ try{
+  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"update",id:job.id,status:$("detail-status").value,next:$("detail-next").value})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Aggiornamento non riuscito");
+  closeModal();await loadNotionJobs();
+ }catch(error){alert("Non sono riuscito ad aggiornare Notion: "+error.message)}
+}
 function deleteJob(i){if(confirm("Eliminare questa opportunità?")){jobs.splice(i,1);closeModal();save()}}
 function exportData(){let blob=new Blob([JSON.stringify(jobs,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="job-hunting-opportunities.json";a.click();URL.revokeObjectURL(a.href)}
 $("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
@@ -148,18 +198,18 @@ render();
 async function loadNotionJobs(){
  const badge=document.getElementById("sync-status");
  try{
-  if(badge) badge.textContent="CONNESSIONE NOTION…";
+  if(badge) badge.textContent="NOTION · SINCRONIZZAZIONE…";
   const response=await fetch("/api/jobs",{cache:"no-store"});
   const payload=await response.json();
   if(!response.ok) throw new Error(payload.error||"Sincronizzazione non riuscita");
   if(!Array.isArray(payload.jobs)) throw new Error("Risposta API non valida");
   jobs=payload.jobs;
   localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
-  if(badge) badge.textContent="NOTION LIVE · "+jobs.length+" OPPORTUNITÀ";
+  if(badge) badge.textContent="NOTION LIVE · "+jobs.length;
   render();
  }catch(error){
   console.error("Notion sync:",error);
-  if(badge) badge.textContent="DATI LOCALI · SYNC NON DISPONIBILE";
+  if(badge) badge.textContent="SYNC NON DISPONIBILE";
  }
 }
 
