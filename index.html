@@ -56,6 +56,41 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
 @media(max-width:560px){.top{align-items:flex-start}.topright{display:flex;flex-wrap:wrap;justify-content:flex-end;font-size:9px}.topright .live{flex:0 0 7px}.hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(17px) saturate(150%);-webkit-backdrop-filter:blur(17px) saturate(150%)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.95)}}
 
+
+
+/* WIDE DESKTOP / FULL-WIDTH COMMAND CENTER */
+html,body{width:100%;min-height:100%;margin:0}
+body{overflow-x:hidden}
+.app{
+  width:100%;
+  max-width:none;
+  min-height:100vh;
+  margin:0;
+  padding:clamp(20px,2.2vw,38px) clamp(22px,3vw,58px) 52px;
+}
+.hero{width:100%}
+.nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.layout{grid-template-columns:minmax(0,1.8fr) minmax(320px,.82fr);gap:clamp(16px,1.4vw,26px)}
+.panel{min-width:0}
+.list,.job,.toolbar{min-width:0}
+@media(min-width:1600px){
+  .app{padding-left:clamp(48px,3.2vw,76px);padding-right:clamp(48px,3.2vw,76px)}
+  .hero{padding:clamp(30px,2.2vw,44px)}
+  .panel{padding:clamp(20px,1.5vw,28px)}
+  .stats{gap:clamp(14px,1.2vw,22px)}
+  .nav{gap:clamp(12px,1vw,18px)}
+}
+@media(max-width:1100px){
+  .app{padding:22px 20px 44px}
+  .layout{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .app{padding:18px 13px 40px}
+  .nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
