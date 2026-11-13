@@ -22,7 +22,102 @@ button{border:1px solid #48527d;background:#1a2340;color:var(--text);padding:11p
 .empty{color:var(--muted);font-size:12px;text-align:center;padding:28px}.footer{text-align:center;color:#667395;font-size:10px;margin-top:22px}
 .modal{position:fixed;inset:0;background:#02040bd9;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.dialog{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111a30;border:1px solid #5d5c98;border-radius:18px;padding:22px;box-shadow:0 20px 90px #000b}.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.dialog h3{margin:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:var(--muted)}.field input,.field select,.field textarea{width:100%}.dialogactions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.detailtext{color:#c2cbe4;line-height:1.6;font-size:12px;white-space:pre-wrap}.detailtop{display:flex;justify-content:space-between;gap:12px;align-items:start}.detailmeta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start;flex-direction:column}.board{grid-template-columns:repeat(4,220px)}}@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:none}.nav{grid-template-columns:repeat(2,1fr)}.stats{gap:8px}.stat{padding:13px}.stat .num{font-size:24px}.hero{padding:21px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.job{grid-template-columns:1fr}.score{text-align:left}.panel{padding:14px}}
-</style>
+
+/* LIQUID GLASS — layered translucent material system */
+:root{
+ --bg:#070910;--panel:rgba(25,30,48,.48);--panel2:rgba(34,40,62,.42);
+ --line:rgba(255,255,255,.15);--muted:#aab2c7;--text:#f7f8fc;
+ --violet:#b8a5ff;--cyan:#8ce8f7;--pink:#f0a8df;--green:#8ce7c5;--yellow:#f8d99a;
+}
+body{
+ background:
+  radial-gradient(ellipse at 12% 2%,rgba(117,94,190,.27),transparent 34%),
+  radial-gradient(ellipse at 88% 12%,rgba(65,144,174,.20),transparent 32%),
+  radial-gradient(ellipse at 50% 100%,rgba(74,77,132,.15),transparent 42%),
+  #070910;
+ background-attachment:fixed;
+}
+body:before{
+ opacity:.18;
+ background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#b9caff 99%,transparent),radial-gradient(1px 1px at 90% 82%,#fff 99%,transparent),radial-gradient(1px 1px at 25% 88%,#fff 99%,transparent);
+}
+.app{isolation:isolate}
+.logo{
+ background:linear-gradient(145deg,rgba(255,255,255,.38),rgba(158,137,255,.22) 45%,rgba(99,220,242,.18));
+ border:1px solid rgba(255,255,255,.34);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.48),0 8px 28px rgba(106,117,255,.22),0 0 42px rgba(133,110,255,.16);
+ backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+}
+.hero,.panel,.stat,.nav button,.column,.job,.dialog,.modal,.pill,.tag,.status,.nexticon{
+ background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025) 42%,rgba(130,145,190,.055));
+ border:1px solid rgba(255,255,255,.16);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.035),0 16px 44px rgba(0,0,0,.23);
+ backdrop-filter:blur(26px) saturate(165%);-webkit-backdrop-filter:blur(26px) saturate(165%);
+}
+.hero{
+ background:linear-gradient(112deg,rgba(137,117,210,.19),rgba(72,105,145,.13) 56%,rgba(75,167,183,.10));
+ border-color:rgba(221,222,255,.25);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.06),0 24px 70px rgba(0,0,0,.32),0 0 55px rgba(128,115,220,.08);
+}
+.hero:before,.panel:before,.stat:before,.dialog:before{
+ content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+ background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 24%,transparent 70%,rgba(255,255,255,.035));
+}
+.panel,.stat,.dialog{position:relative;overflow:hidden}
+.panel{background:linear-gradient(145deg,rgba(30,37,58,.57),rgba(17,23,39,.48));}
+.stat{background:linear-gradient(145deg,rgba(45,49,75,.54),rgba(19,25,42,.46));}
+.nav button{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.13)}
+.nav button.active{
+ background:linear-gradient(135deg,rgba(157,133,255,.25),rgba(89,190,219,.12));
+ border-color:rgba(203,194,255,.48);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 8px 32px rgba(127,105,220,.16);
+}
+.job{
+ background:linear-gradient(115deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+ border-color:rgba(255,255,255,.12);
+}
+.job:hover{
+ background:linear-gradient(115deg,rgba(178,162,255,.16),rgba(104,205,226,.08));
+ border-color:rgba(205,197,255,.38);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 12px 30px rgba(0,0,0,.2);
+}
+.column{background:rgba(14,19,33,.42)}
+button{
+ background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.045));
+ border:1px solid rgba(255,255,255,.2);border-radius:14px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 18px rgba(0,0,0,.16);
+ backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+}
+button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 26px rgba(101,160,220,.16)}
+.primary{
+ background:linear-gradient(130deg,rgba(163,139,255,.72),rgba(91,174,211,.58));
+ border:1px solid rgba(255,255,255,.28);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 8px 26px rgba(111,105,220,.24);
+}
+.ghost{background:rgba(255,255,255,.055)}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea{
+ background:rgba(5,9,18,.42);border:1px solid rgba(255,255,255,.16);
+ border-radius:12px;box-shadow:inset 0 1px 4px rgba(0,0,0,.22);
+ backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus{
+ border-color:rgba(177,164,255,.65);box-shadow:0 0 0 3px rgba(155,130,255,.13),inset 0 1px 4px rgba(0,0,0,.2)
+}
+.dialog{background:linear-gradient(145deg,rgba(39,44,67,.88),rgba(13,19,34,.91));border-color:rgba(255,255,255,.22);backdrop-filter:blur(36px) saturate(170%);-webkit-backdrop-filter:blur(36px) saturate(170%)}
+.modal{background:rgba(2,5,12,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.pill,.tag,.status{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.14)}
+.next{border-bottom-color:rgba(255,255,255,.09)}
+.nexticon{background:linear-gradient(145deg,rgba(177,153,255,.18),rgba(105,208,225,.09))}
+.bar{background:rgba(255,255,255,.09)}
+.bar i{background:linear-gradient(90deg,#c0aaff,#91e8f2);box-shadow:0 0 14px rgba(146,203,255,.32)}
+.live{box-shadow:0 0 12px var(--green),0 0 24px rgba(140,231,197,.35)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ .hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.94)}
+}
+@media(max-width:560px){
+ .hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
+}
+\n</style>
 </head>
 <body>
 <div class="app">
