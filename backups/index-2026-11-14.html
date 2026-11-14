@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerOS · Mission Control</title>
+<style>
+:root{--bg:#070914;--panel:#101528;--panel2:#141b32;--line:#273052;--muted:#9aa6c8;--text:#f4f6ff;--violet:#9b7bff;--cyan:#55d9f5;--pink:#ed79d7;--green:#59e0b0;--yellow:#ffd27a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 18% 0%,#252052 0,transparent 35%),radial-gradient(ellipse at 90% 12%,#102c4a 0,transparent 32%),var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#b9caff 99%,transparent),radial-gradient(1px 1px at 90% 82%,#fff 99%,transparent),radial-gradient(1px 1px at 25% 88%,#fff 99%,transparent);background-size:230px 190px}
+.app{max-width:1440px;margin:auto;padding:28px 30px 60px;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#8f6cff,#4bd8f1);display:grid;place-items:center;box-shadow:0 0 30px #8465ff66;font-size:22px}.eyebrow{color:var(--cyan);font-size:10px;letter-spacing:2.5px;font-weight:800}.brand h1{font-size:20px;letter-spacing:.7px;margin:3px 0 0}.topright{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.live{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;box-shadow:0 0 10px var(--green)}
+.hero{border:1px solid #5c5aa0;border-radius:22px;padding:28px 30px;background:linear-gradient(112deg,#201c43dd,#111c36e8 58%,#102c42dd);box-shadow:0 18px 60px #0007,inset 0 1px #ffffff12;display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden;position:relative}.hero:after{content:"✧";position:absolute;right:26%;top:-42px;font-size:190px;color:#a58cff12}.hero h2{font-size:clamp(24px,3vw,36px);margin:7px 0 8px;letter-spacing:-.8px}.hero p{margin:0;color:#b9c4e4;max-width:650px;line-height:1.55}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;z-index:1}
+button{border:1px solid #48527d;background:#1a2340;color:var(--text);padding:11px 15px;border-radius:11px;font-weight:700;cursor:pointer;transition:.18s;font-size:12px}button:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 5px 20px #56d9f522}.primary{background:linear-gradient(110deg,#8b68f3,#397fc9);border:0;box-shadow:0 5px 24px #8264ff44}.ghost{background:#ffffff08}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 22px}.nav button{padding:15px;text-align:left;background:#10172bd9;border:1px solid #2a3558;border-radius:14px}.nav button.active{background:linear-gradient(120deg,#30245b,#12344b);border-color:#8d79ff;box-shadow:0 0 24px #876aff22}.nav strong{display:block;font-size:13px;margin-bottom:4px}.nav span{font-size:11px;color:var(--muted);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}.stat{background:linear-gradient(145deg,#141b31ee,#0e1427ee);border:1px solid var(--line);border-radius:16px;padding:17px 18px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-38px;background:#8c6dff18;filter:blur(5px)}.stat .label{color:var(--muted);font-size:11px}.stat .num{font-size:29px;font-weight:800;margin:7px 0 3px;letter-spacing:-1px}.stat .hint{font-size:10px;color:#8b9abc}.purple{color:#b69dff}.blue{color:var(--cyan)}.pink{color:var(--pink)}.green{color:var(--green)}
+.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);gap:16px}.panel{background:#0f1629ed;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 10px 35px #0003}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.panel h3{font-size:15px;margin:0}.sub{font-size:11px;color:var(--muted);margin-top:4px}.pill{font-size:10px;padding:5px 9px;border-radius:30px;border:1px solid #3d4770;color:#bfc9e7;background:#202943}
+.toolbar{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap}.toolbar input,.toolbar select,.field input,.field select,.field textarea{background:#0a1020;color:var(--text);border:1px solid #303b60;border-radius:9px;padding:10px 11px;font:inherit;outline:none}.toolbar input{flex:1;min-width:160px}.toolbar select{min-width:130px}.toolbar input:focus,.toolbar select:focus,.field input:focus{border-color:var(--violet)}
+.list{display:flex;flex-direction:column;gap:9px}.job{border:1px solid #273354;background:linear-gradient(100deg,#151d34,#10182b);border-radius:13px;padding:13px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;cursor:pointer}.job:hover{border-color:#7869bd;background:#1a2140}.jobtitle{font-weight:750;font-size:13px}.company{font-size:11px;color:var(--muted);margin-top:4px}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.tag{font-size:10px;color:#c7d1ee;background:#252e4b;border:1px solid #394568;padding:4px 7px;border-radius:6px}.score{font-size:12px;font-weight:800;color:var(--green);text-align:right}.status{font-size:10px;border-radius:20px;padding:5px 8px;white-space:nowrap;height:max-content;border:1px solid #465174;color:#d8def4}.status.sent{color:var(--green);border-color:#2b7867}.status.interview{color:var(--cyan);border-color:#2e7288}.status.rejected{color:#ff9caa;border-color:#8a4659}.status.interesting{color:var(--yellow);border-color:#80683b}
+.side{display:flex;flex-direction:column;gap:16px}.pipeline{display:flex;flex-direction:column;gap:12px}.pipe-row{display:grid;grid-template-columns:112px 1fr 24px;align-items:center;gap:9px;font-size:11px;color:#c4cce4}.bar{height:7px;border-radius:10px;background:#252d48;overflow:hidden}.bar i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#906bff,#4bd5ed)}.pipe-count{text-align:right;color:#fff;font-weight:800}.next{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #242e4b}.next:last-child{border:0}.nexticon{width:30px;height:30px;border-radius:9px;background:#28264b;display:grid;place-items:center}.next b{font-size:11px}.next small{display:block;color:var(--muted);font-size:10px;margin-top:4px;line-height:1.4}
+.section{display:none}.section.active{display:block}.board{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:12px;overflow:auto}.column{background:#0b1121;border:1px solid #293453;border-radius:14px;padding:12px;min-height:220px}.column h4{font-size:11px;color:#bfc9e7;margin:0 0 12px;display:flex;justify-content:space-between}.column .job{display:block;margin-bottom:9px}.column .score{margin-top:8px;text-align:left}
+.empty{color:var(--muted);font-size:12px;text-align:center;padding:28px}.footer{text-align:center;color:#667395;font-size:10px;margin-top:22px}
+.modal{position:fixed;inset:0;background:#02040bd9;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.dialog{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111a30;border:1px solid #5d5c98;border-radius:18px;padding:22px;box-shadow:0 20px 90px #000b}.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.dialog h3{margin:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:var(--muted)}.field input,.field select,.field textarea{width:100%}.dialogactions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.detailtext{color:#c2cbe4;line-height:1.6;font-size:12px;white-space:pre-wrap}.detailtop{display:flex;justify-content:space-between;gap:12px;align-items:start}.detailmeta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start;flex-direction:column}.board{grid-template-columns:repeat(4,220px)}}@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:none}.nav{grid-template-columns:repeat(2,1fr)}.stats{gap:8px}.stat{padding:13px}.stat .num{font-size:24px}.hero{padding:21px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.job{grid-template-columns:1fr}.score{text-align:left}.panel{padding:14px}}
+
+
+/* MISSION CONTROL — Liquid Glass, warm alchemy accents */
+:root{
+ --bg:#090c16;--panel:rgba(27,34,52,.56);--line:rgba(255,255,255,.15);
+ --muted:#aebbd0;--text:#f5f4f0;--violet:#c4adff;--cyan:#a4e4ec;
+ --pink:#e9b4d5;--green:#b7e4c7;--yellow:#f0cf91;
+}
+html,body{width:100%;min-height:100%;margin:0;background:#090c16;color:var(--text)}
+body{
+ overflow-x:hidden;
+ background:
+  radial-gradient(ellipse at 12% 0%,rgba(146,112,190,.28),transparent 36%),
+  radial-gradient(ellipse at 88% 12%,rgba(79,153,174,.20),transparent 34%),
+  radial-gradient(ellipse at 52% 100%,rgba(169,123,72,.10),transparent 42%),
+  #090c16;
+ background-attachment:fixed;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;
+ background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#d7c5a6 99%,transparent);
+ background-size:230px 190px;z-index:-1;
+}
+.app{width:100%;max-width:none;min-height:100vh;margin:0;padding:clamp(20px,2.2vw,38px) clamp(22px,3vw,58px) 52px;position:relative;isolation:isolate}
+.hero,.panel,.stat,.nav button,.column,.job,.dialog,.pill,.tag,.status,.nexticon{
+ border:1px solid rgba(255,255,255,.14);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.025),0 16px 44px rgba(0,0,0,.22);
+ backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+}
+.hero{
+ background:linear-gradient(115deg,rgba(139,113,184,.24),rgba(65,119,150,.15) 58%,rgba(176,143,94,.10));
+ border-color:rgba(225,215,255,.24);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 24px 70px rgba(0,0,0,.28);
+}
+.hero p{color:#c4cce0}
+.panel{background:linear-gradient(145deg,rgba(38,47,69,.68),rgba(17,24,40,.62))}
+.stat{background:linear-gradient(145deg,rgba(52,56,80,.62),rgba(20,27,44,.55))}
+.nav button{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.13)}
+.nav button.active{background:linear-gradient(135deg,rgba(157,133,255,.24),rgba(89,190,219,.13));border-color:rgba(203,194,255,.48)}
+.job{background:linear-gradient(115deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-color:rgba(255,255,255,.12)}
+.job:hover{background:linear-gradient(115deg,rgba(178,162,255,.16),rgba(104,205,226,.08));border-color:rgba(205,197,255,.4)}
+.column{background:rgba(14,19,33,.48)}
+button{
+ color:var(--text);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.045));
+ border:1px solid rgba(255,255,255,.19);border-radius:14px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 5px 18px rgba(0,0,0,.16);
+ backdrop-filter:blur(18px) saturate(155%);-webkit-backdrop-filter:blur(18px) saturate(155%);
+}
+button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 8px 26px rgba(101,160,220,.16)}
+.primary{background:linear-gradient(130deg,rgba(148,120,222,.86),rgba(74,153,185,.76));border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 26px rgba(111,105,220,.22)}
+.ghost{background:rgba(255,255,255,.055)}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea{
+ color:var(--text);background:rgba(5,9,18,.48);border:1px solid rgba(255,255,255,.16);
+ border-radius:12px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(177,164,255,.65);box-shadow:0 0 0 3px rgba(155,130,255,.13)}
+.dialog{background:linear-gradient(145deg,rgba(39,44,67,.94),rgba(13,19,34,.96));border-color:rgba(255,255,255,.22);backdrop-filter:blur(36px) saturate(170%);-webkit-backdrop-filter:blur(36px) saturate(170%)}
+.modal{background:rgba(2,5,12,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.pill,.tag,.status{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.14)}
+.next{border-bottom-color:rgba(255,255,255,.09)}
+.nexticon{background:linear-gradient(145deg,rgba(177,153,255,.18),rgba(105,208,225,.09))}
+.bar{background:rgba(255,255,255,.09)}
+.bar i{background:linear-gradient(90deg,#c0aaff,#91e8f2);box-shadow:0 0 14px rgba(146,203,255,.32)}
+.live{box-shadow:0 0 12px var(--green),0 0 24px rgba(140,231,197,.35)}
+.topright{display:flex}
+@media(min-width:1600px){.app{padding-left:clamp(48px,3.2vw,76px);padding-right:clamp(48px,3.2vw,76px)}.hero{padding:clamp(30px,2.2vw,44px)}.panel{padding:clamp(20px,1.5vw,28px)}}
+@media(max-width:1100px){.app{padding:22px 20px 44px}.layout{grid-template-columns:1fr}}
+@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:flex;flex-wrap:wrap;justify-content:flex-end;font-size:9px}.nav{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(17px) saturate(150%);-webkit-backdrop-filter:blur(17px) saturate(150%)}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.95)}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">✦</div><div><div class="eyebrow">PERSONAL OPERATING SYSTEM</div><h1>CAREEROS · MISSION CONTROL</h1></div></div>
+ <div class="topright"><span class="live"></span> <span id="sync-status">SYNC NOTION</span> <span>·</span> <span id="today"></span><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button></div>
+</header>
+<section class="hero">
+ <div><div class="eyebrow">MISSION CONTROL / CAREER TRACKER</div><h2>La prossima opportunità<br>parte da qui.</h2><p>Un unico spazio per monitorare candidature, valutare le opportunità e preparare i prossimi colloqui. Tutto sotto controllo, un passo alla volta.</p></div>
+ <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza Notion</button><button class="ghost" onclick="window.open('https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a','_blank','noopener')">↗ Apri Notion</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button><a class="notion-link" href="https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a" target="_blank" rel="noopener">↗ Apri Notion</a></div>
+</section>
+<nav class="nav">
+ <button class="active" data-tab="overview" onclick="tab('overview',this)"><strong>◈ PANORAMICA</strong><span>La tua missione, a colpo d'occhio</span></button>
+ <button data-tab="pipeline" onclick="tab('pipeline',this)"><strong>▤ PIPELINE</strong><span>Segui ogni candidatura</span></button>
+ <button data-tab="opportunities" onclick="tab('opportunities',this)"><strong>✧ OPPORTUNITÀ</strong><span>Esplora e seleziona i ruoli</span></button>
+ <button data-tab="interviews" onclick="tab('interviews',this)"><strong>◎ COLLOQUI</strong><span>Prepara i prossimi incontri</span></button>
+</nav>
+<section id="overview" class="section active">
+ <div class="stats">
+  <div class="stat"><div class="label">OPPORTUNITÀ TRACCIATE</div><div class="num purple" id="s-total">—</div><div class="hint">Nel tuo radar professionale</div></div>
+  <div class="stat"><div class="label">CANDIDATURE INVIATE</div><div class="num blue" id="s-sent">—</div><div class="hint">Passi già completati</div></div>
+  <div class="stat"><div class="label">DA VALUTARE</div><div class="num pink" id="s-review">—</div><div class="hint">Opportunità da approfondire</div></div>
+  <div class="stat"><div class="label">COLLOQUI</div><div class="num green" id="s-interview">—</div><div class="hint">Selezioni in corso</div></div>
+ </div>
+ <div class="layout">
+  <div class="panel"><div class="panelhead"><div><h3>Ultime opportunità</h3><div class="sub">Le posizioni nel tuo radar</div></div><span class="pill" id="shown">—</span></div><div class="toolbar"><input id="search1" placeholder="⌕ Cerca azienda, ruolo..." oninput="render()"><select id="filter1" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select></div><div class="list" id="latest"></div></div>
+  <div class="side">
+   <div class="panel"><div class="panelhead"><div><h3>Pipeline candidature</h3><div class="sub">Distribuzione per stato</div></div><span class="pill">LIVE</span></div><div class="pipeline" id="pipelineBars"></div></div>
+   <div class="panel"><div class="panelhead"><div><h3>Focus consigliato</h3><div class="sub">Prossimi passi concreti</div></div></div><div class="next"><div class="nexticon">✦</div><div><b>Verifica le candidature aperte</b><small>Controlla gli annunci più interessanti e completa i passaggi mancanti.</small></div></div><div class="next"><div class="nexticon">⌁</div><div><b>Prepara il prossimo colloquio</b><small>Raccogli esempi su SQL, BigQuery, CRM analytics e dashboard.</small></div></div><div class="next"><div class="nexticon">↗</div><div><b>Segui i recruiter</b><small>Aggiungi contatti e prossime azioni alle opportunità inviate.</small></div></div></div>
+  </div>
+ </div>
+</section>
+<section id="pipeline" class="section">
+ <div class="panel"><div class="panelhead"><div><h3>La tua pipeline</h3><div class="sub">Apri una scheda per vedere i dettagli o cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div>
+</section>
+<section id="opportunities" class="section">
+ <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill">DATABASE LOCALE</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option></select></div><div class="list" id="alljobs"></div></div>
+</section>
+<section id="interviews" class="section">
+ <div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in fase di selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch di 60 secondi sul percorso in GameStop, risultati RFM/CLTV, segmentazione clienti, SQL e BigQuery. Tieni pronti 2–3 esempi con impatto misurabile.</small></div></div></div>
+</section>
+<div class="footer">JOB HUNTING COMMAND CENTER · ULTIMO AGGIORNAMENTO 12 NOV 2026 · I DATI SI SALVANO SU QUESTO DISPOSITIVO</div>
+</div>
+<div class="modal" id="modal"><div class="dialog" id="dialog"></div></div>
+<script>
+const seed = [
+{company:"SDG Group",role:"Business Intelligence Analyst – Categorie protette (68/99)",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Candidatura inviata",protected:true,url:"https://careers.sdggroup.com/jobs/4430189-business-intelligence-analyst-categorie-protette-68-99",notes:"BI e dashboard nell’area CPM. RAL indicativa €26–28k. Da chiarire il peso dell’analytics rispetto al controllo di gestione.",next:"Attendere feedback / verificare portale"},
+{company:"Tissington",role:"Business Intelligence Analyst",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:false,url:"https://freehire.me/jobs/business-intelligence-analyst-tissington-awr2zoli",notes:"Sviluppo dashboard BI e analisi dati. Power BI, SQL e data modelling. RAL e seniority da verificare.",next:"Cercare annuncio sul sito ufficiale"},
+{company:"Clutch",role:"CRM Data Analyst – Insight-driven Marketing & Automation",area:"CRM Analytics · Data Analyst · BI",location:"Milano",mode:"Non specificata",score:9,status:"Da valutare",protected:false,url:"https://www.jobleads.com/it/job/crm-data-analyst-insight-driven-marketing-automation--milano--e039ca550bf992b509076d874809b9718",notes:"Analisi CRM, comportamenti d’acquisto, SQL, KPI, dashboard, segmentazione e marketing automation. Match molto forte con esperienza retail/B2C e CLV.",next:"Verificare candidatura sul sito Clutch"},
+{company:"SDG Group",role:"Data Analyst – Categorie Protette (68/99)",area:"Data Analyst · BI",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:true,url:"https://careers.sdggroup.com/jobs/3642456-data-analyst-categorie-protette-68-99",notes:"Data analytics in società specializzata. RAL indicativa €26–28k. Verificare che l’annuncio sia ancora aperto.",next:"Controllare apertura e seniority"},
+{company:"ManpowerGroup",role:"Business Intelligence Specialist",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:false,url:"https://www.manpower.it/it/annuncio-lavoro/consulenza-servizi/marketing-comunicazione/business-intelligence-specialist/1052984",notes:"RAL €35–40k, smart working 2 giorni. ETL, dashboard Power BI, KPI e supporto decisionale. Scadenza indicata 31/01/2027.",next:"Verificare requisiti Power BI"},
+{company:"BIP (Datwave)",role:"BI & Data Analytics Expert – GCP",area:"BI · Data Engineering · Analytics Engineering",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:false,url:"https://fa-etjb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/it/sites/CX_1/job/2550/",notes:"RAL €34–48k. SQL, BigQuery/GCP, pipeline, data warehouse, BI e Python. Match tecnico forte.",next:"Verificare seniority e candidarsi"},
+{company:"PwC Italy",role:"Senior Customer Data Analyst",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"In presenza",score:9,status:"Da valutare",protected:false,url:"https://jobs.managementconsulted.com/jobs/602861208-senior-customer-data-analyst",notes:"RAL €36–50k + variabile. Customer analytics, campagne, CDP, SQL, R/Python. Match molto forte; verificare annuncio sul portale PwC.",next:"Verificare annuncio ufficiale"},
+{company:"Satispay",role:"Senior Data Analyst – Product",area:"Data Analyst · Product Analytics",location:"Milano",mode:"Ibrido",score:9,status:"Da valutare",protected:false,url:"https://www.startupjobs.it/offerte/15666-senior-data-analyst-product",notes:"RAL indicata €51–58k. Product analytics, funnel, cohort, retention, segmentazione, A/B test, SQL e Python.",next:"Verificare candidatura sul sito Satispay"},
+{company:"Satispay",role:"Data Analyst – Growth & Marketing",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"Ibrido",score:9,status:"Da valutare",protected:false,url:"https://www.startupjobs.it/offerte/15882-data-analyst-growth-marketing",notes:"RAL indicata €43–50k. Acquisizione, engagement, retention, funnel, SQL, data modelling, ETL e dashboard.",next:"Verificare candidatura sul sito Satispay"},
+{company:"Mollie",role:"Analytics Engineer",area:"Analytics Engineering · BI · Data Engineering",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:false,url:"https://jobs.mollie.com/vacancies/a47018ac-0a29-4ba0-88cf-9616fdb03b71",notes:"dbt, BI, dashboard, data quality, SQL, Python, data modelling e BigQuery/GCP.",next:"Verificare seniority e modalità"},
+{company:"Randstad (Fashion Luxury)",role:"Business Analyst – Categorie protette L.68/99",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:true,url:"https://www.randstad.com/jobs/business-analyst-categorie-protette-l6899fmnb_milano_47569516/",notes:"RAL €28–34k, scadenza 6 dicembre 2026. Ruolo L.68/99, SQL, Python/R, Excel e BI. Contatto: milano.ho@randstad.it.",next:"Valutare RAL e inviare CV via email"},
+{company:"BIP (Datwave)",role:"Data Analyst – Google – Categoria Protetta L.68/99",area:"Data Analyst · BI · Data Science",location:"Milano",mode:"Non specificata",score:7,status:"Da valutare",protected:true,url:"https://fa-etjb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/2276",notes:"SQL, SAS e Python; canale L.68/99. Annuncio datato: verificare apertura.",next:"Verificare se ancora aperto"},
+{company:"Andrea Poletti & Associati",role:"Junior Data Analyst – Categoria Protetta L.68/99",area:"Data Analyst · BI",location:"Assago / Milano",mode:"Non specificata",score:5,status:"Da valutare",protected:true,url:"https://www.helplavoro.it/offerta-di-lavoro-categorie-protette-in-provincia-di-milano-cercasi-junior-data-analyst-categoria-protetta-l-68-99/6979676.html",notes:"Ruolo junior in retail/distribuzione. Scadenza 26 novembre 2026. Potenzialmente sottodimensionato rispetto all’esperienza.",next:"Valutare livello e responsabilità"},
+{company:"RISORSE SPA",role:"Data & Analytics Specialist – Categorie protette L.68/99",area:"Data Analyst · BI · CRM Analytics · Data Engineering",location:"Milano Ovest",mode:"Ibrido",score:9,status:"Candidatura inviata",protected:true,url:"https://it.linkedin.com/jobs/view/data-analytics-specialist-categorie-protette-l-68-99-at-risorse-spa-4485096263",notes:"RAL €40–50k, tempo indeterminato, 2 giorni smart working. Reporting, analisi commerciali, ETL/ELT e data warehouse cloud.",next:"Attendere feedback"}
+];
+let jobs=JSON.parse(localStorage.getItem("jhc_jobs")||"null")||seed;
+// Aggiornamento ricerca lavoro del 11/11/2026: inserisce solo nuove offerte,
+// preservando le opportunità e gli stati già salvati nel browser.
+const scanDate="Ricerca aggiornata il 11/11/2026.";
+const latestScan=[
+ {company:"Cerved",role:"Senior Data Analyst",area:"Data Analytics · BI · Business Intelligence",location:"Da verificare",mode:"Da verificare",score:9,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 9/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
+ {company:"Shopfully",role:"Senior Data Analyst",area:"Data Analytics · Retail · Customer Analytics",location:"Da verificare",mode:"Da verificare",score:9,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 9/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
+ {company:"Lexroom",role:"Analytics Engineer",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:8,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 8/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
+ {company:"Satispay",role:"Analytics Engineer",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:8,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 8/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
+ {company:"BIP",role:"Senior Data Scientist",area:"Data Science · Advanced Analytics",location:"Da verificare",mode:"Da verificare",score:6,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 6/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
+ {company:"Randstad",role:"Junior Analytics Engineer – L.68/99",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:6,status:"Da valutare",protected:true,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 6/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Verificare annuncio, seniority e requisiti L.68/99"}
+];
+for(const item of latestScan){
+ item.dateAdded="2026-11-11";
+ const exists=jobs.some(j=>j.company.toLowerCase()===item.company.toLowerCase()&&j.role.toLowerCase()===item.role.toLowerCase());
+ if(!exists) jobs.unshift(item);
+}
+for(const j of jobs){
+ if(!j.dateAdded) j.dateAdded="";
+ const isInScan=(j.company==="Satispay"&&(j.role.includes("Product")||j.role.includes("Growth & Marketing")))||(j.company==="Mollie"&&j.role==="Analytics Engineer")||(j.company.includes("BIP")&&j.role.includes("BI & Data Analytics Expert"));
+ if(isInScan&&!j.dateAdded) j.dateAdded="2026-11-11";
+ if(isInScan&&!j.notes.includes(scanDate)) j.notes+=" "+scanDate;
+}
+localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
+const statuses=["Da valutare","Interessante","Candidatura inviata","Colloquio","Scartata"];
+const $=id=>document.getElementById(id);
+
+function toggleTheme(){
+ const dark=document.documentElement.classList.toggle("dark-glass");
+ localStorage.setItem("jhc_theme",dark?"dark":"parchment");
+ const b=document.getElementById("theme-toggle");
+ if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+}
+(function initTheme(){
+ const dark=localStorage.getItem("jhc_theme")==="dark";
+ if(dark)document.documentElement.classList.add("dark-glass");
+ document.addEventListener("DOMContentLoaded",()=>{
+  const b=document.getElementById("theme-toggle");
+  if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+ });
+})();
+
+function save(){localStorage.setItem("jhc_jobs",JSON.stringify(jobs));render()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function cls(s){return s==="Candidatura inviata"?"sent":s==="Colloquio"?"interview":s==="Scartata"?"rejected":s==="Interessante"?"interesting":""}
+function card(j,i){return `<div class="job" onclick="detail(${i})"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)} · ${esc(j.location)}</div><div class="meta"><span class="tag">Inserita: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT") : "data non disponibile"}</span><span class="tag">${esc(j.mode)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">${esc(j.area)}</span></div></div><div><div class="score">${j.score}/10 MATCH</div><div class="status ${cls(j.status)}">${esc(j.status)}</div></div></div>`}
+function render(){
+ $("today").textContent=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"short",year:"numeric"}).format(new Date());
+ let sent=jobs.filter(j=>j.status==="Candidatura inviata").length,review=jobs.filter(j=>j.status==="Da valutare"||j.status==="Interessante").length,inter=jobs.filter(j=>j.status==="Colloquio").length;
+ $("s-total").textContent=jobs.length;$("s-sent").textContent=sent;$("s-review").textContent=review;$("s-interview").textContent=inter;
+ let counts=statuses.map(s=>[s,jobs.filter(j=>j.status===s).length]);$("pipelineBars").innerHTML=counts.map(([s,n])=>`<div class="pipe-row"><span>${s}</span><div class="bar"><i style="width:${jobs.length?n/jobs.length*100:0}%"></i></div><span class="pipe-count">${n}</span></div>`).join("");
+ const q1=($("search1")?.value||"").toLowerCase(),f1=$("filter1")?.value||"";
+ let recent=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f1||j.status===f1)&&(`${j.company} ${j.role} ${j.location}`.toLowerCase().includes(q1))).sort((a,b)=>b.score-a.score);
+ $("latest").innerHTML=recent.slice(0,6).map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';$("shown").textContent=recent.length+" risultati";
+ const q2=($("search2")?.value||"").toLowerCase(),f2=$("filter2")?.value||"",sort=$("sort")?.value||"score";
+ let all=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f2||j.status===f2)&&(`${j.company} ${j.role} ${j.location} ${j.area}`.toLowerCase().includes(q2)));
+ all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):((a,b)=>b.score-a.score));
+ $("alljobs").innerHTML=all.map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';
+ $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
+ let iv=jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status==="Colloquio");
+ $("interviewList").innerHTML=iv.length?iv.map(j=>card(j,j._i)).join(""):'<div class="empty">Non hai ancora colloqui registrati.<br>Quando un’azienda ti contatta, apri la relativa opportunità e cambia lo stato in “Colloquio”.</div>';
+}
+function tab(id,btn){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");render()}
+function closeModal(){$("modal").classList.remove("show")}
+function openAdd(){ $("dialog").innerHTML=`<div class="dialoghead"><h3>＋ Nuova opportunità</h3><button onclick="closeModal()">✕</button></div><div class="fields">
+<div class="field"><label>AZIENDA</label><input id="f-company" placeholder="Nome azienda"></div><div class="field"><label>RUOLO</label><input id="f-role" placeholder="Titolo posizione"></div>
+<div class="field"><label>SEDE</label><input id="f-location" value="Milano"></div><div class="field"><label>MODALITÀ</label><select id="f-mode"><option>Ibrido</option><option>Remoto</option><option>In presenza</option><option>Non specificata</option></select></div>
+<div class="field"><label>COMPATIBILITÀ (1–10)</label><input id="f-score" type="number" min="1" max="10" value="7"></div><div class="field"><label>STATO</label><select id="f-status">${statuses.map(s=>`<option>${s}</option>`).join("")}</select></div>
+<div class="field full"><label>LINK ANNUNCIO</label><input id="f-url" placeholder="https://..."></div><div class="field full"><label>NOTE</label><textarea id="f-notes" rows="3" placeholder="Requisiti, RAL, dettagli..."></textarea></div></div><div class="dialogactions"><button onclick="closeModal()">Annulla</button><button class="primary" onclick="addJob()">Salva opportunità</button></div>`;$("modal").classList.add("show")}
+async function addJob(){
+ let company=$("f-company").value.trim(),role=$("f-role").value.trim();
+ if(!company||!role){alert("Inserisci almeno azienda e ruolo.");return}
+ const job={company,role,location:$("f-location").value,mode:$("f-mode").value,score:Math.min(10,Math.max(1,Number($("f-score").value)||7)),status:$("f-status").value,protected:false,url:$("f-url").value.trim(),notes:$("f-notes").value,area:"",next:"Definire prossima azione"};
+ try{
+  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"create",job})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Creazione non riuscita");
+  closeModal();await loadNotionJobs();
+ }catch(error){alert("Non sono riuscito a salvare su Notion: "+error.message)}
+}
+function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT"):"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions">${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
+async function updateJob(i){
+ const job=jobs[i];if(!job.id){alert("Questa scheda non ha un ID Notion valido: aggiornamento non disponibile.");return}
+ try{
+  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"update",id:job.id,status:$("detail-status").value,next:$("detail-next").value})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||"Aggiornamento non riuscito");
+  closeModal();await loadNotionJobs();
+ }catch(error){alert("Non sono riuscito ad aggiornare Notion: "+error.message)}
+}
+function deleteJob(i){if(confirm("Eliminare questa opportunità?")){jobs.splice(i,1);closeModal();save()}}
+function exportData(){let blob=new Blob([JSON.stringify(jobs,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="job-hunting-opportunities.json";a.click();URL.revokeObjectURL(a.href)}
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
+render();
+
+async function loadNotionJobs(){
+ const badge=document.getElementById("sync-status");
+ try{
+  if(badge) badge.textContent="NOTION · SINCRONIZZAZIONE…";
+  const response=await fetch("/api/jobs",{cache:"no-store"});
+  const payload=await response.json();
+  if(!response.ok) throw new Error(payload.error||"Sincronizzazione non riuscita");
+  if(!Array.isArray(payload.jobs)) throw new Error("Risposta API non valida");
+  jobs=payload.jobs;
+  localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
+  if(badge) badge.textContent="NOTION LIVE · "+jobs.length;
+  render();
+ }catch(error){
+  console.error("Notion sync:",error);
+  if(badge) badge.textContent="SYNC NON DISPONIBILE";
+ }
+}
+
+loadNotionJobs();
+</script>
+</body></html>
