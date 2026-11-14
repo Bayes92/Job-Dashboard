@@ -91,6 +91,87 @@ body{overflow-x:hidden}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+/* PARCHMENT + AMBER LIQUID GLASS — iPhone wallpaper inspired */
+:root{
+ --bg:#b9874e;--panel:rgba(255,239,205,.25);--panel2:rgba(255,231,185,.32);
+ --line:rgba(104,61,29,.28);--muted:#704b2e;--text:#3b281b;
+ --violet:#8d5c2e;--cyan:#9a6738;--pink:#a65c36;--green:#526b42;--yellow:#966323;
+}
+html,body{background:#b88950;color:var(--text)}
+body{
+ background:
+  radial-gradient(ellipse at 8% 12%,rgba(255,245,211,.65),transparent 42%),
+  radial-gradient(ellipse at 88% 20%,rgba(132,75,34,.24),transparent 38%),
+  radial-gradient(ellipse at 52% 88%,rgba(255,224,164,.34),transparent 46%),
+  repeating-linear-gradient(7deg,rgba(91,52,25,.035) 0 1px,transparent 1px 5px),
+  linear-gradient(115deg,#c99a60,#e1bd82 48%,#b98249);
+ background-attachment:fixed;
+}
+body:before{
+ opacity:.38;
+ background-image:
+  radial-gradient(ellipse at 15% 22%,transparent 0 22px,rgba(92,54,29,.22) 23px 24px,transparent 25px),
+  radial-gradient(ellipse at 78% 70%,transparent 0 42px,rgba(92,54,29,.16) 43px 44px,transparent 45px),
+  repeating-linear-gradient(135deg,transparent 0 38px,rgba(87,51,28,.055) 39px 40px,transparent 41px 82px);
+ background-size:310px 260px,420px 360px,190px 190px;
+ mix-blend-mode:multiply;
+}
+.logo{background:linear-gradient(135deg,#a86d35,#e4bd78);color:#fff4dc;box-shadow:0 5px 20px #70451f44}
+.eyebrow{color:#805126}
+.brand h1,.hero h2,.panel h3,.dialog h3{color:#422b1b}
+.hero{
+ background:linear-gradient(115deg,rgba(255,240,205,.58),rgba(214,163,99,.30) 58%,rgba(255,247,222,.40));
+ border-color:rgba(255,250,229,.72);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 20px 55px rgba(83,49,22,.2);
+}
+.hero p{color:#69472c}
+button{
+ color:#51351f;background:linear-gradient(145deg,rgba(255,249,229,.62),rgba(224,182,120,.28));
+ border-color:rgba(112,72,38,.25);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.72),0 5px 18px rgba(88,54,25,.13);
+}
+button:hover{border-color:rgba(111,69,32,.55);box-shadow:inset 0 1px 0 #fff9e8,0 8px 24px rgba(88,54,25,.2)}
+.primary{color:#fff8e8;background:linear-gradient(130deg,rgba(146,91,42,.9),rgba(190,132,66,.88));border:1px solid rgba(255,255,255,.52);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 8px 26px rgba(111,68,29,.2)}
+.ghost{color:#54381f}
+.nav button{color:#4c321f;background:rgba(255,246,221,.30);border-color:rgba(105,66,34,.22)}
+.nav button span,.sub,.stat .label,.stat .hint,.company,.field label,.topright{color:#765335}
+.nav button.active{background:linear-gradient(135deg,rgba(255,246,222,.7),rgba(198,143,78,.32));border-color:rgba(129,80,37,.48)}
+.hero,.panel,.stat,.nav button,.column,.job,.dialog,.pill,.tag,.status,.nexticon{
+ border-color:rgba(112,70,34,.24);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.62),inset 0 -1px 0 rgba(107,65,29,.06),0 14px 38px rgba(91,55,26,.14);
+ backdrop-filter:blur(25px) saturate(145%);-webkit-backdrop-filter:blur(25px) saturate(145%);
+}
+.panel{background:linear-gradient(145deg,rgba(255,246,221,.48),rgba(235,202,151,.28))}
+.stat{background:linear-gradient(145deg,rgba(255,248,227,.62),rgba(226,187,126,.32))}
+.stat .num{color:#70451f}
+.purple,.blue,.pink,.green{color:#805126}
+.job{background:linear-gradient(115deg,rgba(255,249,231,.53),rgba(225,190,137,.24));border-color:rgba(109,69,34,.2)}
+.job:hover{background:linear-gradient(115deg,rgba(255,251,237,.78),rgba(219,174,111,.4));border-color:rgba(114,69,31,.42)}
+.tag,.pill,.status{color:#69472b;background:rgba(255,246,224,.45);border-color:rgba(112,70,34,.22)}
+.status.sent{color:#45613b;border-color:#71885b}
+.status.interview{color:#6b572d;border-color:#aa8749}
+.status.rejected{color:#914d3a;border-color:#b77b62}
+.status.interesting{color:#85591f;border-color:#b18a4e}
+.score{color:#536b3e}
+.column{background:rgba(255,242,213,.34)}
+.toolbar input,.toolbar select,.field input,.field select,.field textarea{
+ color:#4c321f;background:rgba(255,249,231,.58);border:1px solid rgba(112,70,34,.25);
+}
+.toolbar input::placeholder,.field input::placeholder,.field textarea::placeholder{color:#987653}
+.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:#a87942;box-shadow:0 0 0 3px rgba(164,112,57,.14)}
+.dialog{color:#4c321f;background:linear-gradient(145deg,rgba(255,247,224,.94),rgba(226,190,137,.94));border-color:rgba(112,70,34,.32)}
+.detailtext{color:#62452b}
+.modal{background:rgba(62,39,21,.36);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.next{border-bottom-color:rgba(112,70,34,.15)}
+.nexticon{color:#805126;background:linear-gradient(145deg,rgba(255,247,225,.66),rgba(204,155,91,.32))}
+.bar{background:rgba(112,70,34,.14)}
+.bar i{background:linear-gradient(90deg,#a8733c,#d5a968);box-shadow:0 0 12px rgba(155,103,48,.25)}
+.live{background:#61794a;box-shadow:0 0 10px rgba(97,121,74,.4)}
+.footer{color:#795837}
+@media(max-width:560px){
+ .hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+}
+
 </style>
 </head>
 <body>
