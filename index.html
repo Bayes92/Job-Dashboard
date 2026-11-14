@@ -192,17 +192,51 @@ body:before{
 .stat,.nav button{background:rgba(255,235,196,.68)!important}
 .job{background:rgba(255,239,211,.66)!important}
 
+
+/* THEME SWITCH — preserve the alchemical parchment and add a true dark Liquid Glass option */
+.theme-toggle,.notion-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;color:inherit;font:inherit;font-size:11px;font-weight:750;padding:9px 12px;border-radius:12px;border:1px solid rgba(112,70,34,.24);background:rgba(255,246,224,.42);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 5px 18px rgba(88,54,25,.10)}
+.notion-link{color:#56391f}
+.theme-toggle:hover,.notion-link:hover{transform:translateY(-1px);border-color:rgba(112,70,34,.5)}
+html.dark-glass,html.dark-glass body{background:#080b15!important;color:#f5f6ff!important}
+html.dark-glass body{background-image:radial-gradient(ellipse at 12% 0%,rgba(124,103,210,.34),transparent 38%),radial-gradient(ellipse at 90% 18%,rgba(55,157,185,.25),transparent 36%),radial-gradient(ellipse at 50% 100%,rgba(76,79,142,.18),transparent 48%)!important;background-attachment:fixed!important}
+html.dark-glass body:before{opacity:.22!important;background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#b9caff 99%,transparent)!important;background-size:230px 190px!important;mix-blend-mode:screen!important}
+html.dark-glass .brand h1,html.dark-glass .hero h2,html.dark-glass .panel h3,html.dark-glass .dialog h3{color:#f5f6ff!important}
+html.dark-glass .eyebrow{color:#a9eaf5!important}
+html.dark-glass .hero{background:linear-gradient(115deg,rgba(145,123,218,.25),rgba(67,112,154,.18) 58%,rgba(76,173,187,.15))!important;border-color:rgba(230,230,255,.25)!important}
+html.dark-glass .hero p,html.dark-glass .detailtext{color:#c5cce1!important}
+html.dark-glass .panel{background:linear-gradient(145deg,rgba(33,40,62,.72),rgba(15,22,38,.68))!important}
+html.dark-glass .stat{background:linear-gradient(145deg,rgba(47,51,78,.68),rgba(17,23,40,.62))!important}
+html.dark-glass .stat .num{color:#c0b0ff!important}
+html.dark-glass .nav button{color:#f4f6ff!important;background:rgba(255,255,255,.065)!important;border-color:rgba(255,255,255,.15)!important}
+html.dark-glass .nav button span,html.dark-glass .sub,html.dark-glass .stat .label,html.dark-glass .stat .hint,html.dark-glass .company,html.dark-glass .field label,html.dark-glass .topright{color:#b5bfd3!important}
+html.dark-glass .nav button.active{background:linear-gradient(135deg,rgba(157,133,255,.28),rgba(89,190,219,.16))!important;border-color:rgba(203,194,255,.5)!important}
+html.dark-glass .job{background:linear-gradient(115deg,rgba(255,255,255,.085),rgba(255,255,255,.035))!important;border-color:rgba(255,255,255,.14)!important}
+html.dark-glass .job:hover{background:linear-gradient(115deg,rgba(178,162,255,.18),rgba(104,205,226,.1))!important}
+html.dark-glass .column{background:rgba(14,19,33,.56)!important}
+html.dark-glass button,html.dark-glass .theme-toggle,html.dark-glass .notion-link{color:#f5f6ff!important;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.055))!important;border-color:rgba(255,255,255,.2)!important}
+html.dark-glass .primary{background:linear-gradient(130deg,rgba(163,139,255,.82),rgba(91,174,211,.7))!important}
+html.dark-glass .toolbar input,html.dark-glass .toolbar select,html.dark-glass .field input,html.dark-glass .field select,html.dark-glass .field textarea{color:#f5f6ff!important;background:rgba(5,9,18,.62)!important;border-color:rgba(255,255,255,.18)!important}
+html.dark-glass .toolbar input::placeholder,html.dark-glass .field input::placeholder,html.dark-glass .field textarea::placeholder{color:#8f9bb7!important}
+html.dark-glass .dialog{color:#f5f6ff!important;background:linear-gradient(145deg,rgba(39,44,67,.96),rgba(13,19,34,.97))!important;border-color:rgba(255,255,255,.22)!important}
+html.dark-glass .tag,html.dark-glass .pill,html.dark-glass .status{color:#dce4f7!important;background:rgba(255,255,255,.075)!important;border-color:rgba(255,255,255,.15)!important}
+html.dark-glass .score{color:#9ae9ca!important}
+html.dark-glass .footer{color:#8491ad!important}
+html.dark-glass .next{border-bottom-color:rgba(255,255,255,.1)!important}
+html.dark-glass .bar{background:rgba(255,255,255,.1)!important}
+html.dark-glass .bar i{background:linear-gradient(90deg,#c0aaff,#91e8f2)!important}
+@media(max-width:560px){.theme-toggle,.notion-link{font-size:10px;padding:8px 9px}}
+
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
  <div class="brand"><div class="logo">✦</div><div><div class="eyebrow">PERSONAL CAREER OPERATING SYSTEM</div><h1>JOB HUNTING COMMAND CENTER</h1></div></div>
- <div class="topright"><span class="live"></span> <span id="sync-status">SYNC NOTION</span> <span>·</span> <span id="today"></span></div>
+ <div class="topright"><span class="live"></span> <span id="sync-status">SYNC NOTION</span> <span>·</span> <span id="today"></span><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button></div>
 </header>
 <section class="hero">
  <div><div class="eyebrow">MISSION CONTROL / CAREER TRACKER</div><h2>La prossima opportunità<br>parte da qui.</h2><p>Un unico spazio per monitorare candidature, valutare le opportunità e preparare i prossimi colloqui. Tutto sotto controllo, un passo alla volta.</p></div>
- <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button></div>
+ <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button><a class="notion-link" href="https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a" target="_blank" rel="noopener">↗ Apri Notion</a></div>
 </section>
 <nav class="nav">
  <button class="active" data-tab="overview" onclick="tab('overview',this)"><strong>◈ PANORAMICA</strong><span>La tua missione, a colpo d'occhio</span></button>
@@ -280,6 +314,22 @@ for(const j of jobs){
 localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
 const statuses=["Da valutare","Interessante","Candidatura inviata","Colloquio","Scartata"];
 const $=id=>document.getElementById(id);
+
+function toggleTheme(){
+ const dark=document.documentElement.classList.toggle("dark-glass");
+ localStorage.setItem("jhc_theme",dark?"dark":"parchment");
+ const b=document.getElementById("theme-toggle");
+ if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+}
+(function initTheme(){
+ const dark=localStorage.getItem("jhc_theme")==="dark";
+ if(dark)document.documentElement.classList.add("dark-glass");
+ document.addEventListener("DOMContentLoaded",()=>{
+  const b=document.getElementById("theme-toggle");
+  if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+ });
+})();
+
 function save(){localStorage.setItem("jhc_jobs",JSON.stringify(jobs));render()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function cls(s){return s==="Candidatura inviata"?"sent":s==="Colloquio"?"interview":s==="Scartata"?"rejected":s==="Interessante"?"interesting":""}
