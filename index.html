@@ -266,15 +266,15 @@ async function loadNotionJobs(){
 }
 
 loadNotionJobs();
-// Keep the Notion-backed dashboard current while the page remains open.
-// Skip polling while hidden or when a sync is already in progress.
+// Refresh on page load, when returning to the tab, and at most every 12 hours while open.
+// Scheduled server-side updates at 09:00 and 18:00 Europe/Rome are a separate pending task.
 let notionRefreshInProgress=false;
 const refreshNotionJobs=async()=>{
  if(document.hidden||notionRefreshInProgress)return;
  notionRefreshInProgress=true;
  try{await loadNotionJobs()}finally{notionRefreshInProgress=false}
 };
-window.setInterval(refreshNotionJobs,60000);
+window.setInterval(refreshNotionJobs,12*60*60*1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshNotionJobs()});
 </script>
 </body></html>
