@@ -1,1 +1,179 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fitness OS</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0%,#173e58,transparent 45%),#090f1c;color:#edf5ff;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:28px}main{max-width:1100px;margin:auto}h1{font-size:clamp(32px,5vw,48px);letter-spacing:-1.5px;margin:12px 0}h1:after{content:" ✦";color:#74dfce}.lead{color:#a6bad1;line-height:1.6;max-width:690px}.eyebrow{color:#77e2cf;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:24px 0}.metric,section{background:linear-gradient(145deg,#14283b,#101c2f);border:1px solid #284157;border-radius:20px;padding:22px;box-shadow:0 15px 35px #0002}.metric .name{font-size:12px;color:#9bb2c7}.metric .value{font-size:clamp(22px,3vw,34px);font-weight:800;margin:13px 0 4px}.metric .unit{color:#8aa7b7;font-size:12px}.metric:after{content:"";display:block;height:4px;border-radius:5px;background:linear-gradient(90deg,#67dfce,#3989c5);margin-top:19px}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:16px}section{margin:0 0 16px}h2{font-size:18px;margin:0 0 16px}label{display:grid;gap:6px;margin:10px 0;color:#a9c1d3;font-size:13px}input,textarea{background:#091a2a;border:1px solid #355169;border-radius:10px;color:#f0f7ff;padding:12px;font:inherit;width:100%;min-width:0}button{background:#76ddce;color:#062b30;border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}button:hover{filter:brightness(1.1)}form button{width:100%;margin-top:10px}small,section p{color:#a6bad1;line-height:1.6}ul{list-style:none;padding:0}li{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #2b4155;padding:12px 0;color:#c7d9e6}li button{background:#253e51;color:#d2e8f0;font-size:12px}#healthStatus{color:#78ddc8}@media(max-width:800px){.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:420px){body{padding:16px}.metric{padding:15px}}</style></head><body><main><div class="eyebrow">Mission Control / Wellness</div><h1>Fitness OS</h1><p class="lead">Attività, recupero e progressi in un unico spazio. I dati restano nel browser; Apple Health non è ancora collegato automaticamente.</p><div class="metrics"><div class="metric"><div class="name">Passi · ultimo giorno</div><div class="value" id="mSteps">—</div><div class="unit">passi</div></div><div class="metric"><div class="name">Energia attiva</div><div class="value" id="mKcal">—</div><div class="unit">kcal</div></div><div class="metric"><div class="name">Sonno</div><div class="value" id="mSleep">—</div><div class="unit">ore</div></div><div class="metric"><div class="name">Battito a riposo</div><div class="value" id="mHeart">—</div><div class="unit">bpm</div></div></div><div class="layout"><div><section><h2>Registra allenamento</h2><form id="f"><label>Data <input name="date" type="date" required></label><label>Attività <input name="activity" placeholder="Es. Pesi — petto" required maxlength="120"></label><label>Durata (minuti) <input name="minutes" type="number" min="1" max="1440" required></label><button>Salva allenamento</button></form></section></div><div><section><h2>Importa dati salute (CSV)</h2><p>Colonne supportate: date,steps,active_kcal,resting_heart_rate,weight_kg,sleep_hours. Le informazioni restano nel browser; la sincronizzazione automatica Apple Health non è ancora attiva.</p><input id="healthFile" type="file" accept=".csv,text/csv"><p id="healthStatus"></p><div id="healthSummary"></div></section><section><h2>Diario</h2><ul id="items"></ul><button id="export" type="button">Esporta JSON</button><p><small>Non usare questo diario per dati che non vuoi conservare nel browser.</small></p></section></div></div></main><script>const key='mission-control-fitness-v1';const f=document.getElementById('f'),items=document.getElementById('items');f.elements.date.value=new Date().toLocaleDateString('en-CA');let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(rows))rows=[]}catch{}function render(){items.replaceChildren();for(const [i,r] of rows.entries()){const li=document.createElement('li');li.textContent=r.date+' · '+r.activity+' · '+r.minutes+' min ';const b=document.createElement('button');b.textContent='Elimina';b.onclick=()=>{rows.splice(i,1);save()};li.append(b);items.append(li)}if(!rows.length){const li=document.createElement('li');li.textContent='Nessun allenamento registrato';items.append(li)}}function save(){localStorage.setItem(key,JSON.stringify(rows));render()}f.onsubmit=e=>{e.preventDefault();const v=new FormData(f);rows.unshift({date:String(v.get('date')),activity:String(v.get('activity')).slice(0,120),minutes:Number(v.get('minutes'))});save();f.reset();f.elements.date.value=new Date().toLocaleDateString('en-CA')};document.getElementById('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}));a.download='fitness-os.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};const healthKey='mission-control-health-v1';let health=[];try{health=JSON.parse(localStorage.getItem(healthKey)||'[]')}catch{}function renderHealth(){const e=document.getElementById('healthSummary');e.replaceChildren();const p=document.createElement('p');const last=health.at(-1);p.textContent=last?'Giornate: '+health.length+'; ultima '+last.date+'; passi: '+(last.steps??'n/d')+'; kcal attive: '+(last.active_kcal??'n/d')+'; battito a riposo: '+(last.resting_heart_rate??'n/d')+' bpm; peso: '+(last.weight_kg??'n/d')+' kg; sonno: '+(last.sleep_hours??'n/d')+' ore.':'Nessun dato importato';e.append(p);for(const [id,k] of [['mSteps','steps'],['mKcal','active_kcal'],['mSleep','sleep_hours'],['mHeart','resting_heart_rate']])document.getElementById(id).textContent=last?.[k]===undefined?'—':Number(last[k]).toLocaleString('it-IT',{maximumFractionDigits:1})}document.getElementById('healthFile').onchange=async e=>{const file=e.target.files?.[0],status=document.getElementById('healthStatus');if(!file)return;if(file.size>2000000){status.textContent='Dimensione massima 2 MB';return}const lines=(await file.text()).trim().replace(/\r/g,'').split('\n');const cols=lines.shift().split(',').map(x=>x.trim().toLowerCase());if(!cols.includes('date')||!cols.some(x=>['steps','active_kcal','resting_heart_rate','weight_kg','sleep_hours'].includes(x))){status.textContent='Intestazioni CSV non riconosciute';return}const incoming=[];for(const line of lines){if(!line.trim())continue;const v=line.split(',');const date=v[cols.indexOf('date')]?.trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){status.textContent='Usa date AAAA-MM-GG';return}const record={date};for(const key of ['steps','active_kcal','resting_heart_rate','weight_kg','sleep_hours']){const i=cols.indexOf(key);if(i>=0&&v[i]?.trim()){const n=Number(v[i]);if(!Number.isFinite(n)||n<0){status.textContent='Valore non valido: '+key;return}record[key]=n}}incoming.push(record)}if(incoming.length>10000){status.textContent='Troppe righe';return}const map=new Map([...health,...incoming].map(r=>[r.date,r]));health=[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));try{localStorage.setItem(healthKey,JSON.stringify(health));status.textContent='Importate '+incoming.length+' righe';renderHealth()}catch{status.textContent='Memoria del browser insufficiente'}};renderHealth();render();</script></body></html>
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101513">
+  <title>Fitness OS · Mission Control</title>
+  <style>
+    :root{color-scheme:dark;--ink:#101513;--paper:#f3f0e8;--muted:#b6b8ac;--line:#ffffff20;--glass:#ffffff0b;--mint:#b9e4c9;--lime:#d9e39a;--coral:#e9a78f;--serif:Georgia,'Times New Roman',serif;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--paper);font:15px var(--sans);background:radial-gradient(ellipse at 8% 0%,#344c39 0,transparent 34%),radial-gradient(ellipse at 100% 14%,#374a45 0,transparent 30%),radial-gradient(ellipse at 55% 100%,#40342e 0,transparent 38%),var(--ink)}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.11;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");z-index:-1}
+    button,input{font:inherit}button{cursor:pointer}
+    .shell{width:min(1160px,100%);margin:auto;padding:30px 34px 56px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}
+    .brand{display:flex;align-items:center;gap:12px;color:#d7d8ce;text-decoration:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+    .mark{width:35px;height:35px;border:1px solid #ffffff35;border-radius:50%;display:grid;place-items:center;color:var(--mint);font-size:17px;background:#ffffff09}
+    .privacy{display:flex;align-items:center;gap:8px;color:#c5c8bb;font-size:12px;border:1px solid var(--line);background:#ffffff08;border-radius:999px;padding:9px 13px}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px #b9e4c9aa}
+    .hero{position:relative;min-height:310px;display:flex;align-items:center;overflow:hidden;border:1px solid #ffffff26;border-radius:28px;padding:clamp(28px,5vw,58px);background:linear-gradient(110deg,#28372edb,#1a2723bf 58%,#19221fbd);box-shadow:inset 0 1px #ffffff22,0 24px 70px #0004}
+    .hero-copy{max-width:670px;position:relative;z-index:2}
+    .eyebrow{font-size:10px;font-weight:750;letter-spacing:.2em;text-transform:uppercase;color:var(--mint)}
+    h1{font:400 clamp(42px,7vw,76px)/.98 var(--serif);letter-spacing:-.055em;margin:19px 0 16px;max-width:650px}
+    .hero p{max-width:520px;color:#c5c9be;line-height:1.7;margin:0}
+    .hero-actions{display:flex;gap:10px;margin-top:25px;flex-wrap:wrap}
+    .button{border:1px solid #ffffff30;border-radius:999px;padding:12px 17px;color:var(--paper);background:#ffffff0d;text-decoration:none;transition:.2s}
+    .button:hover{transform:translateY(-2px);border-color:#b9e4c988;background:#b9e4c91a}
+    .button.primary{background:var(--mint);border-color:var(--mint);color:#17221a;font-weight:750}
+    .button.primary:hover{background:#d3f0dc}
+    .orbit{position:absolute;width:min(43vw,390px);aspect-ratio:1;right:5%;top:50%;transform:translateY(-50%);border:1px solid #d5e5cc27;border-radius:50%;background:radial-gradient(circle at 35% 32%,#d6e4ad22,transparent 28%),radial-gradient(circle at 65% 65%,#dd9d7c26,transparent 32%);box-shadow:inset 0 0 70px #c6ddb30d,0 0 70px #c6ddb30a}
+    .orbit:before,.orbit:after{content:"";position:absolute;inset:11%;border:1px solid #d5e5cc20;border-radius:50%;transform:rotate(-27deg) scaleY(.55)}
+    .orbit:after{inset:20%;transform:rotate(31deg) scaleY(.55)}
+    .orb-core{position:absolute;left:50%;top:50%;width:72px;aspect-ratio:1;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#e6e0bd,#a2bf9c);color:#263729;font:34px var(--serif);box-shadow:0 0 50px #b9e4c94c}
+    .orb-leaf{position:absolute;left:16%;top:20%;font-size:22px;color:#dce2b4;transform:rotate(-24deg)}
+    .orb-star{position:absolute;right:19%;bottom:22%;font-size:15px;color:#ecc2a3}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:17px 0 32px}
+    .metric,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#ffffff0d,#ffffff06);backdrop-filter:blur(18px);box-shadow:inset 0 1px #ffffff13,0 14px 42px #0002}
+    .metric{border-radius:19px;padding:20px 22px;min-height:132px;position:relative;overflow:hidden}
+    .metric:after{content:"";position:absolute;width:90px;height:90px;right:-34px;top:-40px;border-radius:50%;background:#d9e39a16;filter:blur(5px)}
+    .metric-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#bcc2b5}
+    .metric-value{font:400 clamp(30px,4vw,43px)/1 var(--serif);letter-spacing:-.04em;margin:16px 0 6px;color:var(--paper)}
+    .metric-note{font-size:12px;color:#aeb5a8}
+    .content{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.85fr);gap:16px;align-items:start}
+    .stack{display:grid;gap:16px}
+    .panel{border-radius:21px;padding:23px}
+    .panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+    h2{font:400 25px/1.1 var(--serif);letter-spacing:-.025em;margin:0}
+    .caption{font-size:12px;line-height:1.55;color:#b4b9ac;margin:6px 0 0}
+    .tiny-mark{color:var(--mint);font-size:16px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .field{display:grid;gap:7px;color:#c4c9bd;font-size:12px}
+    .field.full{grid-column:1/-1}
+    .field input{width:100%;min-width:0;border:1px solid #ffffff24;border-radius:11px;background:#0b100e8c;color:var(--paper);padding:12px 13px;outline:none}
+    .field input:focus{border-color:#b9e4c9aa;box-shadow:0 0 0 3px #b9e4c918}
+    .save{margin-top:16px;width:100%;border:0;border-radius:11px;padding:13px 16px;background:linear-gradient(100deg,#c5e5cb,#dce4b0);color:#1b2a20;font-weight:750;transition:transform .2s,filter .2s}
+    .save:hover{transform:translateY(-1px);filter:brightness(1.06)}
+    .week{display:flex;align-items:end;gap:10px;height:153px;padding:8px 2px 0}
+    .day{flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}
+    .bar-track{height:112px;width:min(100%,31px);display:flex;align-items:end;border-radius:999px;background:#ffffff08;overflow:hidden}
+    .bar{width:100%;min-height:3px;border-radius:999px;background:linear-gradient(0deg,#a4c9a9,#e1e4b3);box-shadow:0 0 16px #b9e4c91c;transition:height .3s}
+    .day-label{font-size:10px;color:#aeb6a8}
+    .week-note{font-size:11px;color:#adb5a7;margin:13px 0 0}
+    .journal{display:grid;gap:0}
+    .entry{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #ffffff13}
+    .entry:last-child{border-bottom:0;padding-bottom:0}
+    .entry-icon{width:40px;height:40px;border:1px solid #d6e3c521;border-radius:13px;display:grid;place-items:center;background:#c0d4b10d;color:var(--mint);font-size:17px}
+    .entry-title{font-weight:650;font-size:13px;color:#f0eee6;overflow-wrap:anywhere}
+    .entry-meta{font-size:11px;color:#aeb5a8;margin-top:4px}
+    .entry-time{font:18px var(--serif);color:#d6e4c3;white-space:nowrap}
+    .entry-time small{font:10px var(--sans);color:#aeb5a8}
+    .delete{border:0;background:transparent;color:#aeb5a8;padding:6px 0 6px 8px;font-size:11px}
+    .delete:hover{color:#f1b29c}
+    .empty{padding:21px 0 4px;color:#afb7a9;font-size:13px;line-height:1.6}
+    .journal-actions{display:flex;justify-content:flex-end;margin-top:15px}
+    .quiet{border:1px solid #ffffff25;border-radius:999px;background:#ffffff08;color:#d9ddd1;padding:9px 13px;font-size:11px}
+    .quiet:hover{border-color:#d9e39a88}
+    .footer{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:22px;color:#a6ad9f;font-size:11px}
+    .footer span{display:flex;align-items:center;gap:8px}
+    @media(max-width:850px){.content{grid-template-columns:1fr}.orbit{right:1%;opacity:.7}.hero-copy{max-width:590px}}
+    @media(max-width:560px){.shell{padding:19px 15px 34px}.topbar{margin-bottom:18px}.brand{font-size:10px}.privacy{font-size:10px;padding:8px 10px}.hero{min-height:340px;padding:26px 22px;align-items:flex-start}.hero-copy{padding-top:7px}.orbit{width:200px;right:-28px;top:auto;bottom:-64px;transform:none;opacity:.55}.orb-core{width:54px;font-size:26px}.metrics{gap:8px;margin:11px 0 23px}.metric{min-height:108px;padding:15px 13px;border-radius:15px}.metric-label{font-size:9px}.metric-value{font-size:30px;margin:13px 0 5px}.metric-note{font-size:10px}.panel{padding:18px;border-radius:17px}.content{gap:12px}.stack{gap:12px}.form-grid{gap:11px}.field input{padding:11px}.footer{align-items:flex-start;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="mark" aria-hidden="true">✳</span><span>Mission Control <span aria-hidden="true">/</span> Fitness OS</span></a>
+      <div class="privacy"><span class="dot" aria-hidden="true"></span> Diario salvato su questo dispositivo</div>
+    </header>
+
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <div class="eyebrow">Il tuo spazio di movimento</div>
+        <h1 id="title">Muoviti<br>con intenzione.</h1>
+        <p>Un diario semplice per dare valore a ogni sessione. Registra il tuo allenamento, segui il ritmo della settimana e guarda i progressi prendere forma.</p>
+        <div class="hero-actions"><a class="button primary" href="#registra">Registra una sessione <span aria-hidden="true">↗</span></a><a class="button" href="#diario">Apri il diario</a></div>
+      </div>
+      <div class="orbit" aria-hidden="true"><span class="orb-leaf">✳</span><span class="orb-core">✦</span><span class="orb-star">✧</span></div>
+    </section>
+
+    <section class="metrics" aria-label="Riepilogo allenamenti">
+      <article class="metric"><div class="metric-label">Sessioni registrate</div><div class="metric-value" id="statSessions">0</div><div class="metric-note">nel tuo diario</div></article>
+      <article class="metric"><div class="metric-label">Tempo in movimento</div><div class="metric-value" id="statMinutes">0</div><div class="metric-note">minuti complessivi</div></article>
+      <article class="metric"><div class="metric-label">Ultima sessione</div><div class="metric-value" id="statLast">—</div><div class="metric-note" id="statLastNote">Quando inizi, la trovi qui</div></article>
+    </section>
+
+    <div class="content">
+      <div class="stack">
+        <section class="panel" id="registra" aria-labelledby="formTitle">
+          <div class="panel-heading"><div><h2 id="formTitle">Dai spazio al movimento</h2><p class="caption">Aggiungi una sessione al tuo diario personale.</p></div><span class="tiny-mark" aria-hidden="true">✳</span></div>
+          <form id="workoutForm">
+            <div class="form-grid">
+              <label class="field">Data<input name="date" type="date" required></label>
+              <label class="field">Durata · minuti<input name="minutes" type="number" min="1" max="1440" placeholder="45" required></label>
+              <label class="field full">Attività<input name="activity" type="text" placeholder="Es. Camminata, palestra, yoga" maxlength="120" required></label>
+            </div>
+            <button class="save" type="submit">Salva nel diario <span aria-hidden="true">→</span></button>
+          </form>
+        </section>
+
+        <section class="panel" id="diario" aria-labelledby="journalTitle">
+          <div class="panel-heading"><div><h2 id="journalTitle">Il tuo diario</h2><p class="caption">Le sessioni che hai scelto di registrare.</p></div><span class="tiny-mark" aria-hidden="true">01 — ∞</span></div>
+          <div class="journal" id="entries" aria-live="polite"></div>
+          <div class="journal-actions"><button class="quiet" id="export" type="button">Esporta diario JSON ↗</button></div>
+        </section>
+      </div>
+
+      <aside class="panel" aria-labelledby="weekTitle">
+        <div class="panel-heading"><div><h2 id="weekTitle">Il ritmo della settimana</h2><p class="caption">Minuti allenati negli ultimi sette giorni.</p></div><span class="tiny-mark" aria-hidden="true">◌</span></div>
+        <div class="week" id="week" role="img" aria-label="Minuti allenati per giorno negli ultimi sette giorni"></div>
+        <p class="week-note" id="weekNote">Ogni sessione conta, anche la prima.</p>
+      </aside>
+    </div>
+
+    <footer class="footer"><span><span class="dot" aria-hidden="true"></span>I tuoi allenamenti restano in questo browser.</span><span>Un giorno alla volta <span aria-hidden="true">✦</span></span></footer>
+  </main>
+
+  <script>
+    const STORAGE_KEY='mission-control-fitness-v1';
+    const form=document.getElementById('workoutForm');
+    const entries=document.getElementById('entries');
+    const localDate=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+    let rows=[];
+    try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(Array.isArray(saved))rows=saved.filter(r=>r&&typeof r.date==='string'&&typeof r.activity==='string'&&Number.isFinite(Number(r.minutes)))}catch{}
+    form.elements.date.value=localDate();
+    const dateLabel=value=>new Date(value+'T12:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});
+    function render(){
+      entries.replaceChildren();
+      if(!rows.length){const empty=document.createElement('p');empty.className='empty';empty.textContent='Il diario è pronto per la tua prima sessione. Scegli un’attività e comincia da lì.';entries.append(empty)}
+      for(const [index,row] of rows.entries()){
+        const item=document.createElement('article');item.className='entry';
+        const icon=document.createElement('span');icon.className='entry-icon';icon.setAttribute('aria-hidden','true');icon.textContent='✳';
+        const details=document.createElement('div');const title=document.createElement('div');title.className='entry-title';title.textContent=row.activity;const date=document.createElement('div');date.className='entry-meta';date.textContent=dateLabel(row.date);details.append(title,date);
+        const trailing=document.createElement('div');const duration=document.createElement('span');duration.className='entry-time';duration.textContent=String(row.minutes);const unit=document.createElement('small');unit.textContent=' min';duration.append(unit);const remove=document.createElement('button');remove.type='button';remove.className='delete';remove.textContent='Rimuovi';remove.setAttribute('aria-label','Rimuovi '+row.activity+' del '+dateLabel(row.date));remove.onclick=()=>{rows.splice(index,1);save()};trailing.append(duration,remove);
+        item.append(icon,details,trailing);entries.append(item)
+      }
+      document.getElementById('statSessions').textContent=rows.length.toLocaleString('it-IT');
+      document.getElementById('statMinutes').textContent=rows.reduce((sum,row)=>sum+Number(row.minutes),0).toLocaleString('it-IT');
+      const latest=[...rows].sort((a,b)=>b.date.localeCompare(a.date))[0];
+      document.getElementById('statLast').textContent=latest?dateLabel(latest.date).replace(/\s+\d{4}$/,''):'—';
+      document.getElementById('statLastNote').textContent=latest?latest.activity:'Quando inizi, la trovi qui';
+      renderWeek()
+    }
+    function renderWeek(){
+      const week=document.getElementById('week');week.replaceChildren();
+      const today=new Date();today.setHours(12,0,0,0);const days=[];
+      for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(today.getDate()-i);const key=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');const minutes=rows.filter(r=>r.date===key).reduce((n,r)=>n+Number(r.minutes),0);days.push({key,label:new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(d).replace('.',''),minutes})}
+      const max=Math.max(...days.map(d=>d.minutes),1);
+      for(const day of days){const col=document.createElement('div');col.className='day';const track=document.createElement('div');track.className='bar-track';track.title=day.label+': '+day.minutes+' minuti';const bar=document.createElement('div');bar.className='bar';bar.style.height=(day.minutes?Math.max(7,day.minutes/max*100):3)+'%';track.append(bar);const label=document.createElement('span');label.className='day-label';label.textContent=day.label;col.append(track,label);week.append(col)}
+      const total=days.reduce((n,d)=>n+d.minutes,0);document.getElementById('weekNote').textContent=total?total+' minuti registrati negli ultimi sette giorni.':'Ogni sessione conta, anche la prima.'
+    }
+    function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(rows));render()}
+    form.addEventListener('submit',event=>{event.preventDefault();const data=new FormData(form);rows.unshift({date:String(data.get('date')),activity:String(data.get('activity')).trim().slice(0,120),minutes:Number(data.get('minutes'))});save();form.reset();form.elements.date.value=localDate();document.getElementById('diario').scrollIntoView({behavior:'smooth',block:'nearest'})});
+    document.getElementById('export').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='fitness-os-diario.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+    render();
+  </script>
+</body>
+</html>
