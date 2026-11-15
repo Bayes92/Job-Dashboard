@@ -92,6 +92,14 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
 @media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:flex;flex-wrap:wrap;justify-content:flex-end;font-size:9px}.nav{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(17px) saturate(150%);-webkit-backdrop-filter:blur(17px) saturate(150%)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.95)}}
 
+.app{width:100%;max-width:none}
+#latest{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.job-summary{display:flex;flex-direction:column;align-items:flex-start;gap:10px;cursor:default}
+.job-summary .company{margin:0}
+.job-summary .ghost{margin-top:auto}
+.queue-views{display:flex;gap:8px;flex-wrap:wrap}
+.queue-views button[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:-2px}
+#latest .empty{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -101,8 +109,8 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
  <div class="topright"><span class="live"></span> <span id="sync-status">SYNC NOTION</span> <span>·</span> <span id="today"></span><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button></div>
 </header>
 <section class="hero">
- <div><div class="eyebrow">MISSION CONTROL / CAREER TRACKER</div><h2>La prossima opportunità<br>parte da qui.</h2><p>Un unico spazio per monitorare candidature, valutare le opportunità e preparare i prossimi colloqui. Tutto sotto controllo, un passo alla volta.</p></div>
- <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza Notion</button><button class="ghost" onclick="window.open('https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a','_blank','noopener')">↗ Apri Notion</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button><a class="notion-link" href="https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a" target="_blank" rel="noopener">↗ Apri Notion</a></div>
+ <div><h2>Le tue candidature</h2></div>
+ <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza Notion</button><button class="ghost" onclick="window.open('https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a','_blank','noopener')">↗ Apri Notion</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button></div>
 </section>
 <nav class="nav">
  <button class="active" data-tab="overview" onclick="tab('overview',this)"><strong>◈ PANORAMICA</strong><span>La tua missione, a colpo d'occhio</span></button>
@@ -117,12 +125,16 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
   <div class="stat"><div class="label">DA VALUTARE</div><div class="num pink" id="s-review">—</div><div class="hint">Opportunità da approfondire</div></div>
   <div class="stat"><div class="label">COLLOQUI</div><div class="num green" id="s-interview">—</div><div class="hint">Selezioni in corso</div></div>
  </div>
- <div class="layout">
-  <div class="panel"><div class="panelhead"><div><h3>Ultime opportunità</h3><div class="sub">Le posizioni nel tuo radar</div></div><span class="pill" id="shown">—</span></div><div class="toolbar"><input id="search1" placeholder="⌕ Cerca azienda, ruolo..." oninput="render()"><select id="filter1" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select></div><div class="list" id="latest"></div></div>
-  <div class="side">
-   <div class="panel"><div class="panelhead"><div><h3>Pipeline candidature</h3><div class="sub">Distribuzione per stato</div></div><span class="pill">LIVE</span></div><div class="pipeline" id="pipelineBars"></div></div>
-   <div class="panel"><div class="panelhead"><div><h3>Focus consigliato</h3><div class="sub">Prossimi passi concreti</div></div></div><div class="next"><div class="nexticon">✦</div><div><b>Verifica le candidature aperte</b><small>Controlla gli annunci più interessanti e completa i passaggi mancanti.</small></div></div><div class="next"><div class="nexticon">⌁</div><div><b>Prepara il prossimo colloquio</b><small>Raccogli esempi su SQL, BigQuery, CRM analytics e dashboard.</small></div></div><div class="next"><div class="nexticon">↗</div><div><b>Segui i recruiter</b><small>Aggiungi contatti e prossime azioni alle opportunità inviate.</small></div></div></div>
+ <div class="panel">
+  <div class="panelhead">
+   <div class="queue-views" role="group" aria-label="Vista candidature">
+    <button type="button" class="ghost" id="queue-review" aria-pressed="true" onclick="setQueue('review')">Da valutare</button>
+    <button type="button" class="ghost" id="queue-sent" aria-pressed="false" onclick="setQueue('sent')">Candidature inviate</button>
+   </div>
+   <span class="pill" id="shown" aria-live="polite"></span>
   </div>
+  <div class="toolbar"><input id="search1" aria-label="Cerca azienda o ruolo" placeholder="Cerca azienda o ruolo" oninput="render()"></div>
+  <div class="list" id="latest"></div>
  </div>
 </section>
 <section id="pipeline" class="section">
@@ -199,15 +211,35 @@ function toggleTheme(){
 function save(){localStorage.setItem("jhc_jobs",JSON.stringify(jobs));render()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function cls(s){return s==="Candidatura inviata"?"sent":s==="Colloquio"?"interview":s==="Scartata"?"rejected":s==="Interessante"?"interesting":""}
-function card(j,i){return `<div class="job" onclick="detail(${i})"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)} · ${esc(j.location)}</div><div class="meta"><span class="tag">Inserita: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT") : "data non disponibile"}</span><span class="tag">${esc(j.mode)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">${esc(j.area)}</span></div></div><div><div class="score">${j.score}/10 MATCH</div><div class="status ${cls(j.status)}">${esc(j.status)}</div></div></div>`}
+let queue = "review";
+function setQueue(view) {
+ queue = view;
+ $("queue-review").setAttribute("aria-pressed", String(view === "review"));
+ $("queue-sent").setAttribute("aria-pressed", String(view === "sent"));
+ render();
+}
+function card(job, index) {
+ const date = new Date(job.dateAdded + "T12:00:00");
+ const added = Number.isNaN(date.getTime()) ? "Data di inserimento assente" : "Inserita il " + date.toLocaleDateString("it-IT");
+ return `<article class="job job-summary">
+  <div class="jobtitle">${esc(job.role)}</div>
+  <div class="company">${esc(job.company)}</div>
+  <div class="meta"><span class="tag">${esc(added)}</span></div>
+  <button type="button" class="ghost" aria-label="Apri scheda: ${esc(job.role)} — ${esc(job.company)}" onclick="detail(${index})">Apri scheda</button>
+ </article>`;
+}
 function render(){
  $("today").textContent=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"short",year:"numeric"}).format(new Date());
  let sent=jobs.filter(j=>j.status==="Candidatura inviata").length,review=jobs.filter(j=>j.status==="Da valutare"||j.status==="Interessante").length,inter=jobs.filter(j=>j.status==="Colloquio").length;
  $("s-total").textContent=jobs.length;$("s-sent").textContent=sent;$("s-review").textContent=review;$("s-interview").textContent=inter;
- let counts=statuses.map(s=>[s,jobs.filter(j=>j.status===s).length]);$("pipelineBars").innerHTML=counts.map(([s,n])=>`<div class="pipe-row"><span>${s}</span><div class="bar"><i style="width:${jobs.length?n/jobs.length*100:0}%"></i></div><span class="pipe-count">${n}</span></div>`).join("");
- const q1=($("search1")?.value||"").toLowerCase(),f1=$("filter1")?.value||"";
- let recent=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f1||j.status===f1)&&(`${j.company} ${j.role} ${j.location}`.toLowerCase().includes(q1))).sort((a,b)=>b.score-a.score);
- $("latest").innerHTML=recent.slice(0,6).map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';$("shown").textContent=recent.length+" risultati";
+ const query = $("search1").value.trim().toLowerCase();
+ const queueStatuses = queue === "sent" ? ["Candidatura inviata"] : ["Da valutare", "Interessante"];
+ const visibleJobs = jobs.map((job, index) => ({job, index}))
+  .filter(({job}) => queueStatuses.includes(job.status) && `${job.company} ${job.role}`.toLowerCase().includes(query))
+  .sort((a, b) => (b.job.dateAdded || "").localeCompare(a.job.dateAdded || ""));
+ $("latest").innerHTML = visibleJobs.map(({job, index}) => card(job, index)).join("") ||
+  '<div class="empty">Nessuna opportunità in questa vista.</div>';
+ $("shown").textContent = String(visibleJobs.length);
  const q2=($("search2")?.value||"").toLowerCase(),f2=$("filter2")?.value||"",sort=$("sort")?.value||"score";
  let all=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f2||j.status===f2)&&(`${j.company} ${j.role} ${j.location} ${j.area}`.toLowerCase().includes(q2)));
  all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):((a,b)=>b.score-a.score));
