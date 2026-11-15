@@ -9,18 +9,28 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify production shell and Fitness OS
+      - name: Verify unified Mission Control and each local module
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview.vercel.app/ -o /tmp/mission.html
+          base="https://mission-control-unified-next.vercel.app"
+          curl --fail --location --retry 2 --silent --show-error "$base/" -o /tmp/mission.html
           grep -qi 'Mission Control' /tmp/mission.html
-          grep -q 'fitness-os.html' /tmp/mission.html
+          grep -q 'mac-control.html' /tmp/mission.html
+          grep -q 'mail-center.html' /tmp/mission.html
+          grep -q 'productivity.html' /tmp/mission.html
+          grep -q 'ai-hub.html' /tmp/mission.html
+          grep -q 'Career OS si apre in una scheda separata' /tmp/mission.html
+          for module in productivity mail-center ai-hub mac-control; do
+            curl --fail --location --retry 2 --silent --show-error "$base/$module.html" -o "/tmp/$module.html"
+            test -s "/tmp/$module.html"
+            grep -qi '<html' "/tmp/$module.html"
+          done
+      - name: Verify linked Career OS and Fitness OS endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --silent --show-error https://missioncontrolcareeros2026-11-12.vercel.app/ -o /tmp/career.html
+          grep -qi 'Career' /tmp/career.html
           curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview.vercel.app/fitness-os.html -o /tmp/fitness.html
           grep -qi 'Fitness OS' /tmp/fitness.html
-      - name: Verify Career OS preview
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview-33quhiljl-workout-b2a6.vercel.app/ -o /tmp/career.html
-          grep -qi 'CareerOS' /tmp/career.html
