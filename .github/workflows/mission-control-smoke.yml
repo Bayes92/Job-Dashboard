@@ -1,7 +1,5 @@
 name: Mission Control smoke tests
 on:
-  push:
-    branches: [feature/mission-control-unified-safe]
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,5 +30,5 @@ jobs:
           set -euo pipefail
           curl --fail --location --retry 2 --silent --show-error https://missioncontrolcareeros2026-11-12.vercel.app/ -o /tmp/career.html
           grep -qi 'Career' /tmp/career.html
-          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview.vercel.app/fitness-os.html -o /tmp/fitness.html
+          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-next.vercel.app/fitness-os.html -o /tmp/fitness.html
           grep -qi 'Fitness OS' /tmp/fitness.html
