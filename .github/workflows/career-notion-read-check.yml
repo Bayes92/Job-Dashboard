@@ -1,0 +1,39 @@
+name: Career OS Notion scheduled read check
+on:
+  schedule:
+    - cron: '0 8,9,16,17 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notion-read-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only run at 09:00 or 18:00 Europe/Rome
+        id: clock
+        shell: bash
+        run: |
+          hour="$(TZ=Europe/Rome date +%H)"
+          if [[ "$hour" == "09" || "$hour" == "18" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check Notion-backed Career OS API (read only)
+        if: steps.clock.outputs.run == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl --location --silent --show-error --max-time 30 --output /tmp/notion-check.json --write-out '%{http_code}' 'https://missioncontrolcareeros2026-11-12.vercel.app/api/jobs')"
+          if [[ "$status" != "200" ]]; then
+            echo "Career OS API returned HTTP $status"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          with open('/tmp/notion-check.json') as f:
+              result=json.load(f)
+          if result.get('source') != 'notion' or not isinstance(result.get('jobs'),list):
+              raise SystemExit('Unexpected Career OS API response')
+          print('Notion read check successful; job records were not logged or modified.')
+          PY
