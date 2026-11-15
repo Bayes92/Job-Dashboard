@@ -218,9 +218,13 @@ function setQueue(view) {
  $("queue-sent").setAttribute("aria-pressed", String(view === "sent"));
  render();
 }
+function formatAddedDate(value) {
+ const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + "T12:00:00" : value || "");
+ return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("it-IT", {timeZone: "Europe/Rome"});
+}
 function card(job, index) {
- const date = new Date(job.dateAdded + "T12:00:00");
- const added = Number.isNaN(date.getTime()) ? "Data di inserimento assente" : "Inserita il " + date.toLocaleDateString("it-IT");
+ const date = formatAddedDate(job.dateAdded);
+ const added = date ? "Inserita il " + date : "Data di inserimento assente";
  return `<article class="job job-summary">
   <div class="jobtitle">${esc(job.role)}</div>
   <div class="company">${esc(job.company)}</div>
@@ -265,7 +269,7 @@ async function addJob(){
   closeModal();await loadNotionJobs();
  }catch(error){alert("Non sono riuscito a salvare su Notion: "+error.message)}
 }
-function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${j.dateAdded?new Date(j.dateAdded+"T12:00:00").toLocaleDateString("it-IT"):"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions">${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
+function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${formatAddedDate(j.dateAdded)||"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions">${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
 async function updateJob(i){
  const job=jobs[i];if(!job.id){alert("Questa scheda non ha un ID Notion valido: aggiornamento non disponibile.");return}
  try{
