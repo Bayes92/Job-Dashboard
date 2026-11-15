@@ -1,0 +1,26 @@
+name: Mission Control smoke tests
+on:
+  push:
+    branches: [feature/mission-control-unified-safe]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify production shell and Fitness OS
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview.vercel.app/ -o /tmp/mission.html
+          grep -qi 'Mission Control' /tmp/mission.html
+          grep -q 'fitness-os.html' /tmp/mission.html
+          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview.vercel.app/fitness-os.html -o /tmp/fitness.html
+          grep -qi 'Fitness OS' /tmp/fitness.html
+      - name: Verify Career OS preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --silent --show-error https://mission-control-unified-preview-33quhiljl-workout-b2a6.vercel.app/ -o /tmp/career.html
+          grep -qi 'CareerOS' /tmp/career.html
