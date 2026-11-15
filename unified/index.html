@@ -4,7 +4,7 @@
 </style></head><body><div class="shell"><aside><h1>Mission Control</h1><p class="sub">Workspace personale</p><nav aria-label="Sezioni" id="nav"></nav></aside><main><header><div><h2 id="heading">Panoramica</h2><div class="hint" id="description">Tutti i tuoi strumenti in un unico posto</div></div><button id="reload" hidden>↻ Ricarica sezione</button></header><section id="content" class="panel" aria-live="polite"></section></main></div><script>
 const career='https://missioncontrolcareeros2026-11-12.vercel.app/';
 // Career OS owns its Notion credentials; never expose them in this public shell.
-const fitness='https://mission-control-unified-preview.vercel.app/fitness-os.html';
+const fitness='./fitness-os.html';
 const tabs=[['home','⌂ Panoramica','Riepilogo delle aree disponibili'],['career','▣ Career OS','Opportunità e candidature'],['fitness','♥ Fitness OS','Allenamenti, attività, nutrizione, composizione, recupero e cuore'],['productivity','✓ Productivity','Area di integrazione delle attività'],['mail','✉ Mail Center','Area di integrazione della posta'],['ai','✧ AI Hub','Area di integrazione degli assistenti'],['mac','⌘ Mac Control','Area di integrazione del Mac']];
 const nav=document.getElementById('nav'),content=document.getElementById('content'),reload=document.getElementById('reload');
 tabs.forEach(([id,label])=>{const b=document.createElement('button');b.textContent=label;b.dataset.tab=id;b.onclick=()=>show(id);nav.appendChild(b)});
