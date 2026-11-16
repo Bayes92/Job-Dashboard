@@ -99,7 +99,7 @@ async function fill(page,regex,text) {
 async function formVisible(page){
   try {
     if(await page.locator('input[type="email"]:visible').count())return true;
-    if(await page.getByLabel(/^(first name|last name|nome|cognome|email address|email)(\\s*\\*)?$/i).count())return true;
+    if(await page.getByLabel(/^(first name|last name|nome|cognome|email address|email)(\s*\*)?$/i).count())return true;
   }catch{}
   return false;
 }
