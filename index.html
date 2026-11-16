@@ -349,6 +349,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #75f1
 @media(max-width:480px){.brand-copy h1{font-size:16px}.sidebar{padding:11px}.panel{padding:14px}.hero h2{font-size:23px}#priority-jobs,#latest{grid-template-columns:1fr}.job-summary{padding:14px}.stat-label{position:static;margin-top:-29px;margin-left:43px;min-height:25px}.stat .num{margin-top:11px}.stat{min-height:128px}.analytics-tiles{grid-template-columns:repeat(2,1fr)}.top .sync-chip{font-size:9px}.theme-toggle{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 
+
+html.light-glass body{background:radial-gradient(ellipse at 15% 0%,rgba(113,239,255,.4),transparent 30%),radial-gradient(ellipse at 95% 32%,rgba(1,187,192,.23),transparent 32%),linear-gradient(135deg,#14466d,#174d77 55%,#062f51)!important}
+html.light-glass .panel,html.light-glass .stat,html.light-glass .sidebar,html.light-glass .hero,html.light-glass .job{background:linear-gradient(135deg,rgba(80,147,187,.52),rgba(24,79,125,.68));border-color:rgba(196,247,255,.41)}
+html.light-glass .nav button.active{background:linear-gradient(110deg,#25b4df,#32ded2)}
 </style>
 </head>
 <body>
@@ -411,14 +415,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #75f1
   <div class="stat stat-interview"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-calendar"></use></svg></div><div class="stat-label">COLLOQUI</div><div class="num" id="s-interview">—</div><div class="hint">Registrati nel tuo funnel</div></div>
  </div>
  <div class="panel pipeline-strip">
-   <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg></div><h3>La tua pipeline</h3><div class="sub">Il percorso delle tue candidature, in tempo reale</div></div><button class="inline-action" onclick="tab('pipeline',document.querySelector('.nav [data-tab=\"pipeline\"]'))">Apri pipeline →</button></div>
+   <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg></div><h3>La tua pipeline</h3><div class="sub">Il percorso delle tue candidature, in tempo reale</div></div><button class="inline-action" onclick="goTo('pipeline')">Apri pipeline →</button></div>
    <div class="stage-row" id="overview-pipeline"><div class="empty">Caricamento stati…</div></div>
  </div>
  <div class="dashboard-grid">
   <div class="panel opportunity-panel">
     <div class="panelhead">
       <div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg></div><h3>Opportunità in evidenza</h3><div class="sub">Le schede del tuo radar con priorità e prossime azioni</div></div>
-      <button class="inline-action" onclick="tab('opportunities',document.querySelector('.nav [data-tab=\"opportunities\"]'))">Vedi tutte →</button>
+      <button class="inline-action" onclick="goTo('opportunities')">Vedi tutte →</button>
     </div>
     <div class="panelhead opportunity-controls">
      <div class="queue-views" role="group" aria-label="Vista candidature">
@@ -503,20 +507,18 @@ const statuses=["Da valutare","Interessante","Candidatura inviata","Colloquio","
 const $=id=>document.getElementById(id);
 
 function toggleTheme(){
- const dark=document.documentElement.classList.toggle("dark-glass");
- localStorage.setItem("jhc_theme",dark?"dark":"parchment");
- const b=document.getElementById("theme-toggle");
- if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+ const light=document.documentElement.classList.toggle("light-glass");
+ localStorage.setItem("jhc_light_glass",light?"yes":"no");
+ const b=$("theme-toggle");if(b)b.textContent=light?"◑ Tema scuro":"◐ Tema chiaro";
 }
 (function initTheme(){
- const dark=localStorage.getItem("jhc_theme")==="dark";
- if(dark)document.documentElement.classList.add("dark-glass");
+ const light=localStorage.getItem("jhc_light_glass")==="yes";
+ if(light)document.documentElement.classList.add("light-glass");
  document.addEventListener("DOMContentLoaded",()=>{
   const b=document.getElementById("theme-toggle");
-  if(b)b.textContent=dark?"◑ Tema chiaro":"◐ Tema scuro";
+  if(b)b.textContent=light?"◑ Tema scuro":"◐ Tema chiaro";
  });
 })();
-
 function save(){localStorage.setItem("jhc_jobs",JSON.stringify(jobs));render()}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function cls(s){return s==="Candidatura inviata"?"sent":s==="Colloquio"?"interview":s==="Scartata"?"rejected":s==="Interessante"?"interesting":""}
@@ -582,6 +584,7 @@ function render(){
  $("priority-section").hidden = priorityJobs.length === 0;
  $("priority-jobs").innerHTML = priorityJobs.map(({job, index}) => card(job, index)).join("");
  $("latest").innerHTML = visibleJobs.filter(({index}) => !priorityIndexes.has(index))
+  .slice(0, Math.max(0, 6-priorityJobs.length))
   .map(({job, index}) => card(job, index)).join("") ||
   (priorityJobs.length ? "" : '<div class="empty">Nessuna opportunità in questa vista.</div>');
  $("shown").textContent = String(visibleJobs.length);
@@ -597,7 +600,70 @@ function render(){
  $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
  let iv=jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status==="Colloquio");
  $("interviewList").innerHTML=iv.length?iv.map(j=>card(j,j._i)).join(""):'<div class="empty">Non hai ancora colloqui registrati.<br>Quando un’azienda ti contatta, apri la relativa opportunità e cambia lo stato in “Colloquio”.</div>';
+ renderGlassData();
 }
+
+function goTo(id){
+ const button=document.querySelector('.nav button[data-tab="'+id+'"]');
+ if(button)tab(id,button);
+}
+function quickSearch(value){
+ const q=$("search2");if(q)q.value=value;
+ goTo("opportunities");
+}
+function renderGlassData(){
+ const counts={
+  review:jobs.filter(j=>j.status==="Da valutare").length,
+  interesting:jobs.filter(j=>j.status==="Interessante").length,
+  sent:jobs.filter(j=>j.status==="Candidatura inviata").length,
+  interview:jobs.filter(j=>j.status==="Colloquio").length,
+  rejected:jobs.filter(j=>j.status==="Scartata").length
+ };
+ const stages=[["Da valutare",counts.review],["Interessanti",counts.interesting],["Inviate",counts.sent],["Colloqui",counts.interview],["Scartate",counts.rejected]];
+ const strip=$("overview-pipeline");
+ if(strip)strip.innerHTML=stages.map(([name,n])=>'<div class="stage-item"><small>'+esc(name)+'</small><strong>'+n+'</strong></div>').join("");
+ const focus=jobs.map((j,i)=>({j,i})).filter(({j})=>
+   ["Da valutare","Interessante"].includes(j.status)&&String(j.next||"").trim())
+   .sort((a,b)=>priorityScore(b.j)-priorityScore(a.j)||(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,4);
+ if($("focus-count"))$("focus-count").textContent=focus.length+" priorità";
+ if($("focus-list"))$("focus-list").innerHTML=focus.length?focus.map(({j,i})=>
+   '<div class="focus-entry"><span class="focus-bullet">✓</span><div class="entry-copy"><strong>'+esc(j.company)+'</strong><small>'+esc(j.next)+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
+   :'<div class="empty">Nessuna prossima azione registrata.</div>';
+ const sentJobs=jobs.map((j,i)=>({j,i})).filter(({j})=>j.status==="Candidatura inviata").sort((a,b)=>(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,3);
+ if($("recent-count"))$("recent-count").textContent=counts.sent+" inviate";
+ if($("recent-sent"))$("recent-sent").innerHTML=sentJobs.length?sentJobs.map(({j,i})=>
+   '<div class="recent-entry"><span class="mini-logo">'+esc(String(j.company||"?").slice(0,1).toUpperCase())+'</span><div class="entry-copy"><strong>'+esc(j.company)+'</strong><small>'+esc(j.role)+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
+   :'<div class="empty">Nessuna candidatura ancora registrata.</div>';
+ const today=new Date(),fmt=new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit"});
+ const days=Array.from({length:7},(_,i)=>{
+  const d=new Date(today.getTime()-(6-i)*86400000);
+  return fmt.format(d);
+ });
+ const changes=days.map(day=>jobs.filter(j=>{
+  const d=new Date(j.dateAdded||"");return !Number.isNaN(d.getTime())&&fmt.format(d)===day;
+ }).length);
+ const weekAdded=changes.reduce((n,v)=>n+v,0);
+ if($("analytics-tiles"))$("analytics-tiles").innerHTML=[
+  ["Inviate",counts.sent],["Da valutare",counts.review+counts.interesting],["Colloqui",counts.interview],["Nuove 7gg",weekAdded]
+ ].map(([k,v])=>'<div class="analytics-tile"><strong>'+v+'</strong><small>'+esc(k)+'</small></div>').join("");
+ const svg=$("analytics-line");
+ if(svg){
+  const max=Math.max(1,...changes);
+  const pts=changes.map((n,i)=>[20+i*(380/6),128-(n/max)*104]);
+  const path=pts.map(([x,y],i)=>(i?"L":"M")+x.toFixed(1)+","+y.toFixed(1)).join(" ");
+  const fill=path+" L400,128 L20,128 Z";
+  const guides=[0,.5,1].map(t=>'<line x1="20" y1="'+(128-t*104)+'" x2="400" y2="'+(128-t*104)+'" stroke="rgba(158,218,247,.18)" stroke-dasharray="4 7"/>').join("");
+  svg.innerHTML='<defs><linearGradient id="trendArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#57ecf8" stop-opacity=".37"/><stop offset="1" stop-color="#57ecf8" stop-opacity="0"/></linearGradient></defs>'+guides+
+    '<path d="'+fill+'" fill="url(#trendArea)"/><path d="'+path+'" fill="none" stroke="#6ceff8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+
+    pts.map(([x,y])=>'<circle cx="'+x+'" cy="'+y+'" r="4" fill="#89ffff" stroke="#0d627a" stroke-width="2"/>').join("");
+  const localDay=d=>new Date(d+"T12:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"short"});
+  if($("analytics-dates"))$("analytics-dates").innerHTML="<span>"+localDay(days[0])+"</span><span>"+localDay(days[3])+"</span><span>"+localDay(days[6])+"</span>";
+ }
+ const maxStage=Math.max(1,...stages.map(([,n])=>n));
+ if($("analytics-bars"))$("analytics-bars").innerHTML=stages.map(([name,n])=>
+   '<div class="analytics-bar"><strong>'+n+'</strong><span class="bar-shaft" style="--bar-height:'+Math.max(4,Math.round(104*n/maxStage))+'px"></span><small>'+esc(name==="Da valutare"?"Valutare":name)+'</small></div>').join("");
+}
+
 function tab(id,btn){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");render()}
 function closeModal(){$("modal").classList.remove("show")}
 function openAdd(){ $("dialog").innerHTML=`<div class="dialoghead"><h3>＋ Nuova opportunità</h3><button onclick="closeModal()">✕</button></div><div class="fields">
