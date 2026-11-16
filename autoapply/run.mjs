@@ -15,6 +15,7 @@ for(const cv of [config.cvIt,config.cvEn]){
   if(!cv||!fs.existsSync(cv)){console.error("CV non trovato: ripeti npm run setup");process.exit(1)}
 }
 const args=process.argv.slice(2);
+const auto=args.includes("--auto");
 const value=(key,defaultValue="")=>{
   const flag=args.find(s=>s.startsWith("--"+key+"="));
   return flag?flag.slice(key.length+3):defaultValue;
@@ -71,7 +72,8 @@ console.log("\nCAREER AUTOAPPLY — MODALITA ASSISTITA\n");
 jobs.forEach((j,i)=>console.log(String(i+1).padStart(2," ")+") "+j.company+" — "+j.role+" | "+j.location+" | "+j.mode));
 console.log("\nStati Notion e CSV locale controllati. NON sono controllati automaticamente Gmail Inviati e gli eventuali registri esterni non indicati.");
 console.log("NON verra eseguito alcun invio automatico sul sito.");
-const selected=(await ask("\nIndici separati da virgola, oppure 'tutti': ")).trim().toLowerCase();
+const selected=auto?"tutti":(await ask("\nIndici separati da virgola, oppure 'tutti': ")).trim().toLowerCase();
+if(auto)console.log("Modalita batch: seleziono tutte le offerte ammissibili e provo ad aprire il modulo Apply.");
 if(selected==="tutti")choice.push(...jobs);
 else {
   for(const i of new Set(selected.split(",").map(Number))){
@@ -92,6 +94,30 @@ async function fill(page,regex,text) {
     }catch{}
   }
   return false;
+}
+// Open only the initial Apply navigation control, never an application submit control.
+async function formVisible(page){
+  try {
+    if(await page.locator('input[type="email"]:visible').count())return true;
+    if(await page.getByLabel(/^(first name|last name|nome|cognome|email address|email)(\\s*\\*)?$/i).count())return true;
+  }catch{}
+  return false;
+}
+async function tryOpenApplication(page){
+  if(await formVisible(page))return;
+  for(const role of ["link","button"]){
+    const selector=page.getByRole(role,{name:/^(apply|apply now|apply for this job|candidati|candidati ora)$/i}).first();
+    try{
+      if(!await selector.count()||!await selector.isVisible())continue;
+      // Never click if a form is already on the page: "Apply" might submit it.
+      if(await formVisible(page))return;
+      console.log("Apro il pulsante Apply ("+role+").");
+      await selector.click({timeout:4000});
+      await page.waitForTimeout(1700);
+      return;
+    }catch(e){console.log("Apertura Apply non riuscita: "+e.message.slice(0,130))}
+  }
+  console.log("Pulsante Apply non identificato con sicurezza.");
 }
 async function uploadCV(page,file){
   const inputs=page.locator('input[type="file"]');
@@ -142,8 +168,16 @@ try {
       if(/job not found|this job is no longer available|position is closed|job posting has expired/i.test(pageText)){
         console.log("Annuncio probabilmente chiuso. Non compilato.");continue;
       }
-      console.log("Se necessario clicca Apply nel browser e attendi la comparsa del modulo.");
-      await ask("Premi INVIO quando vedi i campi del modulo: ");
+      if(auto){
+        await tryOpenApplication(page);
+        if(!await formVisible(page)){
+          console.log("Modulo non individuato automaticamente. Apri Apply nel browser.");
+          await ask("Premi INVIO quando hai aperto il modulo (oppure Ctrl+C per interrompere): ");
+        }
+      }else{
+        console.log("Se necessario clicca Apply nel browser e attendi la comparsa del modulo.");
+        await ask("Premi INVIO quando vedi i campi del modulo: ");
+      }
       let done=0;
       const pairs=[
         [/^(first name|nome)(\s*\*)?$/i,config.firstName],
