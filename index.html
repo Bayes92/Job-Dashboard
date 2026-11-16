@@ -114,6 +114,33 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
 .priority-section h3{font-size:15px;margin:0 0 8px}
 #priority-jobs .job-summary{border-color:rgba(165,153,255,.45)}
 .job-context{color:var(--muted);font-size:12px}
+
+/* CareerOS polish · 16 Nov 2026: clearer reading and responsive controls */
+:root{color-scheme:dark}
+body{font-size:14px;line-height:1.55}
+.app{max-width:1800px;margin-inline:auto}
+.brand h1{letter-spacing:.025em}
+.panel,.stat,.job,.hero{transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.panelhead{flex-wrap:wrap}
+.job{min-width:0;align-items:start;gap:14px;padding:17px 18px;border-radius:16px}
+.jobtitle{font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.company{font-size:12px;line-height:1.5}
+.job-context{line-height:1.55}
+.meta{gap:6px;margin-top:11px}
+.tag{font-size:11px;padding:5px 9px;border-radius:9px}
+.toolbar{align-items:stretch}
+.toolbar input,.toolbar select{min-height:43px}
+.toolbar input{min-width:min(100%,230px)}
+.link-filter{display:flex;align-items:center;gap:9px;margin:0 0 16px;color:var(--muted);font-size:12px;cursor:pointer}
+.link-filter input{accent-color:#b9a6ff;width:16px;height:16px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #b6dff9;outline-offset:3px}
+#latest{gap:12px}
+#alljobs{gap:12px}
+#alljobs .job{padding:17px 19px}
+#priority-jobs{gap:12px}
+.stat .label{letter-spacing:.025em}
+@media(max-width:700px){.top{flex-wrap:wrap}.topright{width:100%;justify-content:flex-start}.hero-actions{width:100%}.hero-actions button{flex:1 1 auto}.nav button{min-height:48px}.toolbar select{flex:1 1 140px}.job{padding:14px}.panelhead{align-items:flex-start}.queue-views{width:100%}.queue-views button{flex:1}.app{padding-inline:14px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -159,7 +186,7 @@ button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(25
  <div class="panel"><div class="panelhead"><div><h3>La tua pipeline</h3><div class="sub">Apri una scheda per vedere i dettagli o cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div>
 </section>
 <section id="opportunities" class="section">
- <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill">DATABASE LOCALE</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option></select></div><div class="list" id="alljobs"></div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill">DATABASE LOCALE</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Mostra solo offerte con link all’annuncio</label><div class="list" id="alljobs"></div></div>
 </section>
 <section id="interviews" class="section">
  <div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in fase di selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch di 60 secondi sul percorso in GameStop, risultati RFM/CLTV, segmentazione clienti, SQL e BigQuery. Tieni pronti 2–3 esempi con impatto misurabile.</small></div></div></div>
@@ -282,7 +309,8 @@ function render(){
  $("shown").textContent = String(visibleJobs.length);
  const q2=($("search2")?.value||"").toLowerCase(),f2=$("filter2")?.value||"",sort=$("sort")?.value||"score";
  let all=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f2||j.status===f2)&&(`${j.company} ${j.role} ${j.location} ${j.area}`.toLowerCase().includes(q2)));
- all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):((a,b)=>b.score-a.score));
+ if($("verified-links")?.checked) all=all.filter(j=>{try{const u=new URL(j.url);return u.protocol==="https:"||u.protocol==="http:"}catch{return false}});
+ all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):sort==="recent"?(a,b)=>(b.dateAdded||"").localeCompare(a.dateAdded||""):((a,b)=>b.score-a.score));
  $("alljobs").innerHTML=all.map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';
  $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
  let iv=jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status==="Colloquio");
