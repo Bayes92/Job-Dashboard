@@ -96,7 +96,22 @@ async function fill(page,regex,text) {
 async function uploadCV(page,file){
   const inputs=page.locator('input[type="file"]');
   const count=await inputs.count();
-  if(count===1){await inputs.first().setInputFiles(file);return true}
+  if(count===1){
+    const single=inputs.first();
+    const nearby=await single.evaluate(el=>([
+      el.getAttribute("name")||"",
+      el.getAttribute("id")||"",
+      el.getAttribute("aria-label")||"",
+      el.closest("label")?.textContent||"",
+      el.parentElement?.parentElement?.textContent||""
+    ].join(" ")).slice(0,600)).catch(()=>"");
+    if(/\\bcv\\b|resume|curriculum|upload.*file|allega.*cv|upload document/i.test(nearby)){
+      await single.setInputFiles(file);
+      return true;
+    }
+    console.log("Upload non sicuro: non riconosco il campo CV. Carica il PDF manualmente.");
+    return false;
+  }
   for(let i=0;i<count;i++){
     const input=inputs.nth(i);
     const nearby=await input.evaluate(el=>{
