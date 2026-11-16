@@ -105,7 +105,7 @@ async function uploadCV(page,file){
       el.closest("label")?.textContent||"",
       el.parentElement?.parentElement?.textContent||""
     ].join(" ")).slice(0,600)).catch(()=>"");
-    if(/\\bcv\\b|resume|curriculum|upload.*file|allega.*cv|upload document/i.test(nearby)){
+    if(/\bcv\b|resume|curriculum|upload.*file|allega.*cv|upload document/i.test(nearby)){
       await single.setInputFiles(file);
       return true;
     }
