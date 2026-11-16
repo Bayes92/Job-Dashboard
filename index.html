@@ -142,6 +142,27 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media(max-width:700px){.top{flex-wrap:wrap}.topright{width:100%;justify-content:flex-start}.hero-actions{width:100%}.hero-actions button{flex:1 1 auto}.nav button{min-height:48px}.toolbar select{flex:1 1 140px}.job{padding:14px}.panelhead{align-items:flex-start}.queue-views{width:100%}.queue-views button{flex:1}.app{padding-inline:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 .job-extra-filters{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0}.job-data-caveat{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 15px}.job-summary{display:block;padding:18px 19px;cursor:default}.job-summary .jobtitle{font-size:16px;line-height:1.4}.job-summary .company{font-size:12px;color:var(--cyan);margin:8px 0}.job-summary .meta{margin:12px 0}.job-summary .ghost{margin-top:13px}.job-summary:hover{transform:translateY(-2px)}@media(max-width:560px){.job-summary{padding:15px}.job-summary .jobtitle{font-size:15px}}
+
+/* Mission Control – opportunity dossier cards */
+.job-summary{display:block;padding:19px 20px;cursor:default;border-radius:16px}
+.job-card-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.job-card-info{min-width:0}.job-company-name{color:var(--cyan);font-size:12px;font-weight:800}
+.job-summary .jobtitle{font-size:16px;line-height:1.45;margin-top:6px;letter-spacing:-.15px}
+.job-match{display:flex;flex-direction:column;text-align:center;flex-shrink:0;font-size:20px;line-height:1;font-weight:850;color:var(--green);background:rgba(80,206,157,.08);padding:10px 12px;border:1px solid rgba(80,206,157,.22);border-radius:12px}
+.job-match small{color:var(--muted);letter-spacing:1px;font-size:8px;margin-top:7px}
+.job-card-note{font-size:12px;line-height:1.65;color:var(--text);opacity:.87;margin:12px 0}
+.job-card-status{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0}
+.job-added{font-size:11px;color:var(--muted)}
+.job-next{display:flex;flex-direction:column;gap:5px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);border-radius:11px;padding:10px 12px;margin:11px 0}
+.job-next strong{font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:.65px}
+.job-next span{font-size:11px;line-height:1.5;color:var(--text)}
+.job-card-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:13px}
+.job-card-actions button{margin-top:0!important}
+.job-original-link{display:inline-flex;align-items:center;min-height:36px;font-size:12px;text-decoration:none;color:var(--cyan);font-weight:700;padding:9px 13px;background:rgba(103,201,228,.10);border:1px solid rgba(103,201,228,.30);border-radius:10px}
+.job-original-link:hover{border-color:var(--cyan);background:rgba(103,201,228,.17)}
+.job-unverified{font-size:11px;color:var(--muted)}
+.job-extra-filters select{background:rgba(12,21,34,.7);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px}
+@media(max-width:560px){.job-summary{padding:16px}.job-summary .jobtitle{font-size:15px}.job-match{font-size:18px}.job-card-actions>*{flex:1;text-align:center;justify-content:center}}
 </style>
 </head>
 <body>
@@ -187,7 +208,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
  <div class="panel"><div class="panelhead"><div><h3>La tua pipeline</h3><div class="sub">Apri una scheda per vedere i dettagli o cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div>
 </section>
 <section id="opportunities" class="section">
- <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: full remote da Italia. Il link non conferma che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><select id="geo-filter" aria-label="Area geografica" onchange="render()"><option value="">Tutte le aree</option><option value="milan">Milano / Lombardia</option><option value="italy">Italia full remote</option><option value="international">Europa / estero remoto</option></select><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: full remote da Italia. Il link non conferma che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div>
 </section>
 <section id="interviews" class="section">
  <div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in fase di selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch di 60 secondi sul percorso in GameStop, risultati RFM/CLTV, segmentazione clienti, SQL e BigQuery. Tieni pronti 2–3 esempi con impatto misurabile.</small></div></div></div>
@@ -269,17 +290,31 @@ function formatAddedDate(value) {
  return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("it-IT", {timeZone: "Europe/Rome"});
 }
 function card(job, index) {
- const date = formatAddedDate(job.dateAdded);
- const added = date ? "Inserita il " + date : "Data di inserimento assente";
- const context = [job.location, job.mode].map(value => String(value ?? "").trim())
-  .filter(value => value && !/^(da verificare|non specificat[ao])$/i.test(value)).join(" · ");
- return `<article class="job job-summary">
-  <div class="jobtitle">${esc(job.role)}</div>
-  <div class="company">${esc(job.company)}</div>
-  ${context ? `<div class="job-context">${esc(context)}</div>` : ""}
-  <div class="meta"><span class="tag">${esc(added)}</span></div>
-  <button type="button" class="ghost" aria-label="Apri scheda: ${esc(job.role)} — ${esc(job.company)}" onclick="detail(${index})">Apri scheda</button>
- </article>`;
+ const date=formatAddedDate(job.dateAdded);
+ const context=[job.location,job.mode].map(x=>String(x||"").trim()).filter(x=>x&&!/^(da verificare|non specificat[ao])$/i.test(x)).join(" · ");
+ const score=Number(job.score);
+ const note=String(job.notes||"").replace(/\s+/g," ").trim();
+ const next=String(job.next||"").trim();
+ let safeUrl="";
+ try {const u=new URL(job.url);if(["https:","http:"].includes(u.protocol))safeUrl=u.href;} catch {}
+ return '<article class="job job-summary">'+
+  '<div class="job-card-heading"><div class="job-card-info"><span class="job-company-name">'+esc(job.company)+'</span><div class="jobtitle">'+esc(job.role)+'</div></div>'+
+  '<span class="job-match" title="Compatibilità indicativa, non verifica dei requisiti">'+(score>0?esc(score.toLocaleString("it-IT"))+'/10':'—')+' <small>MATCH</small></span></div>'+
+  '<div class="meta">'+(context?'<span class="tag">⌖ '+esc(context)+'</span>':'')+(job.protected?'<span class="tag">L.68/99</span>':'')+'</div>'+
+  (note?'<p class="job-card-note">'+esc(note.length>240?note.slice(0,240)+'…':note)+'</p>':'')+
+  '<div class="job-card-status"><span class="job-added">'+(date?'Inserita '+esc(date):'Data inserimento non disponibile')+'</span><span class="status '+cls(job.status)+'">'+esc(job.status)+'</span></div>'+
+  (next?'<div class="job-next"><strong>Prossima azione</strong><span>'+esc(next)+'</span></div>':'')+
+  '<div class="job-card-actions"><button type="button" class="ghost" onclick="detail('+Number(index)+')">Dettagli e stato</button>'+
+  (safeUrl?'<a class="job-original-link" href="'+esc(safeUrl)+'" target="_blank" rel="noopener noreferrer">Annuncio originale ↗</a>':'<span class="job-unverified">Link non disponibile</span>')+'</div>'+
+ '</article>';
+}
+function geographyGroup(job) {
+ const loc=String(job.location||"").toLowerCase();
+ const remote=/^remot[oa]$/i.test(String(job.mode||"").trim());
+ if(/milano|lombardia|assago|monza|san donato milanese|segrate|rho\b|bergamo|brianza/i.test(loc))return "milan";
+ if(remote&&/italia|italy|italian|roma|bologna|torino|napoli|firenze|palermo|verona|bari|padova|genova|ancona|venezia|catania/i.test(loc))return "italy";
+ if(remote&&!/^(non specificata|da verificare|)$/.test(loc))return "international";
+ return "other";
 }
 function priorityScore(job) {
  const location = /milano|lombardia|assago|monza|bergamo|brescia|como|lecco|varese|sondrio|pavia|cremona|mantova|lodi/i.test(job.location);
@@ -313,6 +348,8 @@ function render(){
  if($("verified-links")?.checked) all=all.filter(j=>{try{const u=new URL(j.url);return u.protocol==="https:"||u.protocol==="http:"}catch{return false}});
  if($("remote-only")?.checked) all=all.filter(j=>/remot|remote|home.office|work from anywhere/i.test(j.mode+" "+j.location));
  if($("protected-only")?.checked) all=all.filter(j=>j.protected||/68\/99|categorie protette/i.test(j.role));
+ const geo=$("geo-filter")?.value;
+ if(geo)all=all.filter(j=>geographyGroup(j)===geo);
  all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):sort==="recent"?(a,b)=>(b.dateAdded||"").localeCompare(a.dateAdded||""):((a,b)=>b.score-a.score));
  $("alljobs").innerHTML=all.map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';
  $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
