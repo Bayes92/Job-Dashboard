@@ -2,6 +2,18 @@
 
 Uno strumento Playwright gratuito che legge **le offerte reali di Notion tramite l'API di Mission Control**, apre gli annunci nel browser, compila i dati di contatto che trova e carica un CV PDF se riconosce con sicurezza il relativo campo. Non inventa le risposte ai requisiti, non aggira login/CAPTCHA e **non fa mai clic sul pulsante finale di invio**.
 
+## Avvio rapido sul Mac (una sola riga)
+
+Se **Node.js LTS** è già installato, apri **Terminale**, copia questo comando e premi Invio:
+
+```bash
+cd ~/Downloads && curl -fLsS -o CareerAutoApply.zip https://github.com/Bayes92/Job-Dashboard/archive/refs/heads/main.zip && unzip -oq CareerAutoApply.zip && bash Job-Dashboard-main/autoapply/avvia-mac.sh
+```
+
+Il primo avvio installa Playwright e Chromium, chiede dove si trovano i due CV PDF e mostra le offerte **registrate il 16/11/2026** ancora da valutare. Se vuoi usare il sistema nei giorni successivi, dal Terminale lancia `bash ~/Downloads/Job-Dashboard-main/autoapply/avvia-mac.sh --all` per tutte le offerte non scartate e non segnate come inviate.
+
+Non c'è alcun invio senza la tua azione nel browser. I dati personali e i PDF restano sul Mac.
+
 ## Prima installazione (MacBook Air)
 
 1. Installa **Node.js LTS** da [nodejs.org](https://nodejs.org/), se non è già installato.
