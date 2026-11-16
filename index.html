@@ -141,6 +141,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .stat .label{letter-spacing:.025em}
 @media(max-width:700px){.top{flex-wrap:wrap}.topright{width:100%;justify-content:flex-start}.hero-actions{width:100%}.hero-actions button{flex:1 1 auto}.nav button{min-height:48px}.toolbar select{flex:1 1 140px}.job{padding:14px}.panelhead{align-items:flex-start}.queue-views{width:100%}.queue-views button{flex:1}.app{padding-inline:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+.job-extra-filters{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0}.job-data-caveat{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 15px}.job-summary{display:block;padding:18px 19px;cursor:default}.job-summary .jobtitle{font-size:16px;line-height:1.4}.job-summary .company{font-size:12px;color:var(--cyan);margin:8px 0}.job-summary .meta{margin:12px 0}.job-summary .ghost{margin-top:13px}.job-summary:hover{transform:translateY(-2px)}@media(max-width:560px){.job-summary{padding:15px}.job-summary .jobtitle{font-size:15px}}
 </style>
 </head>
 <body>
@@ -186,7 +187,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
  <div class="panel"><div class="panelhead"><div><h3>La tua pipeline</h3><div class="sub">Apri una scheda per vedere i dettagli o cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div>
 </section>
 <section id="opportunities" class="section">
- <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill">DATABASE LOCALE</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Mostra solo offerte con link all’annuncio</label><div class="list" id="alljobs"></div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: full remote da Italia. Il link non conferma che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div>
 </section>
 <section id="interviews" class="section">
  <div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in fase di selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch di 60 secondi sul percorso in GameStop, risultati RFM/CLTV, segmentazione clienti, SQL e BigQuery. Tieni pronti 2–3 esempi con impatto misurabile.</small></div></div></div>
@@ -310,6 +311,8 @@ function render(){
  const q2=($("search2")?.value||"").toLowerCase(),f2=$("filter2")?.value||"",sort=$("sort")?.value||"score";
  let all=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f2||j.status===f2)&&(`${j.company} ${j.role} ${j.location} ${j.area}`.toLowerCase().includes(q2)));
  if($("verified-links")?.checked) all=all.filter(j=>{try{const u=new URL(j.url);return u.protocol==="https:"||u.protocol==="http:"}catch{return false}});
+ if($("remote-only")?.checked) all=all.filter(j=>/remot|remote|home.office|work from anywhere/i.test(j.mode+" "+j.location));
+ if($("protected-only")?.checked) all=all.filter(j=>j.protected||/68\/99|categorie protette/i.test(j.role));
  all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):sort==="recent"?(a,b)=>(b.dateAdded||"").localeCompare(a.dateAdded||""):((a,b)=>b.score-a.score));
  $("alljobs").innerHTML=all.map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';
  $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
@@ -358,10 +361,12 @@ async function loadNotionJobs(){
   jobs=payload.jobs;
   localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
   if(badge) badge.textContent="NOTION LIVE · "+jobs.length;
+  if($("source-label")) $("source-label").textContent="NOTION SINCRONIZZATO";
   render();
  }catch(error){
   console.error("Notion sync:",error);
   if(badge) badge.textContent="SYNC NON DISPONIBILE";
+  if($("source-label")) $("source-label").textContent="DATI LOCALI · NOTION OFFLINE";
  }
 }
 
