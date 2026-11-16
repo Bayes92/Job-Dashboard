@@ -1,0 +1,12 @@
+{
+  "name": "career-autoapply-local",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "setup": "node setup.mjs",
+    "start": "node run.mjs"
+  },
+  "dependencies": {"playwright": "^1.57.0"}
+}
