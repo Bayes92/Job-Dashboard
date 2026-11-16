@@ -37,6 +37,16 @@ Non c'è alcun invio senza la tua azione nel browser. I dati personali e i PDF r
    Per tutte le offerte ancora in valutazione: `npm start -- --all`.
    Per una scheda specifica: `npm start -- --id=ID_NOTION`.
 
+## Modalità batch (meno passaggi)
+
+In questa modalità Career AutoApply seleziona tutte le opportunità filtrate e cerca di premere il pulsante iniziale **Apply**, prima di compilare i dati personali e caricare il CV:
+
+```bash
+bash avvia-mac.sh --date=2026-11-16 --auto
+```
+
+Se il form non si apre da solo, il programma si ferma e chiede di aprirlo nel browser. **L'invio finale resta manuale:** nessun click su Submit, nessuna risposta inventata e nessun contrassegno di candidatura inviata senza una conferma verificabile. Gmail Inviati e il registro esterno non sono controllati automaticamente; evita duplicati controllandoli prima dell'invio.
+
 ## Cosa succede
 
 - Il programma elenca le offerte Notion non segnate come inviate o scartate e non presenti in `autoapply/data/applied.csv`.
