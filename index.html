@@ -163,57 +163,299 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .job-unverified{font-size:11px;color:var(--muted)}
 .job-extra-filters select{background:rgba(12,21,34,.7);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px}
 @media(max-width:560px){.job-summary{padding:16px}.job-summary .jobtitle{font-size:15px}.job-match{font-size:18px}.job-card-actions>*{flex:1;text-align:center;justify-content:center}}
+
+/* CAREER OS · AURORA GLASS 2026 · original production interface */
+:root{--bg:#041122;--text:#effaff;--muted:#9cb4cd;--cyan:#57ebfc;--green:#63e3bc;--violet:#ad91ff;--line:rgba(123,217,255,.22)}
+html,html.dark-glass{color-scheme:dark}
+body,html{min-height:100%;background:#041122!important;color:var(--text)}
+body{font-size:14px;line-height:1.5;overflow-x:hidden;background:
+ radial-gradient(ellipse at -4% 3%,rgba(0,240,227,.24),transparent 20%),
+ radial-gradient(ellipse at 101% 15%,rgba(1,196,175,.28),transparent 26%),
+ radial-gradient(ellipse at 57% -8%,rgba(0,144,231,.28),transparent 36%),
+ radial-gradient(ellipse at 15% 93%,rgba(13,115,251,.19),transparent 40%),
+ linear-gradient(135deg,#041225 5%,#052240 45%,#020d23 83%)!important;background-attachment:fixed!important}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:1;background:
+ linear-gradient(117deg,transparent 11%,rgba(28,218,255,.22) 12%,rgba(1,164,227,.045) 17%,transparent 26%),
+ linear-gradient(126deg,transparent 61%,rgba(0,251,215,.1) 62%,transparent 73%),
+ radial-gradient(ellipse at 50% 100%,rgba(5,129,205,.15),transparent 56%)}
+body:after{content:"";pointer-events:none;position:fixed;top:-56vh;right:23vw;width:28vw;height:125vh;border-radius:50%;transform:rotate(35deg);border:2px solid rgba(82,252,234,.15);filter:blur(2px);box-shadow:0 0 90px rgba(15,229,233,.14);z-index:0}
+.svg-sprite{position:absolute!important;width:0;height:0;overflow:hidden;pointer-events:none}
+.icon{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.app{position:relative;z-index:1;width:100%;max-width:2000px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:19px;align-items:start;padding:18px 20px 36px;isolation:initial}
+.glass,.panel,.stat,.hero,.job,.column,.dialog{background:linear-gradient(140deg,rgba(22,68,99,.6),rgba(9,33,62,.67) 68%,rgba(4,55,68,.41));border:1px solid rgba(143,219,253,.30);box-shadow:inset 0 1px 0 rgba(237,252,255,.25),inset 0 -1px 0 rgba(40,174,241,.07),0 19px 48px rgba(0,8,28,.27);backdrop-filter:blur(25px) saturate(165%);-webkit-backdrop-filter:blur(25px) saturate(165%)}
+.panel{border-radius:22px;padding:20px 22px;min-width:0;overflow:hidden}
+.panel:hover{border-color:rgba(112,226,254,.43)}
+.sidebar{position:sticky;top:18px;min-height:calc(100dvh - 36px);border-radius:27px;padding:22px 14px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(159deg,rgba(15,70,105,.66),rgba(5,31,65,.76) 55%,rgba(19,58,103,.52))}
+.brand{gap:11px;padding:1px 0 7px;align-items:center}
+.logo{width:51px;height:51px;flex:0 0 51px;border-radius:17px;background:linear-gradient(140deg,#51d5ff 0%,#196cbf 46%,#424dba 100%);border:1px solid rgba(208,246,255,.7);box-shadow:inset 0 1px rgba(255,255,255,.54),0 11px 24px #00367e88;display:grid;place-items:center}
+.logo .icon{width:29px;height:29px;stroke-width:2;fill:rgba(223,251,255,.16)}
+.brand-copy h1{font-size:16px;line-height:1.15;margin:0;font-weight:830;letter-spacing:-.6px}
+.brand-copy span{color:#b6d6ee;letter-spacing:3px;font-size:10px;font-weight:650}
+.side-divider{height:1px;margin:12px 9px 10px;background:linear-gradient(90deg,transparent,#a1e6ff66,transparent)}
+.side-section-label{font-size:9px;letter-spacing:2.3px;color:#88b6cf;margin:2px 13px 3px;font-weight:800}
+.nav{display:flex;flex-direction:column;gap:7px;margin:0;width:100%}
+.nav button{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;width:100%;min-height:47px;background:transparent;border:1px solid transparent;border-radius:14px;color:#b4cde4;box-shadow:none}
+.nav button strong{font-size:13px;font-weight:680;margin:0;letter-spacing:0}
+.nav button:hover{background:rgba(112,209,244,.10);border-color:rgba(94,209,249,.16)}
+.nav button.active{background:linear-gradient(96deg,rgba(22,135,202,.92),rgba(18,222,213,.63));border:1px solid rgba(122,253,246,.65);color:white;box-shadow:inset 0 1px rgba(255,255,255,.35),0 0 25px rgba(17,233,225,.34)}
+.nav .icon,.quick-links .icon{width:19px;height:19px}
+.side-mid{margin-top:18px}
+.quick-links{display:flex;flex-direction:column;gap:4px}
+.quick-links a{display:flex;align-items:center;gap:12px;text-decoration:none;color:#b6d2ea;padding:11px 13px;border-radius:12px;font-weight:630;font-size:13px}
+.quick-links a:hover{color:white;background:rgba(134,230,255,.1)}
+.quick-links a span{flex:1}
+.quick-links a .icon:last-child{width:13px;height:13px;opacity:.55}
+.sidebar-bottom{margin-top:auto;padding:18px 9px 3px;color:#97b8ce;line-height:1.55}
+.sidebar-bottom small{font-size:10px;display:block;margin-top:8px}
+.live-caption{font-size:11px;font-weight:800;color:#b6f9e9}
+.workspace{min-width:0;display:flex;flex-direction:column;gap:15px}
+.top{margin:0;display:flex;align-items:center;gap:18px;justify-content:space-between;min-height:65px}
+.welcome{min-width:180px}
+.welcome .eyebrow{color:#69dfe7;font-size:9px;letter-spacing:2.1px}
+.welcome h2{margin:4px 0 0;font-size:clamp(16px,1.55vw,23px);letter-spacing:-.6px;font-weight:750}
+.top-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-width:0}
+.top-search{display:flex;align-items:center;gap:9px;min-width:220px;width:clamp(220px,25vw,370px);padding:0 13px;background:linear-gradient(120deg,rgba(78,141,182,.23),rgba(8,41,73,.62));border:1px solid rgba(198,233,253,.35);border-radius:16px;box-shadow:inset 0 1px rgba(255,255,255,.2);height:42px}
+.top-search .icon{width:16px;height:16px}
+.top-search input{width:100%;min-width:0;background:transparent;border:0;outline:0;color:var(--text);font:inherit;font-size:12px}
+.top-search input::placeholder{color:#b2c8dc}
+.top-search kbd{font-size:11px;color:#bce5f7;background:#ffffff14;padding:2px 6px;border-radius:6px}
+.sync-chip,.date-chip{display:inline-flex;align-items:center;gap:8px;border-radius:22px;font-size:10px;font-weight:750;padding:9px 12px;background:rgba(10,101,100,.25);border:1px solid rgba(87,214,196,.38);white-space:nowrap;color:#bdfbe8}
+.live{width:8px;height:8px;background:#66ffb7;box-shadow:0 0 12px #00f5bc;flex-shrink:0}
+.date-chip{color:#b8d8e9;background:rgba(48,105,140,.12);border-color:rgba(126,180,214,.22)}
+.theme-toggle{padding:9px 12px;font-size:11px;white-space:nowrap}
+.hero{border-radius:22px;padding:18px 21px;background:linear-gradient(106deg,rgba(12,76,111,.72),rgba(17,64,111,.63) 47%,rgba(2,98,100,.35));border-color:rgba(123,220,248,.43);display:flex;justify-content:space-between;align-items:center;gap:18px}
+.hero:after{content:"";right:6%;top:-105px;width:300px;height:250px;background:radial-gradient(circle,rgba(24,226,217,.17),transparent 72%);pointer-events:none}
+.hero-heading{min-width:0}
+.hero-heading>span:nth-child(2){color:#7cdeed;font-size:9px;letter-spacing:2.2px;font-weight:820}
+.hero-dot{width:7px;height:7px;border-radius:100%;display:inline-block;background:#63e7ca;box-shadow:0 0 13px #63e7ca;margin-right:8px}
+.hero h2{font-size:clamp(20px,2vw,28px);line-height:1.2;letter-spacing:-.7px;margin:7px 0 5px}
+.hero p{color:#b6d1e5;font-size:12px}
+.hero-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;z-index:1}
+button{cursor:pointer;transition:transform .18s,box-shadow .2s,border-color .2s;background:linear-gradient(135deg,rgba(77,137,178,.24),rgba(7,45,81,.5));border-color:rgba(121,205,242,.30);border-radius:12px;font-size:12px}
+button:hover{border-color:rgba(133,255,250,.7);box-shadow:0 0 25px rgba(0,207,233,.19)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #75f1ff;outline-offset:3px}
+.primary{background:linear-gradient(115deg,rgba(35,139,244,.94),rgba(23,202,221,.85));border:1px solid rgba(173,255,255,.50);color:#fff;box-shadow:inset 0 1px rgba(255,255,255,.30),0 6px 21px rgba(0,194,240,.17)}
+.ghost{background:rgba(134,199,242,.075)}
+.hero-actions button{min-height:40px;white-space:nowrap}
+.hero-actions button .icon{width:14px;height:14px;vertical-align:middle;margin-right:5px}
+.section{display:none;min-width:0}.section.active{display:flex;flex-direction:column;gap:15px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:0!important}
+.stat{border-radius:20px;min-height:126px;padding:16px 17px!important;overflow:hidden;position:relative}
+.stat:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 95% 0%,rgba(101,234,253,.15),transparent 56%);pointer-events:none}
+.stat:after{content:"";position:absolute;right:13px;bottom:6px;width:140px;height:38px;border-radius:100%;background:rgba(1,238,226,.06);filter:blur(22px);pointer-events:none}
+.stat-icon{width:38px;height:38px;display:grid;place-items:center;background:linear-gradient(130deg,rgba(57,149,255,.72),rgba(33,87,174,.61));border:1px solid rgba(184,236,255,.24);border-radius:12px;box-shadow:0 7px 25px #013e8799;margin-bottom:10px}
+.stat-icon .icon{width:21px;height:21px}
+.stat-label{font-size:10px;color:#bfdae8;font-weight:750;letter-spacing:.35px;padding-right:4px;position:absolute;left:63px;top:20px;line-height:1.4}
+.stat .num{font-size:29px;font-weight:830;letter-spacing:-1px;color:#fff;margin:0 0 2px;position:relative}
+.stat .hint{font-size:10px;color:#9fd7d2}
+.stat-sent{background:linear-gradient(135deg,rgba(50,67,146,.56),rgba(16,117,128,.35))}
+.stat-sent .stat-icon{background:linear-gradient(145deg,#6470e8,#3e6fc7)}
+.stat-review .stat-icon{background:linear-gradient(145deg,#17cdb2,#187b95)}
+.stat-interview .stat-icon{background:linear-gradient(145deg,#a15d99,#694991)}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.panelhead>div:first-child{min-width:0}
+.panelhead .h-icon{display:inline-grid;vertical-align:middle;place-items:center;margin-right:8px;color:#9befff}
+.h-icon .icon{width:19px;height:19px}
+.panelhead h3{display:inline-block;vertical-align:middle;font-size:16px;font-weight:760;margin:0;letter-spacing:-.35px}
+.panelhead .sub{margin:3px 0 0;color:#9fbcd0;font-size:11px}
+.inline-action{border:1px solid rgba(137,226,247,.35);background:rgba(98,190,219,.11);color:#d5f5ff;padding:8px 11px;border-radius:13px;white-space:nowrap}
+.pill{background:rgba(137,211,236,.12);border:1px solid rgba(158,223,245,.25);color:#d4eeff;font-size:10px;font-weight:760}
+.pipeline-strip{padding-bottom:17px}
+.pipeline-strip .panelhead{margin-bottom:12px}
+.stage-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.stage-item{border-radius:14px;padding:13px 12px;background:linear-gradient(132deg,rgba(85,143,194,.31),rgba(15,62,91,.37));border:1px solid rgba(165,228,253,.3);box-shadow:inset 0 1px rgba(255,255,255,.2);min-width:0;position:relative}
+.stage-item:nth-child(2){background:linear-gradient(130deg,rgba(53,124,221,.33),rgba(18,56,110,.47))}
+.stage-item:nth-child(3){background:linear-gradient(130deg,rgba(7,181,170,.32),rgba(11,74,107,.48))}
+.stage-item:nth-child(4){background:linear-gradient(130deg,rgba(94,77,185,.33),rgba(42,50,122,.47))}
+.stage-item:nth-child(5){background:linear-gradient(130deg,rgba(0,170,112,.25),rgba(17,76,75,.47))}
+.stage-item small{font-size:10px;color:#c2dfed;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage-item strong{font-size:23px;line-height:1.35;font-weight:830;display:block;color:#fff}
+.stage-item:not(:last-child):after{content:"›";position:absolute;right:-11px;top:35%;color:#d8f8ff;font-size:22px;z-index:1;text-shadow:0 1px 10px #00162b}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.82fr) minmax(285px,.92fr);gap:15px;align-items:start}
+.opportunity-panel{min-width:0}
+.opportunity-panel .opportunity-controls{margin-bottom:12px}
+.queue-views{gap:7px}
+.queue-views button{padding:8px 14px;border-radius:12px;color:#b5d0e5;background:rgba(139,202,247,.055)}
+.queue-views button[aria-pressed="true"]{outline:0;background:linear-gradient(110deg,rgba(20,149,210,.62),rgba(29,202,199,.29));color:#fff;border-color:rgba(96,246,243,.47);box-shadow:0 4px 18px rgba(14,222,217,.13)}
+.opportunity-panel .toolbar{margin-bottom:13px}
+.toolbar input,.toolbar select{background:rgba(5,25,52,.68);border:1px solid rgba(143,208,237,.29);color:#effbff;min-height:40px;border-radius:11px;font-size:12px}
+#priority-jobs,#latest{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.priority-section{margin:0 0 10px}.priority-section h3{font-size:11px;color:#6de6f4;margin:0 0 10px;font-weight:820}
+.job{border-radius:16px;padding:15px;min-width:0;transition:transform .2s,border-color .2s,box-shadow .2s}
+.job:hover{transform:translateY(-2px);border-color:rgba(96,238,244,.6);box-shadow:inset 0 1px rgba(255,255,255,.22),0 15px 40px rgba(0,5,25,.25)}
+.job-summary .job-card-heading{gap:6px}
+.job-company-name{font-size:12px;color:#b2f9f8}
+.job-summary .jobtitle{font-size:14px;line-height:1.35;letter-spacing:-.2px;margin:5px 0}
+.job-match{font-size:16px;color:#66e4ae;border:1px solid rgba(55,209,165,.28);background:rgba(29,154,113,.17);border-radius:11px;padding:8px}
+.job-match small{font-size:7px}
+.job-summary .tag{background:rgba(94,164,210,.15);border:1px solid rgba(122,185,222,.21);border-radius:20px;font-size:9px;color:#badbf2;padding:4px 8px}
+#overview .job-summary .job-card-note{font-size:11px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:9px 0;opacity:.78}
+#overview .job-summary .job-next{padding:8px 10px;border-radius:11px;margin:9px 0;background:rgba(15,91,105,.2)}
+#overview .job-summary .job-next span{font-size:10px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#overview .job-summary .job-original-link{font-size:11px;min-height:31px;padding:8px 10px}
+#overview .job-card-actions{gap:5px;flex-wrap:wrap;margin-top:11px}
+#overview .job-card-actions button{padding:8px 10px;font-size:10px}
+#overview .job-card-status{gap:8px;margin:8px 0}
+#overview .job-summary .status{font-size:9px}
+#overview .job-added{font-size:10px}
+.insight-side{display:flex;flex-direction:column;gap:15px;min-width:0}
+.focus-panel{border-color:rgba(87,234,216,.4);background:linear-gradient(145deg,rgba(7,88,97,.46),rgba(4,50,78,.6))}
+.recent-panel{background:linear-gradient(145deg,rgba(20,78,108,.55),rgba(9,49,80,.59))}
+.focus-list,.recent-sent{display:flex;flex-direction:column;gap:2px}
+.focus-entry,.recent-entry{display:flex;gap:10px;align-items:flex-start;padding:10px 3px;border-bottom:1px solid rgba(145,220,241,.13)}
+.focus-entry:last-child,.recent-entry:last-child{border:0}
+.focus-bullet{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(130,231,226,.76);display:grid;place-items:center;color:#9bfbc8;font-size:10px;flex-shrink:0;margin-top:3px}
+.focus-entry strong,.recent-entry strong{font-size:12px;line-height:1.3;display:block;color:#f3fdff}
+.focus-entry small,.recent-entry small{font-size:10px;color:#afcbdb;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px}
+.focus-entry button,.recent-entry button{padding:6px 9px;font-size:10px;white-space:nowrap;margin-left:auto}
+.recent-entry .mini-logo{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;font-size:13px;font-weight:850;background:linear-gradient(130deg,#1fafa1,#2375a5);box-shadow:inset 0 1px #ffffff5e;flex-shrink:0}
+.recent-entry .mini-logo:nth-child(1){color:#fff}
+.recent-entry .entry-copy{min-width:0;flex:1}
+.analytics-panel{padding:19px 22px}
+.analytics-panel .panelhead{margin-bottom:11px}
+.analytics-body{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(260px,1.25fr) minmax(200px,.88fr);gap:21px;align-items:stretch}
+.analytics-body>div+div{border-left:1px solid rgba(164,231,254,.17);padding-left:20px}
+.analytics-body strong{font-size:12px;color:#e0f7fe}
+.analytics-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.analytics-tile{border:1px solid rgba(139,218,248,.2);background:linear-gradient(134deg,rgba(73,133,177,.30),rgba(15,60,92,.40));border-radius:13px;padding:10px}
+.analytics-tile strong{font-size:21px;display:block;color:#fff}
+.analytics-tile small{color:#b4d4e7;font-size:10px}
+.analytics-trend{display:flex;flex-direction:column;min-width:0}
+#analytics-line{width:100%;max-height:145px;overflow:visible;margin-top:5px}
+.analytics-dates{display:flex;justify-content:space-between;font-size:9px;color:#a6c9d8;margin-top:-8px}
+.analytics-stages{min-width:0}
+.analytics-bars{height:155px;display:flex;align-items:end;gap:11px;margin-top:4px}
+.analytics-bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.analytics-bar strong{font-size:10px}
+.analytics-bar .bar-shaft{width:100%;max-width:35px;height:var(--bar-height,8px);min-height:4px;background:linear-gradient(180deg,#60c5ff,#176eb3);border:1px solid rgba(209,247,255,.4);box-shadow:0 0 14px rgba(48,175,236,.16);border-radius:8px 8px 3px 3px}
+.analytics-bar:nth-child(2) .bar-shaft{background:linear-gradient(#54e8ed,#0587b1)}
+.analytics-bar:nth-child(3) .bar-shaft{background:linear-gradient(#63ecb4,#147f7e)}
+.analytics-bar:nth-child(4) .bar-shaft{background:linear-gradient(#ab98ff,#5e4eb5)}
+.analytics-bar:nth-child(5) .bar-shaft{background:linear-gradient(#aebdd0,#354f70)}
+.analytics-bar small{font-size:9px;white-space:nowrap;color:#c8dce8;transform:scale(.94);transform-origin:center}
+.section:not(#overview)>.panel{min-height:240px}
+#alljobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:11px}
+#interviewList{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:11px}
+#overview .empty{grid-column:1/-1}
+#board .column{background:rgba(4,33,65,.55);border-color:rgba(130,202,234,.2)}
+#board .job{background:linear-gradient(125deg,rgba(46,107,153,.27),rgba(13,47,81,.4))}
+.footer{margin:0;color:#7da9c4;font-size:9px;letter-spacing:.85px;padding:0 2px;text-align:right}
+.modal{z-index:40}
+.dialog{background:linear-gradient(140deg,rgba(18,61,91,.98),rgba(8,25,53,.98));border-color:rgba(146,224,246,.43)}
+@media(min-width:1750px){.app{grid-template-columns:245px minmax(0,1fr);gap:24px;padding:22px 28px}.sidebar{top:22px}.workspace{gap:18px}}
+@media(max-width:1440px){.app{grid-template-columns:202px minmax(0,1fr);gap:14px;padding:14px}.sidebar{padding-inline:10px}.brand-copy h1{font-size:14px}.welcome h2{font-size:18px}.top-search{width:220px;min-width:190px}.dashboard-grid{grid-template-columns:minmax(0,1.5fr) minmax(265px,.9fr)}#priority-jobs,#latest{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-body{grid-template-columns:.75fr 1fr}}
+@media(max-width:1050px){.app{display:block;padding:12px 14px 24px}.sidebar{position:relative;top:0;min-height:auto;margin-bottom:14px;display:flex;padding:11px 14px;flex-direction:row;align-items:center;flex-wrap:wrap;gap:14px;border-radius:20px}.brand{padding:0}.side-divider,.side-section-label,.side-mid,.sidebar-bottom{display:none}.nav{flex:1;display:flex;flex-direction:row;justify-content:flex-end;gap:4px}.nav button{width:auto;padding:9px 10px;min-height:40px}.nav button strong{font-size:11px}.nav button .icon{width:16px;height:16px}.quick-links{display:none}.top{flex-wrap:wrap}.top-tools{flex:1}.top-search{width:100%;flex:1}.dashboard-grid{grid-template-columns:minmax(0,1.5fr) minmax(260px,.9fr)}}
+@media(max-width:760px){.app{padding:10px 10px 25px}.sidebar{display:block;padding:13px 12px}.brand{margin-bottom:12px}.nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.nav button{min-width:0;display:flex;justify-content:center;gap:5px;flex-direction:column;min-height:54px;padding:7px 3px}.nav button strong{font-size:9px;text-align:center;white-space:nowrap}.top{gap:10px}.welcome h2{font-size:17px}.top-tools{flex-wrap:wrap;justify-content:flex-start;width:100%}.top-search{order:3;flex:1 1 100%;width:100%}.date-chip{display:none}.hero{align-items:flex-start;padding:18px;flex-direction:column}.hero-actions{width:100%}.hero-actions button{flex:1}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{min-height:110px;padding:13px!important}.stat-label{font-size:9px;top:18px;left:58px}.stat-icon{width:32px;height:32px}.stat-icon .icon{width:18px;height:18px}.stat .num{font-size:25px}.stage-row{display:flex;overflow-x:auto;padding-bottom:7px;scroll-snap-type:x mandatory}.stage-item{min-width:128px;scroll-snap-align:start}.dashboard-grid{grid-template-columns:minmax(0,1fr)}#priority-jobs,#latest{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-body{grid-template-columns:1fr}.analytics-body>div+div{border:0;border-top:1px solid rgba(164,231,254,.16);padding:15px 0 0}.analytics-tiles{grid-template-columns:repeat(4,1fr)}.analytics-bar small{font-size:9px}.panel{padding:17px}.panelhead h3{font-size:15px}}
+@media(max-width:480px){.brand-copy h1{font-size:16px}.sidebar{padding:11px}.panel{padding:14px}.hero h2{font-size:23px}#priority-jobs,#latest{grid-template-columns:1fr}.job-summary{padding:14px}.stat-label{position:static;margin-top:-29px;margin-left:43px;min-height:25px}.stat .num{margin-top:11px}.stat{min-height:128px}.analytics-tiles{grid-template-columns:repeat(2,1fr)}.top .sync-chip{font-size:9px}.theme-toggle{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+
 </style>
 </head>
 <body>
 <div class="app">
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="svg-sprite"><defs>
+<symbol id="ic-rocket" viewBox="0 0 24 24"><path d="M4 14c-1.5 1-2.5 4-2 6 2 0 5-1 6-2M9 16l-1 3 3-1M9 10c2-5 7-8 13-8 0 6-3 11-8 13l-5-5ZM14 10h.01"/></symbol>
+<symbol id="ic-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/></symbol>
+<symbol id="ic-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></symbol>
+<symbol id="ic-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="ic-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></symbol>
+<symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="ic-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16v-5m5 5V7m5 9V5"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m7 12 3 3 7-7"/></symbol>
+<symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="ic-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-9 9"/><path d="M19 13v6H5V5h6"/></symbol>
+<symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M20 7V3h-4M4 17v4h4M5 9a8 8 0 0 1 14-2l1 0M4 17a8 8 0 0 0 14-2"/></symbol>
+<symbol id="ic-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
+<symbol id="ic-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.2 7-6.2-3.3-6.2 3.3 1.2-7-5-4.8 7-.9 3-6Z"/></symbol>
+</defs></svg>
+<aside class="sidebar glass">
+ <div class="brand"><div class="logo"><svg class="icon" aria-hidden="true"><use href="#ic-rocket"></use></svg></div><div class="brand-copy"><h1>Mission Control</h1><span>CAREER OS</span></div></div>
+ <div class="side-divider"></div>
+ <div class="side-section-label">WORKSPACE</div>
+ <nav class="nav" aria-label="Sezioni di Mission Control">
+<button type="button" class="active" data-tab="overview" onclick="tab('overview',this)" title="Dashboard e riepilogo"><svg class="icon" aria-hidden="true"><use href="#ic-home"></use></svg><strong>Panoramica</strong></button>
+<button type="button" data-tab="pipeline" onclick="tab('pipeline',this)" title="Avanzamento candidature"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg><strong>Pipeline</strong></button>
+<button type="button" data-tab="opportunities" onclick="tab('opportunities',this)" title="Ricerca e filtri"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg><strong>Opportunità</strong></button>
+<button type="button" data-tab="interviews" onclick="tab('interviews',this)" title="Colloqui da preparare"><svg class="icon" aria-hidden="true"><use href="#ic-calendar"></use></svg><strong>Colloqui</strong></button>
+</nav>
+ <div class="side-divider side-mid"></div>
+ <div class="side-section-label">COLLEGAMENTI</div>
+ <div class="quick-links">
+ <a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg><span>Notion</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
+ <a href="https://mail.google.com/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-mail"></use></svg><span>Gmail</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
+ <a href="https://ticktick.com/webapp/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-check"></use></svg><span>TickTick</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
+ </div>
+ <div class="sidebar-bottom"><div class="live-caption"><span class="live"></span> Career intelligence</div><small>Le statistiche vengono dai dati registrati, non da stime inventate.</small></div>
+</aside>
+<div class="workspace">
 <header class="top">
- <div class="brand"><div class="logo">✦</div><div><div class="eyebrow">PERSONAL OPERATING SYSTEM</div><h1>CAREEROS · MISSION CONTROL</h1></div></div>
- <div class="topright"><span class="live"></span> <span id="sync-status">SYNC NOTION</span> <span>·</span> <span id="today"></span><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button></div>
+  <div class="welcome"><div class="eyebrow">CAREER INTELLIGENCE • LA TUA RICERCA</div><h2>Il tuo spazio. Le tue opportunità.</h2></div>
+  <div class="top-tools">
+   <label class="top-search"><svg class="icon" aria-hidden="true"><use href="#ic-search"></use></svg><input id="global-search" aria-label="Cerca ovunque" placeholder="Cerca aziende, posizioni..." oninput="quickSearch(this.value)"><kbd>⌕</kbd></label>
+   <span class="sync-chip"><span class="live"></span><span id="sync-status">NOTION · IN CONNESSIONE</span></span>
+   <span id="today" class="date-chip"></span>
+   <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button>
+  </div>
 </header>
 <section class="hero">
- <div><h2>Le tue candidature</h2></div>
- <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()">↻ Sincronizza Notion</button><button class="ghost" onclick="window.open('https://app.notion.com/p/41393ae6e18d81e396fbd27dfb611d0a','_blank','noopener')">↗ Apri Notion</button><button class="ghost" onclick="exportData()">⇩ Esporta dati</button></div>
+ <div class="hero-heading"><span class="hero-dot"></span><span>MISSION CONTROL / LIVE WORKSPACE</span><h2>Il prossimo passo, tutto sotto controllo.</h2><p>Opportunità, candidature e priorità. Un'unica vista sincronizzata con Notion.</p></div>
+ <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()"><svg class="icon" aria-hidden="true"><use href="#ic-refresh"></use></svg> Sincronizza</button><button class="ghost" onclick="exportData()">⇩ Esporta</button></div>
 </section>
-<nav class="nav">
- <button class="active" data-tab="overview" onclick="tab('overview',this)"><strong>◈ PANORAMICA</strong><span>La tua missione, a colpo d'occhio</span></button>
- <button data-tab="pipeline" onclick="tab('pipeline',this)"><strong>▤ PIPELINE</strong><span>Segui ogni candidatura</span></button>
- <button data-tab="opportunities" onclick="tab('opportunities',this)"><strong>✧ OPPORTUNITÀ</strong><span>Esplora e seleziona i ruoli</span></button>
- <button data-tab="interviews" onclick="tab('interviews',this)"><strong>◎ COLLOQUI</strong><span>Prepara i prossimi incontri</span></button>
-</nav>
 <section id="overview" class="section active">
  <div class="stats">
-  <div class="stat"><div class="label">OPPORTUNITÀ TRACCIATE</div><div class="num purple" id="s-total">—</div><div class="hint">Nel tuo radar professionale</div></div>
-  <div class="stat"><div class="label">CANDIDATURE INVIATE</div><div class="num blue" id="s-sent">—</div><div class="hint">Passi già completati</div></div>
-  <div class="stat"><div class="label">DA VALUTARE</div><div class="num pink" id="s-review">—</div><div class="hint">Opportunità da approfondire</div></div>
-  <div class="stat"><div class="label">COLLOQUI</div><div class="num green" id="s-interview">—</div><div class="hint">Selezioni in corso</div></div>
+  <div class="stat stat-opps"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg></div><div class="stat-label">OPPORTUNITÀ TRACCIATE</div><div class="num" id="s-total">—</div><div class="hint">Nel tuo radar professionale</div></div>
+  <div class="stat stat-sent"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-send"></use></svg></div><div class="stat-label">CANDIDATURE INVIATE</div><div class="num" id="s-sent">—</div><div class="hint">Con stato confermato</div></div>
+  <div class="stat stat-review"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-target"></use></svg></div><div class="stat-label">DA VALUTARE</div><div class="num" id="s-review">—</div><div class="hint">Le prossime opportunità</div></div>
+  <div class="stat stat-interview"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-calendar"></use></svg></div><div class="stat-label">COLLOQUI</div><div class="num" id="s-interview">—</div><div class="hint">Registrati nel tuo funnel</div></div>
  </div>
- <div class="panel">
-  <div class="panelhead">
-   <div class="queue-views" role="group" aria-label="Vista candidature">
-    <button type="button" class="ghost" id="queue-review" aria-pressed="true" onclick="setQueue('review')">Da valutare</button>
-    <button type="button" class="ghost" id="queue-sent" aria-pressed="false" onclick="setQueue('sent')">Candidature inviate</button>
+ <div class="panel pipeline-strip">
+   <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg></div><h3>La tua pipeline</h3><div class="sub">Il percorso delle tue candidature, in tempo reale</div></div><button class="inline-action" onclick="tab('pipeline',document.querySelector('.nav [data-tab=\"pipeline\"]'))">Apri pipeline →</button></div>
+   <div class="stage-row" id="overview-pipeline"><div class="empty">Caricamento stati…</div></div>
+ </div>
+ <div class="dashboard-grid">
+  <div class="panel opportunity-panel">
+    <div class="panelhead">
+      <div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg></div><h3>Opportunità in evidenza</h3><div class="sub">Le schede del tuo radar con priorità e prossime azioni</div></div>
+      <button class="inline-action" onclick="tab('opportunities',document.querySelector('.nav [data-tab=\"opportunities\"]'))">Vedi tutte →</button>
+    </div>
+    <div class="panelhead opportunity-controls">
+     <div class="queue-views" role="group" aria-label="Vista candidature">
+      <button type="button" class="ghost" id="queue-review" aria-pressed="true" onclick="setQueue('review')">Da valutare</button>
+      <button type="button" class="ghost" id="queue-sent" aria-pressed="false" onclick="setQueue('sent')">Inviate</button>
+     </div>
+     <span class="pill" id="shown" aria-live="polite"></span>
+    </div>
+    <div class="toolbar"><input id="search1" aria-label="Cerca azienda o ruolo" placeholder="⌕ Cerca tra le offerte..." oninput="render()"></div>
+    <section class="priority-section" id="priority-section" aria-labelledby="priority-heading" hidden><h3 id="priority-heading">✧ Scelte per te</h3><div class="list" id="priority-jobs"></div></section>
+    <div class="list" id="latest"></div>
    </div>
-   <span class="pill" id="shown" aria-live="polite"></span>
+   <div class="insight-side">
+    <div class="panel focus-panel">
+     <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-target"></use></svg></div><h3>Oggi · Focus</h3><div class="sub">Le prossime azioni dalla tua pipeline</div></div><span class="pill" id="focus-count">—</span></div>
+     <div id="focus-list" class="focus-list"></div>
+    </div>
+    <div class="panel recent-panel">
+     <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-send"></use></svg></div><h3>Candidature registrate</h3><div class="sub">Schede con stato “Candidatura inviata”</div></div><span class="pill" id="recent-count">—</span></div>
+     <div id="recent-sent" class="recent-sent"></div>
+    </div>
+   </div>
+ </div>
+ <div class="panel analytics-panel">
+  <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-chart"></use></svg></div><h3>Analytics</h3><div class="sub">Numeri effettivi dal database Notion</div></div><span class="pill">LIVE DATA</span></div>
+  <div class="analytics-body">
+   <div class="analytics-tiles" id="analytics-tiles"></div>
+   <div class="analytics-trend"><strong>Nuove opportunità · ultimi 7 giorni</strong><svg id="analytics-line" viewBox="0 0 420 154" role="img" aria-label="Andamento delle opportunità aggiunte negli ultimi 7 giorni"></svg><div id="analytics-dates" class="analytics-dates"></div></div>
+   <div class="analytics-stages"><strong>Distribuzione per stato</strong><div class="analytics-bars" id="analytics-bars"></div></div>
   </div>
-  <div class="toolbar"><input id="search1" aria-label="Cerca azienda o ruolo" placeholder="Cerca azienda o ruolo" oninput="render()"></div>
-  <section class="priority-section" id="priority-section" aria-labelledby="priority-heading" hidden>
-   <h3 id="priority-heading">Da valutare per prime</h3>
-   <div class="list" id="priority-jobs"></div>
-  </section>
-  <div class="list" id="latest"></div>
  </div>
 </section>
-<section id="pipeline" class="section">
- <div class="panel"><div class="panelhead"><div><h3>La tua pipeline</h3><div class="sub">Apri una scheda per vedere i dettagli o cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div>
-</section>
-<section id="opportunities" class="section">
- <div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><select id="geo-filter" aria-label="Area geografica" onchange="render()"><option value="">Tutte le aree</option><option value="milan">Milano / Lombardia</option><option value="italy">Italia full remote</option><option value="international">Europa / estero remoto</option></select><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: full remote da Italia. Il link non conferma che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div>
-</section>
-<section id="interviews" class="section">
- <div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in fase di selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch di 60 secondi sul percorso in GameStop, risultati RFM/CLTV, segmentazione clienti, SQL e BigQuery. Tieni pronti 2–3 esempi con impatto misurabile.</small></div></div></div>
-</section>
-<div class="footer">JOB HUNTING COMMAND CENTER · ULTIMO AGGIORNAMENTO 12 NOV 2026 · I DATI SI SALVANO SU QUESTO DISPOSITIVO</div>
+<section id="pipeline" class="section"><div class="panel"><div class="panelhead"><div><h3>Pipeline completa</h3><div class="sub">Apri una scheda per i dettagli o per cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div></section>
+<section id="opportunities" class="section"><div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><select id="geo-filter" aria-label="Area geografica" onchange="render()"><option value="">Tutte le aree</option><option value="milan">Milano / Lombardia</option><option value="italy">Italia full remote</option><option value="international">Europa / estero remoto</option></select><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: verifica sempre l'ammissibilità dall'Italia. Un link non garantisce che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div></section>
+<section id="interviews" class="section"><div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch sul percorso in GameStop, risultati RFM/CLTV, segmentazione, SQL e BigQuery. Tieni pronti esempi reali del tuo lavoro.</small></div></div></div></section>
+<div class="footer">MISSION CONTROL · CAREER OS · DATI SINCRONIZZATI DA NOTION QUANDO DISPONIBILE</div>
+</div>
 </div>
 <div class="modal" id="modal"><div class="dialog" id="dialog"></div></div>
 <script>
