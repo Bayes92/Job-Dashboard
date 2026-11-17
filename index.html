@@ -568,12 +568,12 @@ function priorityScore(job) {
 }
 function render(){
  $("today").textContent=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"short",year:"numeric"}).format(new Date());
- let sent=jobs.filter(j=>j.status==="Candidatura inviata").length,review=jobs.filter(j=>j.status==="Da valutare"||j.status==="Interessante").length,inter=jobs.filter(j=>j.status==="Colloquio").length;
+ let sent=jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length,review=jobs.filter(j=>j.status==="Da valutare"||j.status==="Interessante").length,inter=jobs.filter(j=>j.status==="Colloquio").length;
  $("s-total").textContent=jobs.length;$("s-sent").textContent=sent;$("s-review").textContent=review;$("s-interview").textContent=inter;
  const query = $("search1").value.trim().toLowerCase();
  const queueStatuses = queue === "sent" ? ["Candidatura inviata"] : ["Da valutare", "Interessante"];
  const visibleJobs = jobs.map((job, index) => ({job, index}))
-  .filter(({job}) => queueStatuses.includes(job.status) && `${job.company} ${job.role}`.toLowerCase().includes(query))
+  .filter(({job}) => (queue==="sent" ? (job.status==="Candidatura inviata"||job.sent===true) : queueStatuses.includes(job.status)) && `${job.company} ${job.role}`.toLowerCase().includes(query))
   .sort((a, b) => (b.job.dateAdded || "").localeCompare(a.job.dateAdded || ""));
  const priorityJobs = queue === "review" && !query
   ? visibleJobs.filter(({job}) => /data analyst|data scientist|analytics|business intelligence|\bbi\b|power bi/i.test(job.role) &&
@@ -615,7 +615,7 @@ function renderGlassData(){
  const counts={
   review:jobs.filter(j=>j.status==="Da valutare").length,
   interesting:jobs.filter(j=>j.status==="Interessante").length,
-  sent:jobs.filter(j=>j.status==="Candidatura inviata").length,
+  sent:jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length,
   interview:jobs.filter(j=>j.status==="Colloquio").length,
   rejected:jobs.filter(j=>j.status==="Scartata").length
  };
@@ -629,10 +629,10 @@ function renderGlassData(){
  if($("focus-list"))$("focus-list").innerHTML=focus.length?focus.map(({j,i})=>
    '<div class="focus-entry"><span class="focus-bullet">✓</span><div class="entry-copy"><strong>'+esc(j.company)+'</strong><small>'+esc(j.next)+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
    :'<div class="empty">Nessuna prossima azione registrata.</div>';
- const sentJobs=jobs.map((j,i)=>({j,i})).filter(({j})=>j.status==="Candidatura inviata").sort((a,b)=>(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,3);
+ const sentJobs=jobs.map((j,i)=>({j,i})).filter(({j})=>j.status==="Candidatura inviata"||j.sent===true).sort((a,b)=>(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,3);
  if($("recent-count"))$("recent-count").textContent=counts.sent+" inviate";
  if($("recent-sent"))$("recent-sent").innerHTML=sentJobs.length?sentJobs.map(({j,i})=>
-   '<div class="recent-entry"><span class="mini-logo">'+esc(String(j.company||"?").slice(0,1).toUpperCase())+'</span><div class="entry-copy"><strong>'+esc(j.company)+'</strong><small>'+esc(j.role)+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
+   '<div class="recent-entry"><span class="mini-logo">'+esc(String(j.company||"?").slice(0,1).toUpperCase())+'</span><div class="entry-copy"><strong>'+esc(j.company)+' — '+esc(j.role)+'</strong><small>'+esc(j.status==="Scartata"?"Candidatura inviata · esito negativo":j.status==="Colloquio"?"Candidatura inviata · colloquio":"Candidatura inviata")+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
    :'<div class="empty">Nessuna candidatura ancora registrata.</div>';
  const today=new Date(),fmt=new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit"});
  const days=Array.from({length:7},(_,i)=>{
@@ -705,7 +705,7 @@ async function loadNotionJobs(){
   if(!Array.isArray(payload.jobs)) throw new Error("Risposta API non valida");
   jobs=payload.jobs;
   localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
-  if(badge) badge.textContent="NOTION LIVE · "+jobs.length;
+  if(badge) badge.textContent="NOTION LIVE · "+jobs.length+" offerte · "+jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length+" inviate";
   if($("source-label")) $("source-label").textContent="NOTION SINCRONIZZATO";
   render();
  }catch(error){
@@ -716,5 +716,9 @@ async function loadNotionJobs(){
 }
 
 loadNotionJobs();
+// Rileggi Notion periodicamente anche se la pagina rimane aperta sul Mac.
+setInterval(()=>{if(!document.hidden)loadNotionJobs()},90000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadNotionJobs()});
+window.addEventListener("online",()=>loadNotionJobs());
 </script>
 </body></html>
