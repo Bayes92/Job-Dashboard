@@ -12,7 +12,7 @@ function normalize(page){
   area:(p["Area"]?.multi_select||[]).map(x=>x.name).join(" · ")||"Da classificare",
   location:getText("Sede")||"Non specificata",mode:getSelect("Modalità")||"Non specificata",
   score:Number.isFinite(p["Compatibilità"]?.number)?p["Compatibilità"].number:0,
-  status:getSelect("Stato")||"Da valutare",protected:Boolean(p["Categoria protetta / L.68/99"]?.checkbox),
+  status:getSelect("Stato")||"Da valutare",sent:Boolean(p["📨 Inviata?"]?.checkbox),protected:Boolean(p["Categoria protetta / L.68/99"]?.checkbox),
   url:p["🔗 Link candidatura diretta"]?.url||p["Link annuncio"]?.url||"",
   notes:getText("Note"),next:getText("🧭 Prossima azione"),
   dateAdded:p["Aggiunta alla dashboard"]?.created_time||page.created_time||"",
@@ -43,7 +43,7 @@ module.exports=async function handler(req,res){
    if(typeof id!=="string"||!/^[0-9a-f-]{36}$/i.test(id))return res.status(400).json({error:"ID Notion non valido"});
    if(status!==undefined&&!STATUSES.includes(status))return res.status(400).json({error:"Stato non valido"});
    const properties={};
-   if(status!==undefined)properties["Stato"]={select:{name:status}};
+   if(status!==undefined){properties["Stato"]={select:{name:status}};if(status==="Candidatura inviata")properties["📨 Inviata?"]={checkbox:true};}
    if(next!==undefined)properties["🧭 Prossima azione"]=rich(next);
    if(!Object.keys(properties).length)return res.status(400).json({error:"Nessun campo da aggiornare"});
    const page=await notion("pages/"+id,token,"PATCH",{properties});
@@ -56,6 +56,7 @@ module.exports=async function handler(req,res){
     "Ruolo":{title:[{text:{content:textValue(j.role)}}]},
     "Azienda":rich(j.company),"Sede":rich(j.location),"Note":rich(j.notes),
     "🧭 Prossima azione":rich(j.next),"Stato":{select:{name:STATUSES.includes(j.status)?j.status:"Da valutare"}},
+    "📨 Inviata?":{checkbox:j.status==="Candidatura inviata"||Boolean(j.sent)},
     "Modalità":{select:{name:["Remoto","Ibrido","In presenza","Non specificata"].includes(j.mode)?j.mode:"Non specificata"}},
     "Compatibilità":{number:Math.max(1,Math.min(10,Number(j.score)||7))},
     "Categoria protetta / L.68/99":{checkbox:Boolean(j.protected)}
