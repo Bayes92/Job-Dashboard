@@ -27,7 +27,7 @@ select,input[type="search"]{border-radius:12px;border:1px solid #b4d3f64b;backgr
 @media(max-width:880px){.grid{grid-template-columns:1fr}.queue{max-height:340px}}@media(max-width:580px){main{padding:13px 12px 50px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:25px}.focus{padding:19px;min-height:0}.hero{padding:19px}.focus-actions>.btn{flex-basis:100%}.header{gap:8px}}
 </style></head><body><main>
 <header class="header"><div class="brand">CAREER <span>OS</span> / COPILOT</div><nav><a href="/" target="_blank" rel="noopener">Mission Control</a><a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener">Notion</a></nav></header>
-<section class="hero glass"><div class="eyebrow">CODE DI CANDIDATURA · 19 NOVEMBRE 2026</div><h1>Una candidatura alla volta.</h1><p>Apri il modulo, invia davvero la candidatura sul sito aziendale, poi premi <b>✓ Ho inviato → Prossima</b>. La scheda passa nel registro e compare nel CSV, nell'ordine in cui la completi. Nessun doppione e nessun reinvio automatico.</p><div class="steps"><span class="step"><b>1</b> Apri il modulo</span><span class="step"><b>2</b> Invia sul sito</span><span class="step"><b>3</b> ✓ Ho inviato</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
+<section class="hero glass"><div class="eyebrow">CODE DI CANDIDATURA · 19 NOVEMBRE 2026</div><h1>Tutte e 42 registrate ✓</h1><p>Apri il modulo, invia davvero la candidatura sul sito aziendale, poi premi <b>✓ Ho inviato → Prossima</b>. La coda del 19 novembre è stata completata e allineata con Notion. Tutte le 42 schede risultano inviate secondo il tuo CSV; le conferme aziendali sono tracciate separatamente. Puoi consultare le posizioni nella vista Inviate.</p><div class="steps"><span class="step"><b>1</b> Apri il modulo</span><span class="step"><b>2</b> Invia sul sito</span><span class="step"><b>3</b> ✓ Ho inviato</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
 <section class="stats"><div class="stat glass"><small>Da lavorare</small><strong id="remaining">—</strong></div><div class="stat glass sent"><small>Inviate qui</small><strong id="done">—</strong></div><div class="stat glass blocked"><small>In attesa / esito incerto</small><strong id="blocked">—</strong></div><div class="stat glass"><small>Totale opportunità</small><strong id="total">—</strong></div></section>
 <div class="grid">
 <section class="focus glass" aria-live="polite"><div class="mini" id="currentNumber">CANDIDATURA</div><h2 id="role">—</h2><div class="co" id="company"></div><div class="badges" id="badges"></div><div class="notes" id="note"></div><div class="focus-actions"><a class="btn open" id="open" target="_blank" rel="noopener noreferrer">1. Apri candidatura ↗</a><button class="btn done" id="mark" type="button">2. ✓ Ho inviato → Prossima</button></div><div class="focus-actions"><button class="btn weak" id="later" type="button">Passa alla successiva senza segnare</button><a class="btn weak" id="notion" target="_blank" rel="noopener noreferrer">Apri scheda Notion</a></div><p class="caption" id="help">Premi «Ho inviato» SOLO dopo aver ricevuto conferma dal portale o aver inviato la mail.</p><div class="progress"><div id="bar"></div></div></section>
@@ -45,6 +45,26 @@ let state={};let order=0;let currentId='';let filter='todo';let toastTimer;
 try{state=JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch(_){state={}}
 try{order=Number(localStorage.getItem(stateKey)||0)||0}catch(_){order=0}
 try{currentId=localStorage.getItem(currentKey)||''}catch(_){currentId=''}
+// CSV Copilot caricato dall'utente il 19/11/2026 e riconciliato con Notion.
+const importedCSV=[["41893ae6e18d813d95bce2164fb36283","10:08:11"],["41893ae6e18d816fae44fec4ade709ae","10:08:19"],["41893ae6e18d81879490e432418ee975","10:10:10"],["41793ae6e18d81178f3ee27350e218a1","10:24:21"],["41793ae6e18d8132ac6ac9c7bf2621f9","10:25:35"],["41793ae6e18d8173a118c2a640b10166","10:25:43"],["41793ae6e18d810395d7d84ff03ff2b1","10:26:02"],["41793ae6e18d811992e0ec16ae3dba20","10:26:07"],["41793ae6e18d81c0aea3d36911e59dee","10:26:11"],["41a93ae6e18d81a0ab50c6e6ff4487aa","10:26:19"],["41893ae6e18d81e3a3e3ee7ebb1914f4","10:26:29"],["41893ae6e18d81418911caa4fa284165","10:27:58"],["41793ae6e18d81beb876eeb2a35629ab","10:28:46"],["41793ae6e18d81369ab0fcd5fe58cde0","10:29:36"],["41793ae6e18d8142b8bfe7ed4523d6ea","10:41:19"],["41793ae6e18d81d3ba13ec3143b46ca8","10:41:30"],["41793ae6e18d81bda2ebc8d025a0037f","10:41:36"],["41793ae6e18d813b8fbafc3099ed2451","10:42:01"],["41793ae6e18d8106a185cf526547e1ca","10:44:03"],["41793ae6e18d812ba223fd7333574958","10:44:08"],["41693ae6e18d81a39dcbe879eafb5a5b","10:46:09"],["41693ae6e18d81d59b2bf2c2f144dacd","10:49:41"],["41693ae6e18d81fca71efe05aafacc42","10:52:31"],["41593ae6e18d8187b304d8762f6cd910","10:52:39"],["78139eb44c184a94b48fe77d26e6952b","10:53:47"],["41193ae6e18d81a4ad04e1ab08618a8b","10:54:15"],["41793ae6e18d813cba59e34f40d13626","10:54:20"],["41793ae6e18d81caa700dda6d90d9caa","10:54:25"],["41793ae6e18d818d9513d460acb03b06","10:54:29"],["41793ae6e18d8132bfbee86ebd74f78b","10:55:15"],["41793ae6e18d81eebd7dfd558bd5e16a","10:55:53"],["41593ae6e18d81e29665e77b352aabba","10:57:00"],["41393ae6e18d818b8be8ee07bc936bc2","10:57:34"],["41393ae6e18d8191a3b2c348e956fc90","10:57:39"],["36d5fa6cfd6c46fc9b5f70d10e34b440","11:01:43"],["41193ae6e18d819ab2a7d998c576156b","11:02:06"],["41b93ae6e18d816084b8d46a000d0253","11:02:53"],["41893ae6e18d81afaebdc233fec7bdb0","11:03:29"],["41793ae6e18d81d3b704ddf1b68a6b16","11:04:01"],["41593ae6e18d81849bdeed8413d9bd91","11:04:09"],["41b93ae6e18d817496c1fc1cc62d4d6e","11:04:34"],["41a93ae6e18d81719581f079d5e0c820","11:04:42"]];
+const csvImportKey='career_os_copilot_42_csv_import_20261119';
+try{
+ const matchingJobs=new Map(jobs.map(j=>[j.notion?.split('/').pop(),j]));
+ importedCSV.forEach(([notionId,time],i)=>{
+   const j=matchingJobs.get(notionId);
+   if(!j)return;
+   const existing=state[j.id];
+   if(existing?.status!=='sent'||existing?.from!=='csv_user_confirmed'){
+     state[j.id]={status:'sent',updated:'2026-11-19T'+time+'+01:00',sequence:i+1,from:'csv_user_confirmed'};
+   }
+ });
+ order=Math.max(order,42);
+ currentId='';
+ localStorage.setItem(storageKey,JSON.stringify(state));
+ localStorage.setItem(stateKey,String(order));
+ localStorage.setItem(currentKey,currentId);
+ localStorage.setItem(csvImportKey,'imported');
+}catch(err){console.warn('CSV Notion import:',err)}
 const $=s=>document.getElementById(s);
 const isSent=j=>state[j.id]?.status==='sent';
 function save(){localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem(currentKey,currentId);localStorage.setItem(stateKey,String(order))}
@@ -94,7 +114,7 @@ function render(){
  $('bar').style.width=(100*sent.length/jobs.length).toFixed(1)+'%';
  $('download').textContent='↓ Scarica CSV ('+sent.length+')';$('download').disabled=sent.length===0;
  $('saved').textContent=sent.length+' candidature in registro · salvataggio automatico';
- $('history').innerHTML=sent.length?sent.slice().reverse().map(j=>'<div class="logrow"><div><b>#'+h(state[j.id].sequence||'')+' · '+h(j.azienda)+'</b> — '+h(j.ruolo)+'<br><small>'+h(state[j.id].updated||'')+'</small></div><button class="undo" type="button" data-undo="'+h(j.id)+'">Annulla flag</button></div>').join(''):'<div class="sub">Nessuna candidatura flaggata come inviata da questa dashboard.</div>';
+ $('history').innerHTML=sent.length?sent.slice().reverse().map(j=>'<div class="logrow"><div><b>#'+h(state[j.id].sequence||'')+' · '+h(j.azienda)+'</b> — '+h(j.ruolo)+'<br><small>'+h(state[j.id].updated||'')+'</small></div>'+(state[j.id]?.from==='csv_user_confirmed'?'<span class="sub">Importata da CSV</span>':'<button class="undo" type="button" data-undo="'+h(j.id)+'">Annulla flag</button>')+'</div>').join(''):'<div class="sub">Nessuna candidatura flaggata come inviata da questa dashboard.</div>';
  loadQueue();
 }
 function localRome(iso){try{return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(new Date(iso))}catch(_){return iso}}
