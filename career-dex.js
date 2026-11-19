@@ -3,9 +3,10 @@
 const $=id=>document.getElementById(id);
 const APP={jobs:[],source:'loading',lastSync:null,route:'home',jobPage:0,pageSize:24,sort:'recent',filter:'all',mode:'all',query:'',questFilter:'open',toastTimer:null,selected:null};
 const STATUSES=['Da valutare','Interessante','Candidatura inviata','Colloquio','Scartata'];
+// Dated snapshot, not a live connection to Calendar.
 const INTERVIEWS=[
- {id:'fortitude-20261119',company:'Fortitude Group',role:'Colloquio conoscitivo · ruolo da confermare',start:'2026-11-19T16:00:00+01:00',end:'2026-11-19T16:30:00+01:00',platform:'Google Meet',link:'https://meet.google.com/xuj-hezg-pah',contact:'Melissa Gifuni',verified:'19/11/2026'},
- {id:'agile-20261120',company:'Agile Lab',role:'Colloquio conoscitivo · ruolo da confermare',start:'2026-11-20T16:00:00+01:00',end:'2026-11-20T17:00:00+01:00',platform:'Microsoft Teams',link:'https://teams.microsoft.com/meet/3758614920785439?p=RRoBJ1PZ8TL6ci2lW2',contact:'Leila Gresti',verified:'19/11/2026'}
+ {id:'agile-20261120',company:'Agile Lab',role:'Colloquio conoscitivo',start:'2026-11-20T16:00:00+01:00',end:'2026-11-20T17:00:00+01:00',platform:'Microsoft Teams',link:'https://teams.microsoft.com/meet/3758614920785439?p=RRoBJ1PZ8TL6ci2lW2',contact:'Leila Gresti',verified:'19/11/2026'},
+ {id:'avvale-20261124',company:'Avvale',role:'Colloquio · ruolo da confermare',start:'2026-11-24T15:15:00+01:00',end:'2026-11-24T15:45:00+01:00',platform:'Calendario / booking',link:'https://bookings.cloud.microsoft/bookwithme/user/f5aa76a15cb64e379c17874ef4ae3ff8@avvale.com/booking/8v26Qiokd0qVkVl0bwC2Uw2?anonymous',contact:'Enrica Rottigni',verified:'19/11/2026'}
 ];
 const MESSAGES=[
  {company:'BIP (Datwave)',kind:'Conferma',color:'green',date:'19 nov',title:'BI & Data Analytics Expert — GCP',text:'Candidatura ricevuta per la requisition 2550.',id:'1a1f339f22dbf43c'},
@@ -30,7 +31,7 @@ thanks:'Dear [NAME],\n\nThank you for taking the time to speak with me today. I 
 };
 const STATUS_NAMES={'Da valutare':'Nuovo incontro','Interessante':'Da esplorare','Candidatura inviata':'Catturata','Colloquio':'Arena','Scartata':'Archiviata'};
 const STATUS_COLORS={'Da valutare':'yellow','Interessante':'blue','Candidatura inviata':'green','Colloquio':'purple','Scartata':'red'};
-const ROUTES={home:'Command Center',jobdex:'JobDex',pipeline:'Percorso',arena:'Interview Arena',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
+const ROUTES={home:'Command Center',jobdex:'JobDex',pipeline:'Percorso',arena:'Interview Arena',followup:'Follow-up Center',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
 const CACHE='career_dex_live_cache_v1',QUEST_KEY='career_dex_quests_v1',QUEST_DONE='career_dex_quest_done_v1';
 function html(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function safeLink(x){try{const u=new URL(String(x));return ['https:','http:','mailto:'].includes(u.protocol)?u.href:''}catch{return ''}}
@@ -52,8 +53,8 @@ function category(j){const s=(j.role+' '+j.area).toLowerCase();return /scientist
 function appAction(label,action,cls){return '<button class="btn '+(cls||'small')+'" type="button" data-action="'+html(action)+'">'+html(label)+'</button>'}
 function empty(t,details){return '<div class="empty"><strong>'+html(t)+'</strong><div>'+html(details||'')+'</div></div>'}
 function setRoute(route){if(!ROUTES[route])route='home';APP.route=route;location.hash=route;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+route));document.querySelectorAll('[data-nav]').forEach(b=>{const yes=b.dataset.nav===route;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});$('page-title').textContent=ROUTES[route];$('page-eyebrow').textContent='CAREER DEX / '+route.toUpperCase();document.title=ROUTES[route]+' · Career Dex';$('sidebar').classList.remove('open');window.scrollTo({top:0,behavior:'auto'});renderView(route)}
-function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
-function redraw(){renderHome();renderJobs();renderPipeline();renderArena();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
+function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'followup':renderFollowups();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
+function redraw(){renderHome();renderJobs();renderPipeline();renderArena();renderFollowups();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
 function statusSource(live){$('sync-status').classList.toggle('offline',!live);$('sync-status').innerHTML='<span class="sync-dot"></span>'+html(live?'NOTION LIVE':APP.source==='loading'?'SINCRONIZZAZIONE':'COPIA LOCALE');$('last-sync').textContent=APP.lastSync?'Ultima sincronizzazione: '+timeAgo(APP.lastSync):'In attesa dei dati';$('source-detail').textContent=live?'Collegamento attivo: Notion via /api/jobs. Le modifiche si salvano sul database.':'Dati di riserva salvati nel browser. I salvataggi sono sospesi finché Notion non torna raggiungibile.'}
 async function sync(){
  $('refresh').disabled=true;APP.source='loading';statusSource(false);
@@ -120,9 +121,29 @@ function renderPipeline(){
  $('pipeline-board').innerHTML=body;
  const s=stats();$('pipeline-foot').textContent=s.history+' candidature inviate nello storico · '+s.active+' ancora nella fase inviata · '+s.rejected+' scartate (inclusi eventuali invii precedenti).';
 }
+// The creation date is a triage signal, NOT proof of application date.
+function followupAge(job){
+ const dt=Date.parse(job.dateAdded||'');
+ if(!Number.isFinite(dt))return null;
+ return Math.max(0,Math.floor((Date.now()-dt)/86400000));
+}
+function renderFollowups(){
+ const sent=APP.jobs.filter(j=>j.status==='Candidatura inviata');
+ const aged=sent.filter(j=>followupAge(j)!==null&&followupAge(j)>=7);
+ $('followup-count').textContent=sent.length;
+ $('followup-review').textContent=aged.length;
+ const mode=$('followup-filter')?.value||'review';
+ const filtered=sent.filter(j=>mode==='all'||(mode==='review'?followupAge(j)!==null&&followupAge(j)>=7:followupAge(j)!==null&&followupAge(j)<7));
+ filtered.sort((a,b)=>(Date.parse(a.dateAdded)||0)-(Date.parse(b.dateAdded)||0));
+ $('followup-list').innerHTML=filtered.length?filtered.slice(0,100).map(j=>{
+  const age=followupAge(j),url=safeLink(j.url);
+  const draft='Buongiorno,\\n\\nvi scrivo per chiedere gentilmente un aggiornamento sulla mia candidatura per la posizione di '+j.role+' presso '+j.company+'. Resto molto interessato all’opportunità e disponibile per eventuali approfondimenti.\\n\\nGrazie per il tempo dedicato.\\n\\nCordiali saluti,\\nJacopo Soppelsa';
+  return '<article class="panel followup-card"><div class="followup-card-main"><div class="mini-label">FOLLOW-UP · '+html(j.mode||'MODALITÀ DA VERIFICARE')+'</div><h4>'+html(j.company)+'</h4><p>'+html(j.role)+'</p><span class="pill yellow">'+html(age===null?'Data mancante':age+' giorni dalla creazione')+'</span></div><div class="followup-card-actions"><button type="button" class="btn small" data-job="'+html(j.id)+'">Scheda Notion</button>'+(url?'<a class="btn small blue" href="'+html(url)+'" target="_blank" rel="noopener noreferrer">Annuncio ↗</a>':'')+'<button type="button" class="btn small gold" data-action="copy" data-copy="'+html(draft)+'">Copia follow-up</button></div></article>';
+ }).join(''):empty('Nessuna candidatura in questo filtro','Per le candidature recenti non è ancora il momento di sollecitare. Cambia filtro per vedere tutte le posizioni.');
+}
 function renderArena(){
  const now=new Date();
- $('arena-list').innerHTML=INTERVIEWS.map(i=>{
+ $('arena-list').innerHTML=INTERVIEWS.filter(i=>new Date(i.end)>now).map(i=>{
  const future=new Date(i.end)>now;
  return '<article class="panel arena-card '+(future?'':'alt')+'"><span class="pill '+(future?'yellow':'blue')+'">'+(future?'Programmata':'Passata · snapshot')+'</span>'+
  '<h4>⚔️ '+html(i.company)+'</h4><div class="when">'+html(dayTime(i.start))+' – '+html(hr(i.end))+'</div>'+
@@ -130,11 +151,11 @@ function renderArena(){
  '<div class="row-buttons"><a class="btn blue small" href="'+html(safeLink(i.link))+'" target="_blank" rel="noopener noreferrer">Apri riunione ↗</a>'+
  '<a class="btn small" href="https://calendar.google.com/calendar/u/0/r/week" target="_blank" rel="noopener">Verifica calendario</a></div>'+
  '<div class="status-note">Snapshot verificato il '+html(i.verified)+'. Non sincronizzato automaticamente con il calendario.</div></article>';
- }).join('');
+ }).join('') || empty('Nessun colloquio futuro nello snapshot','Le convocazioni reali sono su Google Calendar e iCloud Calendar: verifica lì.');
 }
 function autoQuests(){
  const t=[];const now=new Date();
- INTERVIEWS.filter(i=>new Date(i.end)>now).forEach(i=>t.push({id:'interview-'+i.id,title:'Preparati: '+i.company,note:dayTime(i.start)+' · prepara pitch, domande e link riunione',type:'Colloquio'}));
+ INTERVIEWS.filter(i=>new Date(i.end)>now).forEach(i=>t.push({id:'interview-'+i.id,title:'Verifica e prepara: '+i.company,note:dayTime(i.start)+' · snapshot datato, controlla prima il calendario',type:'Colloquio'}));
  t.push({id:'pwc-profile',title:'Controlla il profilo candidato PwC',note:'Il 19/11 PwC ha inviato il link al portale per seguire la candidatura e completare eventuali attività.',type:'Candidature'});
  t.push({id:'bip-google-verify',title:'Verifica lo stato BIP Data Analyst Google',note:'Il 18/11 era arrivato un avviso di bozza. Anche se la posizione è ora segnata inviata, verifica nel portale la ricevuta finale.',type:'Verifica'});
  t.push({id:'check-replies',title:'Controlla risposte dei recruiter',note:'Controlla Gmail e iCloud Mail per colloqui e richieste concrete. Non inviare follow-up anticipati.',type:'Comunicazioni'});
@@ -150,7 +171,7 @@ function renderQuests(){
 }
 function renderInbox(){
  $('inbox-list').innerHTML=MESSAGES.map(m=>'<article class="panel message-card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><strong style="font-size:12px">'+html(m.company)+'</strong><span class="pill '+html(m.color)+'">'+html(m.kind)+'</span></div><h4>'+html(m.title)+'</h4><p>'+html(m.text)+'</p><div class="section-head" style="margin:0"><span class="date">'+html(m.date)+' 2026</span><a class="btn small" href="https://mail.google.com/mail/u/0/#all/'+html(m.id)+'" target="_blank" rel="noopener noreferrer">Apri Gmail ↗</a></div></article>').join('');
- $('inbox-snapshot').textContent='Ultima verifica manuale: 19 novembre 2026. Questa sezione non legge Gmail in tempo reale.';
+ $('inbox-snapshot').textContent='Archivio comunicazioni verificato il 19 novembre 2026. Nessun accesso live alla posta da questo sito: il controllo unificato è alle 18:00.';
 }
 function renderRecruiters(){
  $('recruiter-list').innerHTML=RECRUITERS.map(r=>'<article class="panel panel-pad"><div class="encounter" style="border:0;background:transparent;padding:0"><div class="monster-token">📨</div><div class="main"><div class="name">'+html(r.name)+'</div><div class="meta">'+html(r.company)+'</div></div></div><p class="panel-sub" style="margin:14px 0">'+html(r.context)+'</p><div class="row-buttons"><a class="btn small blue" href="mailto:'+html(r.email)+'">Scrivi email ↗</a><button class="btn small" data-action="copy" data-copy="'+html(r.email)+'">Copia indirizzo</button></div></article>').join('');
@@ -261,6 +282,7 @@ function initEvents(){
  $('job-search').addEventListener('input',e=>{APP.query=e.target.value.trim();APP.jobPage=0;renderJobs()});
  $('job-status').addEventListener('change',e=>{APP.filter=e.target.value;APP.jobPage=0;renderJobs()});
  $('job-mode').addEventListener('change',e=>{APP.mode=e.target.value;APP.jobPage=0;renderJobs()});
+ $('followup-filter').addEventListener('change',renderFollowups);
  $('job-sort').addEventListener('change',e=>{APP.sort=e.target.value;APP.jobPage=0;renderJobs()});
  $('job-prev').addEventListener('click',()=>{APP.jobPage--;renderJobs()});
  $('job-next').addEventListener('click',()=>{APP.jobPage++;renderJobs()});
