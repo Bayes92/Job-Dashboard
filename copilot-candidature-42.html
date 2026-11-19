@@ -60,9 +60,11 @@ function notify(text){$('toast').textContent=text;$('toast').style.display='bloc
 function mark(){
  const j=pick();if(!j||isSent(j))return;
  // User's explicit flag is the evidence; never claim that this button submitted the external application.
+ const list=available();const ix=list.findIndex(x=>x.id===j.id);
+ const nxt=list.slice(ix+1).find(x=>x.id!==j.id)||list.find(x=>x.id!==j.id)||pending().find(x=>x.id!==j.id)||null;
  const now=new Date().toISOString();order=Math.max(order,...Object.values(state).map(x=>Number(x?.sequence)||0),0)+1;
  state[j.id]={status:'sent',updated:now,sequence:order,from:'user_flag'};
- currentId=(nextAfter(j.id)||{}).id||'';
+ currentId=nxt?.id||'';
  save();render();
  notify('✓ Segnata come inviata: '+j.azienda+' · '+j.ruolo+' — aggiunta al CSV');
 }
