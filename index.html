@@ -1,724 +1,103 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CareerOS · Mission Control</title>
-<style>
-:root{--bg:#070914;--panel:#101528;--panel2:#141b32;--line:#273052;--muted:#9aa6c8;--text:#f4f6ff;--violet:#9b7bff;--cyan:#55d9f5;--pink:#ed79d7;--green:#59e0b0;--yellow:#ffd27a}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 18% 0%,#252052 0,transparent 35%),radial-gradient(ellipse at 90% 12%,#102c4a 0,transparent 32%),var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#b9caff 99%,transparent),radial-gradient(1px 1px at 90% 82%,#fff 99%,transparent),radial-gradient(1px 1px at 25% 88%,#fff 99%,transparent);background-size:230px 190px}
-.app{max-width:1440px;margin:auto;padding:28px 30px 60px;position:relative}
-.top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#8f6cff,#4bd8f1);display:grid;place-items:center;box-shadow:0 0 30px #8465ff66;font-size:22px}.eyebrow{color:var(--cyan);font-size:10px;letter-spacing:2.5px;font-weight:800}.brand h1{font-size:20px;letter-spacing:.7px;margin:3px 0 0}.topright{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.live{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;box-shadow:0 0 10px var(--green)}
-.hero{border:1px solid #5c5aa0;border-radius:22px;padding:28px 30px;background:linear-gradient(112deg,#201c43dd,#111c36e8 58%,#102c42dd);box-shadow:0 18px 60px #0007,inset 0 1px #ffffff12;display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden;position:relative}.hero:after{content:"✧";position:absolute;right:26%;top:-42px;font-size:190px;color:#a58cff12}.hero h2{font-size:clamp(24px,3vw,36px);margin:7px 0 8px;letter-spacing:-.8px}.hero p{margin:0;color:#b9c4e4;max-width:650px;line-height:1.55}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;z-index:1}
-button{border:1px solid #48527d;background:#1a2340;color:var(--text);padding:11px 15px;border-radius:11px;font-weight:700;cursor:pointer;transition:.18s;font-size:12px}button:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 5px 20px #56d9f522}.primary{background:linear-gradient(110deg,#8b68f3,#397fc9);border:0;box-shadow:0 5px 24px #8264ff44}.ghost{background:#ffffff08}
-.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 22px}.nav button{padding:15px;text-align:left;background:#10172bd9;border:1px solid #2a3558;border-radius:14px}.nav button.active{background:linear-gradient(120deg,#30245b,#12344b);border-color:#8d79ff;box-shadow:0 0 24px #876aff22}.nav strong{display:block;font-size:13px;margin-bottom:4px}.nav span{font-size:11px;color:var(--muted);font-weight:500}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}.stat{background:linear-gradient(145deg,#141b31ee,#0e1427ee);border:1px solid var(--line);border-radius:16px;padding:17px 18px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-38px;background:#8c6dff18;filter:blur(5px)}.stat .label{color:var(--muted);font-size:11px}.stat .num{font-size:29px;font-weight:800;margin:7px 0 3px;letter-spacing:-1px}.stat .hint{font-size:10px;color:#8b9abc}.purple{color:#b69dff}.blue{color:var(--cyan)}.pink{color:var(--pink)}.green{color:var(--green)}
-.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);gap:16px}.panel{background:#0f1629ed;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 10px 35px #0003}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.panel h3{font-size:15px;margin:0}.sub{font-size:11px;color:var(--muted);margin-top:4px}.pill{font-size:10px;padding:5px 9px;border-radius:30px;border:1px solid #3d4770;color:#bfc9e7;background:#202943}
-.toolbar{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap}.toolbar input,.toolbar select,.field input,.field select,.field textarea{background:#0a1020;color:var(--text);border:1px solid #303b60;border-radius:9px;padding:10px 11px;font:inherit;outline:none}.toolbar input{flex:1;min-width:160px}.toolbar select{min-width:130px}.toolbar input:focus,.toolbar select:focus,.field input:focus{border-color:var(--violet)}
-.list{display:flex;flex-direction:column;gap:9px}.job{border:1px solid #273354;background:linear-gradient(100deg,#151d34,#10182b);border-radius:13px;padding:13px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;cursor:pointer}.job:hover{border-color:#7869bd;background:#1a2140}.jobtitle{font-weight:750;font-size:13px}.company{font-size:11px;color:var(--muted);margin-top:4px}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.tag{font-size:10px;color:#c7d1ee;background:#252e4b;border:1px solid #394568;padding:4px 7px;border-radius:6px}.score{font-size:12px;font-weight:800;color:var(--green);text-align:right}.status{font-size:10px;border-radius:20px;padding:5px 8px;white-space:nowrap;height:max-content;border:1px solid #465174;color:#d8def4}.status.sent{color:var(--green);border-color:#2b7867}.status.interview{color:var(--cyan);border-color:#2e7288}.status.rejected{color:#ff9caa;border-color:#8a4659}.status.interesting{color:var(--yellow);border-color:#80683b}
-.side{display:flex;flex-direction:column;gap:16px}.pipeline{display:flex;flex-direction:column;gap:12px}.pipe-row{display:grid;grid-template-columns:112px 1fr 24px;align-items:center;gap:9px;font-size:11px;color:#c4cce4}.bar{height:7px;border-radius:10px;background:#252d48;overflow:hidden}.bar i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#906bff,#4bd5ed)}.pipe-count{text-align:right;color:#fff;font-weight:800}.next{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #242e4b}.next:last-child{border:0}.nexticon{width:30px;height:30px;border-radius:9px;background:#28264b;display:grid;place-items:center}.next b{font-size:11px}.next small{display:block;color:var(--muted);font-size:10px;margin-top:4px;line-height:1.4}
-.section{display:none}.section.active{display:block}.board{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:12px;overflow:auto}.column{background:#0b1121;border:1px solid #293453;border-radius:14px;padding:12px;min-height:220px}.column h4{font-size:11px;color:#bfc9e7;margin:0 0 12px;display:flex;justify-content:space-between}.column .job{display:block;margin-bottom:9px}.column .score{margin-top:8px;text-align:left}
-.empty{color:var(--muted);font-size:12px;text-align:center;padding:28px}.footer{text-align:center;color:#667395;font-size:10px;margin-top:22px}
-.modal{position:fixed;inset:0;background:#02040bd9;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.dialog{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111a30;border:1px solid #5d5c98;border-radius:18px;padding:22px;box-shadow:0 20px 90px #000b}.dialoghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.dialog h3{margin:0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:var(--muted)}.field input,.field select,.field textarea{width:100%}.dialogactions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.detailtext{color:#c2cbe4;line-height:1.6;font-size:12px;white-space:pre-wrap}.detailtop{display:flex;justify-content:space-between;gap:12px;align-items:start}.detailmeta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start;flex-direction:column}.board{grid-template-columns:repeat(4,220px)}}@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:none}.nav{grid-template-columns:repeat(2,1fr)}.stats{gap:8px}.stat{padding:13px}.stat .num{font-size:24px}.hero{padding:21px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.job{grid-template-columns:1fr}.score{text-align:left}.panel{padding:14px}}
-
-
-/* MISSION CONTROL — Liquid Glass, warm alchemy accents */
-:root{
- --bg:#090c16;--panel:rgba(27,34,52,.56);--line:rgba(255,255,255,.15);
- --muted:#aebbd0;--text:#f5f4f0;--violet:#c4adff;--cyan:#a4e4ec;
- --pink:#e9b4d5;--green:#b7e4c7;--yellow:#f0cf91;
-}
-html,body{width:100%;min-height:100%;margin:0;background:#090c16;color:var(--text)}
-body{
- overflow-x:hidden;
- background:
-  radial-gradient(ellipse at 12% 0%,rgba(146,112,190,.28),transparent 36%),
-  radial-gradient(ellipse at 88% 12%,rgba(79,153,174,.20),transparent 34%),
-  radial-gradient(ellipse at 52% 100%,rgba(169,123,72,.10),transparent 42%),
-  #090c16;
- background-attachment:fixed;
-}
-body:before{
- content:"";position:fixed;inset:0;pointer-events:none;opacity:.17;
- background-image:radial-gradient(1px 1px at 12% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 78% 30%,#fff 99%,transparent),radial-gradient(1px 1px at 44% 72%,#d7c5a6 99%,transparent);
- background-size:230px 190px;z-index:-1;
-}
-.app{width:100%;max-width:none;min-height:100vh;margin:0;padding:clamp(20px,2.2vw,38px) clamp(22px,3vw,58px) 52px;position:relative;isolation:isolate}
-.hero,.panel,.stat,.nav button,.column,.job,.dialog,.pill,.tag,.status,.nexticon{
- border:1px solid rgba(255,255,255,.14);
- box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.025),0 16px 44px rgba(0,0,0,.22);
- backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
-}
-.hero{
- background:linear-gradient(115deg,rgba(139,113,184,.24),rgba(65,119,150,.15) 58%,rgba(176,143,94,.10));
- border-color:rgba(225,215,255,.24);
- box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 24px 70px rgba(0,0,0,.28);
-}
-.hero p{color:#c4cce0}
-.panel{background:linear-gradient(145deg,rgba(38,47,69,.68),rgba(17,24,40,.62))}
-.stat{background:linear-gradient(145deg,rgba(52,56,80,.62),rgba(20,27,44,.55))}
-.nav button{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.13)}
-.nav button.active{background:linear-gradient(135deg,rgba(157,133,255,.24),rgba(89,190,219,.13));border-color:rgba(203,194,255,.48)}
-.job{background:linear-gradient(115deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-color:rgba(255,255,255,.12)}
-.job:hover{background:linear-gradient(115deg,rgba(178,162,255,.16),rgba(104,205,226,.08));border-color:rgba(205,197,255,.4)}
-.column{background:rgba(14,19,33,.48)}
-button{
- color:var(--text);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.045));
- border:1px solid rgba(255,255,255,.19);border-radius:14px;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 5px 18px rgba(0,0,0,.16);
- backdrop-filter:blur(18px) saturate(155%);-webkit-backdrop-filter:blur(18px) saturate(155%);
-}
-button:hover{border-color:rgba(204,224,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 8px 26px rgba(101,160,220,.16)}
-.primary{background:linear-gradient(130deg,rgba(148,120,222,.86),rgba(74,153,185,.76));border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 26px rgba(111,105,220,.22)}
-.ghost{background:rgba(255,255,255,.055)}
-.toolbar input,.toolbar select,.field input,.field select,.field textarea{
- color:var(--text);background:rgba(5,9,18,.48);border:1px solid rgba(255,255,255,.16);
- border-radius:12px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
-}
-.toolbar input:focus,.toolbar select:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(177,164,255,.65);box-shadow:0 0 0 3px rgba(155,130,255,.13)}
-.dialog{background:linear-gradient(145deg,rgba(39,44,67,.94),rgba(13,19,34,.96));border-color:rgba(255,255,255,.22);backdrop-filter:blur(36px) saturate(170%);-webkit-backdrop-filter:blur(36px) saturate(170%)}
-.modal{background:rgba(2,5,12,.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.pill,.tag,.status{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.14)}
-.next{border-bottom-color:rgba(255,255,255,.09)}
-.nexticon{background:linear-gradient(145deg,rgba(177,153,255,.18),rgba(105,208,225,.09))}
-.bar{background:rgba(255,255,255,.09)}
-.bar i{background:linear-gradient(90deg,#c0aaff,#91e8f2);box-shadow:0 0 14px rgba(146,203,255,.32)}
-.live{box-shadow:0 0 12px var(--green),0 0 24px rgba(140,231,197,.35)}
-.topright{display:flex}
-@media(min-width:1600px){.app{padding-left:clamp(48px,3.2vw,76px);padding-right:clamp(48px,3.2vw,76px)}.hero{padding:clamp(30px,2.2vw,44px)}.panel{padding:clamp(20px,1.5vw,28px)}}
-@media(max-width:1100px){.app{padding:22px 20px 44px}.layout{grid-template-columns:1fr}}
-@media(max-width:560px){.app{padding:18px 13px 40px}.top{align-items:flex-start}.topright{display:flex;flex-wrap:wrap;justify-content:flex-end;font-size:9px}.nav{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,.panel,.stat,.nav button,.column,.job{backdrop-filter:blur(17px) saturate(150%);-webkit-backdrop-filter:blur(17px) saturate(150%)}}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.hero,.panel,.stat,.nav button,.column,.job,.dialog,button{background:rgba(24,29,47,.95)}}
-
-.app{width:100%;max-width:none}
-#latest{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.job-summary{display:flex;flex-direction:column;align-items:flex-start;gap:10px;cursor:default}
-.job-summary .company{margin:0}
-.job-summary .ghost{margin-top:auto}
-.queue-views{display:flex;gap:8px;flex-wrap:wrap}
-.queue-views button[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:-2px}
-#latest .empty{grid-column:1/-1}
-.top{margin-bottom:14px}
-.hero{padding:12px 18px;gap:10px}
-.hero h2{margin:0;font-size:clamp(22px,2.4vw,30px)}
-.nav{margin:10px 0 12px;gap:8px}
-.nav button{padding:9px 12px}
-.nav strong{margin:0}
-.nav button span{display:none}
-#overview .stats{margin-bottom:12px;gap:8px}
-#overview .stat{padding:9px 12px}
-#overview .stat .num{font-size:24px;margin:2px 0}
-.priority-section{margin:0 0 16px}
-.priority-section h3{font-size:15px;margin:0 0 8px}
-#priority-jobs .job-summary{border-color:rgba(165,153,255,.45)}
-.job-context{color:var(--muted);font-size:12px}
-
-/* CareerOS polish · 16 Nov 2026: clearer reading and responsive controls */
-:root{color-scheme:dark}
-body{font-size:14px;line-height:1.55}
-.app{max-width:1800px;margin-inline:auto}
-.brand h1{letter-spacing:.025em}
-.panel,.stat,.job,.hero{transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
-.panelhead{flex-wrap:wrap}
-.job{min-width:0;align-items:start;gap:14px;padding:17px 18px;border-radius:16px}
-.jobtitle{font-size:14px;line-height:1.45;overflow-wrap:anywhere}
-.company{font-size:12px;line-height:1.5}
-.job-context{line-height:1.55}
-.meta{gap:6px;margin-top:11px}
-.tag{font-size:11px;padding:5px 9px;border-radius:9px}
-.toolbar{align-items:stretch}
-.toolbar input,.toolbar select{min-height:43px}
-.toolbar input{min-width:min(100%,230px)}
-.link-filter{display:flex;align-items:center;gap:9px;margin:0 0 16px;color:var(--muted);font-size:12px;cursor:pointer}
-.link-filter input{accent-color:#b9a6ff;width:16px;height:16px}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #b6dff9;outline-offset:3px}
-#latest{gap:12px}
-#alljobs{gap:12px}
-#alljobs .job{padding:17px 19px}
-#priority-jobs{gap:12px}
-.stat .label{letter-spacing:.025em}
-@media(max-width:700px){.top{flex-wrap:wrap}.topright{width:100%;justify-content:flex-start}.hero-actions{width:100%}.hero-actions button{flex:1 1 auto}.nav button{min-height:48px}.toolbar select{flex:1 1 140px}.job{padding:14px}.panelhead{align-items:flex-start}.queue-views{width:100%}.queue-views button{flex:1}.app{padding-inline:14px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
-.job-extra-filters{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0}.job-data-caveat{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 15px}.job-summary{display:block;padding:18px 19px;cursor:default}.job-summary .jobtitle{font-size:16px;line-height:1.4}.job-summary .company{font-size:12px;color:var(--cyan);margin:8px 0}.job-summary .meta{margin:12px 0}.job-summary .ghost{margin-top:13px}.job-summary:hover{transform:translateY(-2px)}@media(max-width:560px){.job-summary{padding:15px}.job-summary .jobtitle{font-size:15px}}
-
-/* Mission Control – opportunity dossier cards */
-.job-summary{display:block;padding:19px 20px;cursor:default;border-radius:16px}
-.job-card-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
-.job-card-info{min-width:0}.job-company-name{color:var(--cyan);font-size:12px;font-weight:800}
-.job-summary .jobtitle{font-size:16px;line-height:1.45;margin-top:6px;letter-spacing:-.15px}
-.job-match{display:flex;flex-direction:column;text-align:center;flex-shrink:0;font-size:20px;line-height:1;font-weight:850;color:var(--green);background:rgba(80,206,157,.08);padding:10px 12px;border:1px solid rgba(80,206,157,.22);border-radius:12px}
-.job-match small{color:var(--muted);letter-spacing:1px;font-size:8px;margin-top:7px}
-.job-card-note{font-size:12px;line-height:1.65;color:var(--text);opacity:.87;margin:12px 0}
-.job-card-status{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0}
-.job-added{font-size:11px;color:var(--muted)}
-.job-next{display:flex;flex-direction:column;gap:5px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);border-radius:11px;padding:10px 12px;margin:11px 0}
-.job-next strong{font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:.65px}
-.job-next span{font-size:11px;line-height:1.5;color:var(--text)}
-.job-card-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:13px}
-.job-card-actions button{margin-top:0!important}
-.job-original-link{display:inline-flex;align-items:center;min-height:36px;font-size:12px;text-decoration:none;color:var(--cyan);font-weight:700;padding:9px 13px;background:rgba(103,201,228,.10);border:1px solid rgba(103,201,228,.30);border-radius:10px}
-.job-original-link:hover{border-color:var(--cyan);background:rgba(103,201,228,.17)}
-.job-unverified{font-size:11px;color:var(--muted)}
-.job-extra-filters select{background:rgba(12,21,34,.7);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px}
-@media(max-width:560px){.job-summary{padding:16px}.job-summary .jobtitle{font-size:15px}.job-match{font-size:18px}.job-card-actions>*{flex:1;text-align:center;justify-content:center}}
-
-/* CAREER OS · AURORA GLASS 2026 · original production interface */
-:root{--bg:#041122;--text:#effaff;--muted:#9cb4cd;--cyan:#57ebfc;--green:#63e3bc;--violet:#ad91ff;--line:rgba(123,217,255,.22)}
-html,html.dark-glass{color-scheme:dark}
-body,html{min-height:100%;background:#041122!important;color:var(--text)}
-body{font-size:14px;line-height:1.5;overflow-x:hidden;background:
- radial-gradient(ellipse at -4% 3%,rgba(0,240,227,.24),transparent 20%),
- radial-gradient(ellipse at 101% 15%,rgba(1,196,175,.28),transparent 26%),
- radial-gradient(ellipse at 57% -8%,rgba(0,144,231,.28),transparent 36%),
- radial-gradient(ellipse at 15% 93%,rgba(13,115,251,.19),transparent 40%),
- linear-gradient(135deg,#041225 5%,#052240 45%,#020d23 83%)!important;background-attachment:fixed!important}
-body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:1;background:
- linear-gradient(117deg,transparent 11%,rgba(28,218,255,.22) 12%,rgba(1,164,227,.045) 17%,transparent 26%),
- linear-gradient(126deg,transparent 61%,rgba(0,251,215,.1) 62%,transparent 73%),
- radial-gradient(ellipse at 50% 100%,rgba(5,129,205,.15),transparent 56%)}
-body:after{content:"";pointer-events:none;position:fixed;top:-56vh;right:23vw;width:28vw;height:125vh;border-radius:50%;transform:rotate(35deg);border:2px solid rgba(82,252,234,.15);filter:blur(2px);box-shadow:0 0 90px rgba(15,229,233,.14);z-index:0}
-.svg-sprite{position:absolute!important;width:0;height:0;overflow:hidden;pointer-events:none}
-.icon{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.app{position:relative;z-index:1;width:100%;max-width:2000px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);gap:19px;align-items:start;padding:18px 20px 36px;isolation:initial}
-.glass,.panel,.stat,.hero,.job,.column,.dialog{background:linear-gradient(140deg,rgba(22,68,99,.6),rgba(9,33,62,.67) 68%,rgba(4,55,68,.41));border:1px solid rgba(143,219,253,.30);box-shadow:inset 0 1px 0 rgba(237,252,255,.25),inset 0 -1px 0 rgba(40,174,241,.07),0 19px 48px rgba(0,8,28,.27);backdrop-filter:blur(25px) saturate(165%);-webkit-backdrop-filter:blur(25px) saturate(165%)}
-.panel{border-radius:22px;padding:20px 22px;min-width:0;overflow:hidden}
-.panel:hover{border-color:rgba(112,226,254,.43)}
-.sidebar{position:sticky;top:18px;min-height:calc(100dvh - 36px);border-radius:27px;padding:22px 14px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(159deg,rgba(15,70,105,.66),rgba(5,31,65,.76) 55%,rgba(19,58,103,.52))}
-.brand{gap:11px;padding:1px 0 7px;align-items:center}
-.logo{width:51px;height:51px;flex:0 0 51px;border-radius:17px;background:linear-gradient(140deg,#51d5ff 0%,#196cbf 46%,#424dba 100%);border:1px solid rgba(208,246,255,.7);box-shadow:inset 0 1px rgba(255,255,255,.54),0 11px 24px #00367e88;display:grid;place-items:center}
-.logo .icon{width:29px;height:29px;stroke-width:2;fill:rgba(223,251,255,.16)}
-.brand-copy h1{font-size:16px;line-height:1.15;margin:0;font-weight:830;letter-spacing:-.6px}
-.brand-copy span{color:#b6d6ee;letter-spacing:3px;font-size:10px;font-weight:650}
-.side-divider{height:1px;margin:12px 9px 10px;background:linear-gradient(90deg,transparent,#a1e6ff66,transparent)}
-.side-section-label{font-size:9px;letter-spacing:2.3px;color:#88b6cf;margin:2px 13px 3px;font-weight:800}
-.nav{display:flex;flex-direction:column;gap:7px;margin:0;width:100%}
-.nav button{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;width:100%;min-height:47px;background:transparent;border:1px solid transparent;border-radius:14px;color:#b4cde4;box-shadow:none}
-.nav button strong{font-size:13px;font-weight:680;margin:0;letter-spacing:0}
-.nav button:hover{background:rgba(112,209,244,.10);border-color:rgba(94,209,249,.16)}
-.nav button.active{background:linear-gradient(96deg,rgba(22,135,202,.92),rgba(18,222,213,.63));border:1px solid rgba(122,253,246,.65);color:white;box-shadow:inset 0 1px rgba(255,255,255,.35),0 0 25px rgba(17,233,225,.34)}
-.nav .icon,.quick-links .icon{width:19px;height:19px}
-.side-mid{margin-top:18px}
-.quick-links{display:flex;flex-direction:column;gap:4px}
-.quick-links a{display:flex;align-items:center;gap:12px;text-decoration:none;color:#b6d2ea;padding:11px 13px;border-radius:12px;font-weight:630;font-size:13px}
-.quick-links a:hover{color:white;background:rgba(134,230,255,.1)}
-.quick-links a span{flex:1}
-.quick-links a .icon:last-child{width:13px;height:13px;opacity:.55}
-.sidebar-bottom{margin-top:auto;padding:18px 9px 3px;color:#97b8ce;line-height:1.55}
-.sidebar-bottom small{font-size:10px;display:block;margin-top:8px}
-.live-caption{font-size:11px;font-weight:800;color:#b6f9e9}
-.workspace{min-width:0;display:flex;flex-direction:column;gap:15px}
-.top{margin:0;display:flex;align-items:center;gap:18px;justify-content:space-between;min-height:65px}
-.welcome{min-width:180px}
-.welcome .eyebrow{color:#69dfe7;font-size:9px;letter-spacing:2.1px}
-.welcome h2{margin:4px 0 0;font-size:clamp(16px,1.55vw,23px);letter-spacing:-.6px;font-weight:750}
-.top-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-width:0}
-.top-search{display:flex;align-items:center;gap:9px;min-width:220px;width:clamp(220px,25vw,370px);padding:0 13px;background:linear-gradient(120deg,rgba(78,141,182,.23),rgba(8,41,73,.62));border:1px solid rgba(198,233,253,.35);border-radius:16px;box-shadow:inset 0 1px rgba(255,255,255,.2);height:42px}
-.top-search .icon{width:16px;height:16px}
-.top-search input{width:100%;min-width:0;background:transparent;border:0;outline:0;color:var(--text);font:inherit;font-size:12px}
-.top-search input::placeholder{color:#b2c8dc}
-.top-search kbd{font-size:11px;color:#bce5f7;background:#ffffff14;padding:2px 6px;border-radius:6px}
-.sync-chip,.date-chip{display:inline-flex;align-items:center;gap:8px;border-radius:22px;font-size:10px;font-weight:750;padding:9px 12px;background:rgba(10,101,100,.25);border:1px solid rgba(87,214,196,.38);white-space:nowrap;color:#bdfbe8}
-.live{width:8px;height:8px;background:#66ffb7;box-shadow:0 0 12px #00f5bc;flex-shrink:0}
-.date-chip{color:#b8d8e9;background:rgba(48,105,140,.12);border-color:rgba(126,180,214,.22)}
-.theme-toggle{padding:9px 12px;font-size:11px;white-space:nowrap}
-.hero{border-radius:22px;padding:18px 21px;background:linear-gradient(106deg,rgba(12,76,111,.72),rgba(17,64,111,.63) 47%,rgba(2,98,100,.35));border-color:rgba(123,220,248,.43);display:flex;justify-content:space-between;align-items:center;gap:18px}
-.hero:after{content:"";right:6%;top:-105px;width:300px;height:250px;background:radial-gradient(circle,rgba(24,226,217,.17),transparent 72%);pointer-events:none}
-.hero-heading{min-width:0}
-.hero-heading>span:nth-child(2){color:#7cdeed;font-size:9px;letter-spacing:2.2px;font-weight:820}
-.hero-dot{width:7px;height:7px;border-radius:100%;display:inline-block;background:#63e7ca;box-shadow:0 0 13px #63e7ca;margin-right:8px}
-.hero h2{font-size:clamp(20px,2vw,28px);line-height:1.2;letter-spacing:-.7px;margin:7px 0 5px}
-.hero p{color:#b6d1e5;font-size:12px}
-.hero-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;z-index:1}
-button{cursor:pointer;transition:transform .18s,box-shadow .2s,border-color .2s;background:linear-gradient(135deg,rgba(77,137,178,.24),rgba(7,45,81,.5));border-color:rgba(121,205,242,.30);border-radius:12px;font-size:12px}
-button:hover{border-color:rgba(133,255,250,.7);box-shadow:0 0 25px rgba(0,207,233,.19)}
-button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #75f1ff;outline-offset:3px}
-.primary{background:linear-gradient(115deg,rgba(35,139,244,.94),rgba(23,202,221,.85));border:1px solid rgba(173,255,255,.50);color:#fff;box-shadow:inset 0 1px rgba(255,255,255,.30),0 6px 21px rgba(0,194,240,.17)}
-.ghost{background:rgba(134,199,242,.075)}
-.hero-actions button{min-height:40px;white-space:nowrap}
-.hero-actions button .icon{width:14px;height:14px;vertical-align:middle;margin-right:5px}
-.section{display:none;min-width:0}.section.active{display:flex;flex-direction:column;gap:15px}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:0!important}
-.stat{border-radius:20px;min-height:126px;padding:16px 17px!important;overflow:hidden;position:relative}
-.stat:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 95% 0%,rgba(101,234,253,.15),transparent 56%);pointer-events:none}
-.stat:after{content:"";position:absolute;right:13px;bottom:6px;width:140px;height:38px;border-radius:100%;background:rgba(1,238,226,.06);filter:blur(22px);pointer-events:none}
-.stat-icon{width:38px;height:38px;display:grid;place-items:center;background:linear-gradient(130deg,rgba(57,149,255,.72),rgba(33,87,174,.61));border:1px solid rgba(184,236,255,.24);border-radius:12px;box-shadow:0 7px 25px #013e8799;margin-bottom:10px}
-.stat-icon .icon{width:21px;height:21px}
-.stat-label{font-size:10px;color:#bfdae8;font-weight:750;letter-spacing:.35px;padding-right:4px;position:absolute;left:63px;top:20px;line-height:1.4}
-.stat .num{font-size:29px;font-weight:830;letter-spacing:-1px;color:#fff;margin:0 0 2px;position:relative}
-.stat .hint{font-size:10px;color:#9fd7d2}
-.stat-sent{background:linear-gradient(135deg,rgba(50,67,146,.56),rgba(16,117,128,.35))}
-.stat-sent .stat-icon{background:linear-gradient(145deg,#6470e8,#3e6fc7)}
-.stat-review .stat-icon{background:linear-gradient(145deg,#17cdb2,#187b95)}
-.stat-interview .stat-icon{background:linear-gradient(145deg,#a15d99,#694991)}
-.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
-.panelhead>div:first-child{min-width:0}
-.panelhead .h-icon{display:inline-grid;vertical-align:middle;place-items:center;margin-right:8px;color:#9befff}
-.h-icon .icon{width:19px;height:19px}
-.panelhead h3{display:inline-block;vertical-align:middle;font-size:16px;font-weight:760;margin:0;letter-spacing:-.35px}
-.panelhead .sub{margin:3px 0 0;color:#9fbcd0;font-size:11px}
-.inline-action{border:1px solid rgba(137,226,247,.35);background:rgba(98,190,219,.11);color:#d5f5ff;padding:8px 11px;border-radius:13px;white-space:nowrap}
-.pill{background:rgba(137,211,236,.12);border:1px solid rgba(158,223,245,.25);color:#d4eeff;font-size:10px;font-weight:760}
-.pipeline-strip{padding-bottom:17px}
-.pipeline-strip .panelhead{margin-bottom:12px}
-.stage-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.stage-item{border-radius:14px;padding:13px 12px;background:linear-gradient(132deg,rgba(85,143,194,.31),rgba(15,62,91,.37));border:1px solid rgba(165,228,253,.3);box-shadow:inset 0 1px rgba(255,255,255,.2);min-width:0;position:relative}
-.stage-item:nth-child(2){background:linear-gradient(130deg,rgba(53,124,221,.33),rgba(18,56,110,.47))}
-.stage-item:nth-child(3){background:linear-gradient(130deg,rgba(7,181,170,.32),rgba(11,74,107,.48))}
-.stage-item:nth-child(4){background:linear-gradient(130deg,rgba(94,77,185,.33),rgba(42,50,122,.47))}
-.stage-item:nth-child(5){background:linear-gradient(130deg,rgba(0,170,112,.25),rgba(17,76,75,.47))}
-.stage-item small{font-size:10px;color:#c2dfed;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stage-item strong{font-size:23px;line-height:1.35;font-weight:830;display:block;color:#fff}
-.stage-item:not(:last-child):after{content:"›";position:absolute;right:-11px;top:35%;color:#d8f8ff;font-size:22px;z-index:1;text-shadow:0 1px 10px #00162b}
-.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.82fr) minmax(285px,.92fr);gap:15px;align-items:start}
-.opportunity-panel{min-width:0}
-.opportunity-panel .opportunity-controls{margin-bottom:12px}
-.queue-views{gap:7px}
-.queue-views button{padding:8px 14px;border-radius:12px;color:#b5d0e5;background:rgba(139,202,247,.055)}
-.queue-views button[aria-pressed="true"]{outline:0;background:linear-gradient(110deg,rgba(20,149,210,.62),rgba(29,202,199,.29));color:#fff;border-color:rgba(96,246,243,.47);box-shadow:0 4px 18px rgba(14,222,217,.13)}
-.opportunity-panel .toolbar{margin-bottom:13px}
-.toolbar input,.toolbar select{background:rgba(5,25,52,.68);border:1px solid rgba(143,208,237,.29);color:#effbff;min-height:40px;border-radius:11px;font-size:12px}
-#priority-jobs,#latest{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.priority-section{margin:0 0 10px}.priority-section h3{font-size:11px;color:#6de6f4;margin:0 0 10px;font-weight:820}
-.job{border-radius:16px;padding:15px;min-width:0;transition:transform .2s,border-color .2s,box-shadow .2s}
-.job:hover{transform:translateY(-2px);border-color:rgba(96,238,244,.6);box-shadow:inset 0 1px rgba(255,255,255,.22),0 15px 40px rgba(0,5,25,.25)}
-.job-summary .job-card-heading{gap:6px}
-.job-company-name{font-size:12px;color:#b2f9f8}
-.job-summary .jobtitle{font-size:14px;line-height:1.35;letter-spacing:-.2px;margin:5px 0}
-.job-match{font-size:16px;color:#66e4ae;border:1px solid rgba(55,209,165,.28);background:rgba(29,154,113,.17);border-radius:11px;padding:8px}
-.job-match small{font-size:7px}
-.job-summary .tag{background:rgba(94,164,210,.15);border:1px solid rgba(122,185,222,.21);border-radius:20px;font-size:9px;color:#badbf2;padding:4px 8px}
-#overview .job-summary .job-card-note{font-size:11px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:9px 0;opacity:.78}
-#overview .job-summary .job-next{padding:8px 10px;border-radius:11px;margin:9px 0;background:rgba(15,91,105,.2)}
-#overview .job-summary .job-next span{font-size:10px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#overview .job-summary .job-original-link{font-size:11px;min-height:31px;padding:8px 10px}
-#overview .job-card-actions{gap:5px;flex-wrap:wrap;margin-top:11px}
-#overview .job-card-actions button{padding:8px 10px;font-size:10px}
-#overview .job-card-status{gap:8px;margin:8px 0}
-#overview .job-summary .status{font-size:9px}
-#overview .job-added{font-size:10px}
-.insight-side{display:flex;flex-direction:column;gap:15px;min-width:0}
-.focus-panel{border-color:rgba(87,234,216,.4);background:linear-gradient(145deg,rgba(7,88,97,.46),rgba(4,50,78,.6))}
-.recent-panel{background:linear-gradient(145deg,rgba(20,78,108,.55),rgba(9,49,80,.59))}
-.focus-list,.recent-sent{display:flex;flex-direction:column;gap:2px}
-.focus-entry,.recent-entry{display:flex;gap:10px;align-items:flex-start;padding:10px 3px;border-bottom:1px solid rgba(145,220,241,.13)}
-.focus-entry:last-child,.recent-entry:last-child{border:0}
-.focus-bullet{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(130,231,226,.76);display:grid;place-items:center;color:#9bfbc8;font-size:10px;flex-shrink:0;margin-top:3px}
-.focus-entry strong,.recent-entry strong{font-size:12px;line-height:1.3;display:block;color:#f3fdff}
-.focus-entry small,.recent-entry small{font-size:10px;color:#afcbdb;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px}
-.focus-entry button,.recent-entry button{padding:6px 9px;font-size:10px;white-space:nowrap;margin-left:auto}
-.recent-entry .mini-logo{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;font-size:13px;font-weight:850;background:linear-gradient(130deg,#1fafa1,#2375a5);box-shadow:inset 0 1px #ffffff5e;flex-shrink:0}
-.recent-entry .mini-logo:nth-child(1){color:#fff}
-.recent-entry .entry-copy{min-width:0;flex:1}
-.analytics-panel{padding:19px 22px}
-.analytics-panel .panelhead{margin-bottom:11px}
-.analytics-body{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(260px,1.25fr) minmax(200px,.88fr);gap:21px;align-items:stretch}
-.analytics-body>div+div{border-left:1px solid rgba(164,231,254,.17);padding-left:20px}
-.analytics-body strong{font-size:12px;color:#e0f7fe}
-.analytics-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.analytics-tile{border:1px solid rgba(139,218,248,.2);background:linear-gradient(134deg,rgba(73,133,177,.30),rgba(15,60,92,.40));border-radius:13px;padding:10px}
-.analytics-tile strong{font-size:21px;display:block;color:#fff}
-.analytics-tile small{color:#b4d4e7;font-size:10px}
-.analytics-trend{display:flex;flex-direction:column;min-width:0}
-#analytics-line{width:100%;max-height:145px;overflow:visible;margin-top:5px}
-.analytics-dates{display:flex;justify-content:space-between;font-size:9px;color:#a6c9d8;margin-top:-8px}
-.analytics-stages{min-width:0}
-.analytics-bars{height:155px;display:flex;align-items:end;gap:11px;margin-top:4px}
-.analytics-bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
-.analytics-bar strong{font-size:10px}
-.analytics-bar .bar-shaft{width:100%;max-width:35px;height:var(--bar-height,8px);min-height:4px;background:linear-gradient(180deg,#60c5ff,#176eb3);border:1px solid rgba(209,247,255,.4);box-shadow:0 0 14px rgba(48,175,236,.16);border-radius:8px 8px 3px 3px}
-.analytics-bar:nth-child(2) .bar-shaft{background:linear-gradient(#54e8ed,#0587b1)}
-.analytics-bar:nth-child(3) .bar-shaft{background:linear-gradient(#63ecb4,#147f7e)}
-.analytics-bar:nth-child(4) .bar-shaft{background:linear-gradient(#ab98ff,#5e4eb5)}
-.analytics-bar:nth-child(5) .bar-shaft{background:linear-gradient(#aebdd0,#354f70)}
-.analytics-bar small{font-size:9px;white-space:nowrap;color:#c8dce8;transform:scale(.94);transform-origin:center}
-.section:not(#overview)>.panel{min-height:240px}
-#alljobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:11px}
-#interviewList{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:11px}
-#overview .empty{grid-column:1/-1}
-#board .column{background:rgba(4,33,65,.55);border-color:rgba(130,202,234,.2)}
-#board .job{background:linear-gradient(125deg,rgba(46,107,153,.27),rgba(13,47,81,.4))}
-.footer{margin:0;color:#7da9c4;font-size:9px;letter-spacing:.85px;padding:0 2px;text-align:right}
-.modal{z-index:40}
-.dialog{background:linear-gradient(140deg,rgba(18,61,91,.98),rgba(8,25,53,.98));border-color:rgba(146,224,246,.43)}
-@media(min-width:1750px){.app{grid-template-columns:245px minmax(0,1fr);gap:24px;padding:22px 28px}.sidebar{top:22px}.workspace{gap:18px}}
-@media(max-width:1440px){.app{grid-template-columns:202px minmax(0,1fr);gap:14px;padding:14px}.sidebar{padding-inline:10px}.brand-copy h1{font-size:14px}.welcome h2{font-size:18px}.top-search{width:220px;min-width:190px}.dashboard-grid{grid-template-columns:minmax(0,1.5fr) minmax(265px,.9fr)}#priority-jobs,#latest{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-body{grid-template-columns:.75fr 1fr}}
-@media(max-width:1050px){.app{display:block;padding:12px 14px 24px}.sidebar{position:relative;top:0;min-height:auto;margin-bottom:14px;display:flex;padding:11px 14px;flex-direction:row;align-items:center;flex-wrap:wrap;gap:14px;border-radius:20px}.brand{padding:0}.side-divider,.side-section-label,.side-mid,.sidebar-bottom{display:none}.nav{flex:1;display:flex;flex-direction:row;justify-content:flex-end;gap:4px}.nav button{width:auto;padding:9px 10px;min-height:40px}.nav button strong{font-size:11px}.nav button .icon{width:16px;height:16px}.quick-links{display:none}.top{flex-wrap:wrap}.top-tools{flex:1}.top-search{width:100%;flex:1}.dashboard-grid{grid-template-columns:minmax(0,1.5fr) minmax(260px,.9fr)}}
-@media(max-width:760px){.app{padding:10px 10px 25px}.sidebar{display:block;padding:13px 12px}.brand{margin-bottom:12px}.nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.nav button{min-width:0;display:flex;justify-content:center;gap:5px;flex-direction:column;min-height:54px;padding:7px 3px}.nav button strong{font-size:9px;text-align:center;white-space:nowrap}.top{gap:10px}.welcome h2{font-size:17px}.top-tools{flex-wrap:wrap;justify-content:flex-start;width:100%}.top-search{order:3;flex:1 1 100%;width:100%}.date-chip{display:none}.hero{align-items:flex-start;padding:18px;flex-direction:column}.hero-actions{width:100%}.hero-actions button{flex:1}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{min-height:110px;padding:13px!important}.stat-label{font-size:9px;top:18px;left:58px}.stat-icon{width:32px;height:32px}.stat-icon .icon{width:18px;height:18px}.stat .num{font-size:25px}.stage-row{display:flex;overflow-x:auto;padding-bottom:7px;scroll-snap-type:x mandatory}.stage-item{min-width:128px;scroll-snap-align:start}.dashboard-grid{grid-template-columns:minmax(0,1fr)}#priority-jobs,#latest{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-body{grid-template-columns:1fr}.analytics-body>div+div{border:0;border-top:1px solid rgba(164,231,254,.16);padding:15px 0 0}.analytics-tiles{grid-template-columns:repeat(4,1fr)}.analytics-bar small{font-size:9px}.panel{padding:17px}.panelhead h3{font-size:15px}}
-@media(max-width:480px){.brand-copy h1{font-size:16px}.sidebar{padding:11px}.panel{padding:14px}.hero h2{font-size:23px}#priority-jobs,#latest{grid-template-columns:1fr}.job-summary{padding:14px}.stat-label{position:static;margin-top:-29px;margin-left:43px;min-height:25px}.stat .num{margin-top:11px}.stat{min-height:128px}.analytics-tiles{grid-template-columns:repeat(2,1fr)}.top .sync-chip{font-size:9px}.theme-toggle{font-size:10px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
-
-
-html.light-glass body{background:radial-gradient(ellipse at 15% 0%,rgba(113,239,255,.4),transparent 30%),radial-gradient(ellipse at 95% 32%,rgba(1,187,192,.23),transparent 32%),linear-gradient(135deg,#14466d,#174d77 55%,#062f51)!important}
-html.light-glass .panel,html.light-glass .stat,html.light-glass .sidebar,html.light-glass .hero,html.light-glass .job{background:linear-gradient(135deg,rgba(80,147,187,.52),rgba(24,79,125,.68));border-color:rgba(196,247,255,.41)}
-html.light-glass .nav button.active{background:linear-gradient(110deg,#25b4df,#32ded2)}
-</style>
-</head>
-<body>
-<div class="app">
-<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="svg-sprite"><defs>
-<symbol id="ic-rocket" viewBox="0 0 24 24"><path d="M4 14c-1.5 1-2.5 4-2 6 2 0 5-1 6-2M9 16l-1 3 3-1M9 10c2-5 7-8 13-8 0 6-3 11-8 13l-5-5ZM14 10h.01"/></symbol>
-<symbol id="ic-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/></symbol>
-<symbol id="ic-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></symbol>
-<symbol id="ic-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
-<symbol id="ic-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></symbol>
-<symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/></symbol>
-<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
-<symbol id="ic-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></symbol>
-<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16v-5m5 5V7m5 9V5"/></symbol>
-<symbol id="ic-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m7 12 3 3 7-7"/></symbol>
-<symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
-<symbol id="ic-external" viewBox="0 0 24 24"><path d="M13 5h6v6M19 5l-9 9"/><path d="M19 13v6H5V5h6"/></symbol>
-<symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M20 7V3h-4M4 17v4h4M5 9a8 8 0 0 1 14-2l1 0M4 17a8 8 0 0 0 14-2"/></symbol>
-<symbol id="ic-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
-<symbol id="ic-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.2 7-6.2-3.3-6.2 3.3 1.2-7-5-4.8 7-.9 3-6Z"/></symbol>
-</defs></svg>
-<aside class="sidebar glass">
- <div class="brand"><div class="logo"><svg class="icon" aria-hidden="true"><use href="#ic-rocket"></use></svg></div><div class="brand-copy"><h1>Mission Control</h1><span>CAREER OS</span></div></div>
- <div class="side-divider"></div>
- <div class="side-section-label">WORKSPACE</div>
- <nav class="nav" aria-label="Sezioni di Mission Control">
-<button type="button" class="active" data-tab="overview" onclick="tab('overview',this)" title="Dashboard e riepilogo"><svg class="icon" aria-hidden="true"><use href="#ic-home"></use></svg><strong>Panoramica</strong></button>
-<button type="button" data-tab="pipeline" onclick="tab('pipeline',this)" title="Avanzamento candidature"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg><strong>Pipeline</strong></button>
-<button type="button" data-tab="opportunities" onclick="tab('opportunities',this)" title="Ricerca e filtri"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg><strong>Opportunità</strong></button>
-<button type="button" data-tab="interviews" onclick="tab('interviews',this)" title="Colloqui da preparare"><svg class="icon" aria-hidden="true"><use href="#ic-calendar"></use></svg><strong>Colloqui</strong></button>
-</nav>
- <div class="side-divider side-mid"></div>
- <div class="side-section-label">COLLEGAMENTI</div>
- <div class="quick-links">
- <a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg><span>Notion</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
- <a href="https://mail.google.com/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-mail"></use></svg><span>Gmail</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
- <a href="https://ticktick.com/webapp/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#ic-check"></use></svg><span>TickTick</span><svg class="icon" aria-hidden="true"><use href="#ic-external"></use></svg></a>
- </div>
- <div class="sidebar-bottom"><div class="live-caption"><span class="live"></span> Career intelligence</div><small>Le statistiche vengono dai dati registrati, non da stime inventate.</small></div>
+<!doctype html>
+<html lang="it"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light"><meta name="theme-color" content="#131f39">
+<meta name="description" content="Career Dex: Mission Control per candidature, colloqui, analytics e organizzazione carriera, sincronizzato con Notion.">
+<title>Career Dex · Mission Control</title>
+<link rel="stylesheet" href="/career-dex.css?v=2"><script defer src="/career-dex.js?v=2"></script>
+</head><body>
+<div id="app">
+<aside class="sidebar" id="sidebar" aria-label="Menu principale">
+ <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><h1>CAREER <b>DEX</b></h1><small>MISSION CONTROL / V2</small></div></div>
+ <div class="nav-label">TRAINER HUB</div>
+ <button class="nav-link active" type="button" data-nav="home"><span class="glyph">⌂</span>Command Center</button>
+ <button class="nav-link" type="button" data-nav="jobdex"><span class="glyph">📕</span>JobDex</button>
+ <button class="nav-link" type="button" data-nav="pipeline"><span class="glyph">🧭</span>Il percorso</button>
+ <button class="nav-link" type="button" data-nav="arena"><span class="glyph">⚔️</span>Interview Arena</button>
+ <div class="nav-label">DAILY ADVENTURE</div>
+ <button class="nav-link" type="button" data-nav="quests"><span class="glyph">📜</span>Quest Log</button>
+ <button class="nav-link" type="button" data-nav="inbox"><span class="glyph">✉️</span>Messaggi</button>
+ <button class="nav-link" type="button" data-nav="recruiters"><span class="glyph">🤝</span>Recruiter HQ</button>
+ <button class="nav-link" type="button" data-nav="focus"><span class="glyph">🎯</span>Focus Mode</button>
+ <div class="nav-label">RESEARCH LAB</div>
+ <button class="nav-link" type="button" data-nav="analytics"><span class="glyph">📊</span>Analytics Lab</button>
+ <button class="nav-link" type="button" data-nav="trainer"><span class="glyph">👤</span>Trainer Profile</button>
+ <button class="nav-link" type="button" data-nav="vault"><span class="glyph">🗃️</span>Assets Vault</button>
+ <button class="nav-link" type="button" data-nav="settings"><span class="glyph">⚙️</span>Impostazioni</button>
+ <div class="sidebar-card"><div class="overline" style="color:var(--gold)">⭐ TRAINER STATUS</div><strong>Quest: Career Evolution</strong><p>Dal primo invio alla prossima offerta. I dati lavoro arrivano direttamente da Notion.</p><a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener noreferrer">DATABASE NOTION ↗</a></div>
 </aside>
-<div class="workspace">
-<header class="top">
-  <div class="welcome"><div class="eyebrow">CAREER INTELLIGENCE • LA TUA RICERCA</div><h2>Il tuo spazio. Le tue opportunità.</h2></div>
-  <div class="top-tools">
-   <label class="top-search"><svg class="icon" aria-hidden="true"><use href="#ic-search"></use></svg><input id="global-search" aria-label="Cerca ovunque" placeholder="Cerca aziende, posizioni..." oninput="quickSearch(this.value)"><kbd>⌕</kbd></label>
-   <span class="sync-chip"><span class="live"></span><span id="sync-status">NOTION · IN CONNESSIONE</span></span>
-   <span id="today" class="date-chip"></span>
-   <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambia tema">◐ Tema</button>
-  </div>
-</header>
-<section class="hero">
- <div class="hero-heading"><span class="hero-dot"></span><span>MISSION CONTROL / LIVE WORKSPACE</span><h2>Il prossimo passo, tutto sotto controllo.</h2><p>Opportunità, candidature e priorità. Un'unica vista sincronizzata con Notion.</p></div>
- <div class="hero-actions"><button class="primary" onclick="openAdd()">＋ Nuova opportunità</button><button class="ghost" onclick="loadNotionJobs()"><svg class="icon" aria-hidden="true"><use href="#ic-refresh"></use></svg> Sincronizza</button><button class="ghost" onclick="exportData()">⇩ Esporta</button></div>
-</section>
-<section id="overview" class="section active">
+<main class="workspace">
+<header class="topbar"><div style="display:flex;gap:13px;align-items:center"><button id="menu-toggle" class="btn menu-toggle round" type="button" aria-label="Apri menu">☰</button><div class="top-title"><div id="page-eyebrow" class="eyebrow">CAREER DEX / HOME</div><h2 id="page-title">Command Center</h2></div></div>
+<div class="top-actions"><span id="sync-status" class="sync-chip"><span class="sync-dot"></span>SINCRONIZZAZIONE</span><button type="button" id="refresh" class="btn small" aria-label="Sincronizza i dati">↻ Sincronizza</button><button type="button" class="btn gold small" data-action="new">＋ Nuova opportunità</button></div></header>
+<!-- HOME -->
+<section class="view active" id="view-home">
+ <div class="hero">
+ <div class="hero-copy"><span class="overline">★ TRAINER MISSION / ACTIVE QUEST</span><h3>La tua carriera.<br><em>La tua avventura.</em></h3><p id="hero-caption">Sincronizzo il tuo percorso e preparo la prossima missione.</p><div class="row-buttons"><button class="btn gold" data-nav="jobdex">🗂 Esplora JobDex</button><button class="btn ghost" data-nav="arena">⚔️ Entra nell'Arena</button></div></div>
+ <div class="hero-art"><div class="dex-orb"><div class="dex-orb-inner"><div class="dex-orb-core">★</div></div></div><div class="orb-label">CAREER MODE · LVL 07</div></div></div>
  <div class="stats">
-  <div class="stat stat-opps"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg></div><div class="stat-label">OPPORTUNITÀ TRACCIATE</div><div class="num" id="s-total">—</div><div class="hint">Nel tuo radar professionale</div></div>
-  <div class="stat stat-sent"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-send"></use></svg></div><div class="stat-label">CANDIDATURE INVIATE</div><div class="num" id="s-sent">—</div><div class="hint">Con stato confermato</div></div>
-  <div class="stat stat-review"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-target"></use></svg></div><div class="stat-label">DA VALUTARE</div><div class="num" id="s-review">—</div><div class="hint">Le prossime opportunità</div></div>
-  <div class="stat stat-interview"><div class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#ic-calendar"></use></svg></div><div class="stat-label">COLLOQUI</div><div class="num" id="s-interview">—</div><div class="hint">Registrati nel tuo funnel</div></div>
- </div>
- <div class="panel pipeline-strip">
-   <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-layers"></use></svg></div><h3>La tua pipeline</h3><div class="sub">Il percorso delle tue candidature, in tempo reale</div></div><button class="inline-action" onclick="goTo('pipeline')">Apri pipeline →</button></div>
-   <div class="stage-row" id="overview-pipeline"><div class="empty">Caricamento stati…</div></div>
+  <div class="panel stat"><label>🎯 INVII STORICI</label><strong id="kpi-captured">—</strong><small>Candidature tracciate</small><span class="spark">★</span></div>
+  <div class="panel stat"><label>📨 IN ATTESA DI ESITO</label><strong id="kpi-pending">—</strong><small>Stato candidatura inviata</small><span class="spark">✦</span></div>
+  <div class="panel stat"><label>⚔️ COLLOQUI FUTURI</label><strong id="kpi-arena">—</strong><small>Snapshot calendario verificato</small><span class="spark">✧</span></div>
+  <div class="panel stat"><label>🗃️ ARCHIVIATE</label><strong id="kpi-fainted">—</strong><small>Stato scartata in Notion</small><span class="spark">✕</span></div>
  </div>
  <div class="dashboard-grid">
-  <div class="panel opportunity-panel">
-    <div class="panelhead">
-      <div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-briefcase"></use></svg></div><h3>Opportunità in evidenza</h3><div class="sub">Le schede del tuo radar con priorità e prossime azioni</div></div>
-      <button class="inline-action" onclick="goTo('opportunities')">Vedi tutte →</button>
-    </div>
-    <div class="panelhead opportunity-controls">
-     <div class="queue-views" role="group" aria-label="Vista candidature">
-      <button type="button" class="ghost" id="queue-review" aria-pressed="true" onclick="setQueue('review')">Da valutare</button>
-      <button type="button" class="ghost" id="queue-sent" aria-pressed="false" onclick="setQueue('sent')">Inviate</button>
-     </div>
-     <span class="pill" id="shown" aria-live="polite"></span>
-    </div>
-    <div class="toolbar"><input id="search1" aria-label="Cerca azienda o ruolo" placeholder="⌕ Cerca tra le offerte..." oninput="render()"></div>
-    <section class="priority-section" id="priority-section" aria-labelledby="priority-heading" hidden><h3 id="priority-heading">✧ Scelte per te</h3><div class="list" id="priority-jobs"></div></section>
-    <div class="list" id="latest"></div>
-   </div>
-   <div class="insight-side">
-    <div class="panel focus-panel">
-     <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-target"></use></svg></div><h3>Oggi · Focus</h3><div class="sub">Le prossime azioni dalla tua pipeline</div></div><span class="pill" id="focus-count">—</span></div>
-     <div id="focus-list" class="focus-list"></div>
-    </div>
-    <div class="panel recent-panel">
-     <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-send"></use></svg></div><h3>Candidature registrate</h3><div class="sub">Schede con stato “Candidatura inviata”</div></div><span class="pill" id="recent-count">—</span></div>
-     <div id="recent-sent" class="recent-sent"></div>
-    </div>
-   </div>
+  <div class="panel panel-pad"><div class="section-head"><div><h3 class="panel-title">📕 Ultime scoperte</h3><p class="panel-sub">Schede inserite più di recente nel JobDex</p></div><button class="btn small" data-nav="jobdex">Vedi tutte →</button></div><div id="home-encounters" class="encounter-list"></div></div>
+  <div class="panel panel-pad alt"><div class="section-head"><div><h3 class="panel-title">⚔️ Prossimo incontro</h3><p class="panel-sub">Dati verificati il 19/11 · verifica eventuali modifiche nel calendario</p></div></div><div id="home-interview"></div><div class="divider"></div><div class="mini-label">AVANZAMENTO POKÉDEX</div><p class="panel-sub" id="home-xp-label" style="margin:11px 0">—</p><div class="xp"><span id="home-xp" style="width:0%"></span></div></div>
  </div>
- <div class="panel analytics-panel">
-  <div class="panelhead"><div><div class="h-icon"><svg class="icon" aria-hidden="true"><use href="#ic-chart"></use></svg></div><h3>Analytics</h3><div class="sub">Numeri effettivi dal database Notion</div></div><span class="pill">LIVE DATA</span></div>
-  <div class="analytics-body">
-   <div class="analytics-tiles" id="analytics-tiles"></div>
-   <div class="analytics-trend"><strong>Nuove opportunità · ultimi 7 giorni</strong><svg id="analytics-line" viewBox="0 0 420 154" role="img" aria-label="Andamento delle opportunità aggiunte negli ultimi 7 giorni"></svg><div id="analytics-dates" class="analytics-dates"></div></div>
-   <div class="analytics-stages"><strong>Distribuzione per stato</strong><div class="analytics-bars" id="analytics-bars"></div></div>
-  </div>
+ <div class="dashboard-grid">
+  <div class="panel panel-pad"><div class="section-head"><div><h3 class="panel-title">📊 Job journey</h3><p class="panel-sub">Distribuzione reale delle schede Notion</p></div><button class="btn small" data-nav="pipeline">Pipeline →</button></div><div id="home-pipeline" class="mini-bars"></div></div>
+  <div class="panel panel-pad"><div class="section-head"><div><h3 class="panel-title">✨ Daily Quest Board</h3><p class="panel-sub">Preparazione, verifiche e comunicazioni</p></div><button class="btn small" data-nav="quests">Quest Log →</button></div><div id="home-quests" class="quest-list"></div></div>
+ </div>
+ <div class="grid-two" style="margin-top:14px">
+  <div class="panel panel-pad"><div class="section-head"><h3 class="panel-title">🧑‍🚀 Trainer Card</h3><button class="btn small" data-nav="trainer">Profilo →</button></div><div class="trainer-card"><div class="trainer-avatar">🧑‍💻</div><div style="flex:1;min-width:0"><h3>Jacopo Soppelsa</h3><p>Data Scientist · Data Analyst · BI</p><div class="pill yellow">LVL 07 · MILANO</div></div></div><p class="panel-sub" id="home-notion" style="margin-top:13px">Sincronizzazione in corso…</p></div>
+  <div class="panel panel-pad"><div class="section-head"><h3 class="panel-title">🚀 Missione attuale</h3><span class="pill yellow">IN CORSO</span></div><p class="panel-sub" id="home-dex-entry">Il sistema controlla la coda.</p><div class="row-buttons" style="margin-top:19px"><button class="btn blue small" data-nav="focus">Avvia Focus Mode</button><a href="https://mail.google.com/mail/u/0/#inbox" class="btn small" target="_blank" rel="noopener">Apri Gmail</a></div></div>
  </div>
 </section>
-<section id="pipeline" class="section"><div class="panel"><div class="panelhead"><div><h3>Pipeline completa</h3><div class="sub">Apri una scheda per i dettagli o per cambiare stato</div></div><button class="primary" onclick="openAdd()">＋ Aggiungi</button></div><div class="board" id="board"></div></div></section>
-<section id="opportunities" class="section"><div class="panel"><div class="panelhead"><div><h3>Tutte le opportunità</h3><div class="sub">Ricerca, filtra e gestisci il tuo radar professionale</div></div><span class="pill" id="source-label">DATI LOCALI / NOTION</span></div><div class="toolbar"><input id="search2" placeholder="⌕ Cerca azienda, ruolo o sede..." oninput="render()"><select id="filter2" onchange="render()"><option value="">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="sort" onchange="render()"><option value="score">Compatibilità ↓</option><option value="company">Azienda A–Z</option><option value="recent">Inserimento recente</option></select></div><div class="job-extra-filters"><select id="geo-filter" aria-label="Area geografica" onchange="render()"><option value="">Tutte le aree</option><option value="milan">Milano / Lombardia</option><option value="italy">Italia full remote</option><option value="international">Europa / estero remoto</option></select><label class="link-filter"><input type="checkbox" id="verified-links" onchange="render()"> Con link all’annuncio</label><label class="link-filter"><input type="checkbox" id="remote-only" onchange="render()"> Solo remoto</label><label class="link-filter"><input type="checkbox" id="protected-only" onchange="render()"> Categorie protette</label></div><p class="job-data-caveat">Milano: anche ibrido · Italia: full remote · Estero: verifica sempre l'ammissibilità dall'Italia. Un link non garantisce che un annuncio sia ancora aperto.</p><div class="list" id="alljobs"></div></div></section>
-<section id="interviews" class="section"><div class="panel"><div class="panelhead"><div><h3>Area colloqui</h3><div class="sub">Le opportunità in selezione e la preparazione</div></div></div><div id="interviewList"></div><div class="next" style="margin-top:18px"><div class="nexticon">✧</div><div><b>Promemoria preparazione</b><small>Prepara un pitch sul percorso in GameStop, risultati RFM/CLTV, segmentazione, SQL e BigQuery. Tieni pronti esempi reali del tuo lavoro.</small></div></div></div></section>
-<div class="footer">MISSION CONTROL · CAREER OS · DATI SINCRONIZZATI DA NOTION QUANDO DISPONIBILE</div>
-</div>
-</div>
-<div class="modal" id="modal"><div class="dialog" id="dialog"></div></div>
-<script>
-const seed = [
-{company:"SDG Group",role:"Business Intelligence Analyst – Categorie protette (68/99)",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Candidatura inviata",protected:true,url:"https://careers.sdggroup.com/jobs/4430189-business-intelligence-analyst-categorie-protette-68-99",notes:"BI e dashboard nell’area CPM. RAL indicativa €26–28k. Da chiarire il peso dell’analytics rispetto al controllo di gestione.",next:"Attendere feedback / verificare portale"},
-{company:"Tissington",role:"Business Intelligence Analyst",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:false,url:"https://freehire.me/jobs/business-intelligence-analyst-tissington-awr2zoli",notes:"Sviluppo dashboard BI e analisi dati. Power BI, SQL e data modelling. RAL e seniority da verificare.",next:"Cercare annuncio sul sito ufficiale"},
-{company:"Clutch",role:"CRM Data Analyst – Insight-driven Marketing & Automation",area:"CRM Analytics · Data Analyst · BI",location:"Milano",mode:"Non specificata",score:9,status:"Da valutare",protected:false,url:"https://www.jobleads.com/it/job/crm-data-analyst-insight-driven-marketing-automation--milano--e039ca550bf992b509076d874809b9718",notes:"Analisi CRM, comportamenti d’acquisto, SQL, KPI, dashboard, segmentazione e marketing automation. Match molto forte con esperienza retail/B2C e CLV.",next:"Verificare candidatura sul sito Clutch"},
-{company:"SDG Group",role:"Data Analyst – Categorie Protette (68/99)",area:"Data Analyst · BI",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:true,url:"https://careers.sdggroup.com/jobs/3642456-data-analyst-categorie-protette-68-99",notes:"Data analytics in società specializzata. RAL indicativa €26–28k. Verificare che l’annuncio sia ancora aperto.",next:"Controllare apertura e seniority"},
-{company:"ManpowerGroup",role:"Business Intelligence Specialist",area:"Business Intelligence · Data Analyst",location:"Milano",mode:"Ibrido",score:7,status:"Da valutare",protected:false,url:"https://www.manpower.it/it/annuncio-lavoro/consulenza-servizi/marketing-comunicazione/business-intelligence-specialist/1052984",notes:"RAL €35–40k, smart working 2 giorni. ETL, dashboard Power BI, KPI e supporto decisionale. Scadenza indicata 31/01/2027.",next:"Verificare requisiti Power BI"},
-{company:"BIP (Datwave)",role:"BI & Data Analytics Expert – GCP",area:"BI · Data Engineering · Analytics Engineering",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:false,url:"https://fa-etjb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/it/sites/CX_1/job/2550/",notes:"RAL €34–48k. SQL, BigQuery/GCP, pipeline, data warehouse, BI e Python. Match tecnico forte.",next:"Verificare seniority e candidarsi"},
-{company:"PwC Italy",role:"Senior Customer Data Analyst",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"In presenza",score:9,status:"Da valutare",protected:false,url:"https://jobs.managementconsulted.com/jobs/602861208-senior-customer-data-analyst",notes:"RAL €36–50k + variabile. Customer analytics, campagne, CDP, SQL, R/Python. Match molto forte; verificare annuncio sul portale PwC.",next:"Verificare annuncio ufficiale"},
-{company:"Satispay",role:"Senior Data Analyst – Product",area:"Data Analyst · Product Analytics",location:"Milano",mode:"Ibrido",score:9,status:"Da valutare",protected:false,url:"https://www.startupjobs.it/offerte/15666-senior-data-analyst-product",notes:"RAL indicata €51–58k. Product analytics, funnel, cohort, retention, segmentazione, A/B test, SQL e Python.",next:"Verificare candidatura sul sito Satispay"},
-{company:"Satispay",role:"Data Analyst – Growth & Marketing",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"Ibrido",score:9,status:"Da valutare",protected:false,url:"https://www.startupjobs.it/offerte/15882-data-analyst-growth-marketing",notes:"RAL indicata €43–50k. Acquisizione, engagement, retention, funnel, SQL, data modelling, ETL e dashboard.",next:"Verificare candidatura sul sito Satispay"},
-{company:"Mollie",role:"Analytics Engineer",area:"Analytics Engineering · BI · Data Engineering",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:false,url:"https://jobs.mollie.com/vacancies/a47018ac-0a29-4ba0-88cf-9616fdb03b71",notes:"dbt, BI, dashboard, data quality, SQL, Python, data modelling e BigQuery/GCP.",next:"Verificare seniority e modalità"},
-{company:"Randstad (Fashion Luxury)",role:"Business Analyst – Categorie protette L.68/99",area:"Data Analyst · CRM Analytics · BI",location:"Milano",mode:"Ibrido",score:8,status:"Da valutare",protected:true,url:"https://www.randstad.com/jobs/business-analyst-categorie-protette-l6899fmnb_milano_47569516/",notes:"RAL €28–34k, scadenza 6 dicembre 2026. Ruolo L.68/99, SQL, Python/R, Excel e BI. Contatto: milano.ho@randstad.it.",next:"Valutare RAL e inviare CV via email"},
-{company:"BIP (Datwave)",role:"Data Analyst – Google – Categoria Protetta L.68/99",area:"Data Analyst · BI · Data Science",location:"Milano",mode:"Non specificata",score:7,status:"Da valutare",protected:true,url:"https://fa-etjb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/2276",notes:"SQL, SAS e Python; canale L.68/99. Annuncio datato: verificare apertura.",next:"Verificare se ancora aperto"},
-{company:"Andrea Poletti & Associati",role:"Junior Data Analyst – Categoria Protetta L.68/99",area:"Data Analyst · BI",location:"Assago / Milano",mode:"Non specificata",score:5,status:"Da valutare",protected:true,url:"https://www.helplavoro.it/offerta-di-lavoro-categorie-protette-in-provincia-di-milano-cercasi-junior-data-analyst-categoria-protetta-l-68-99/6979676.html",notes:"Ruolo junior in retail/distribuzione. Scadenza 26 novembre 2026. Potenzialmente sottodimensionato rispetto all’esperienza.",next:"Valutare livello e responsabilità"},
-{company:"RISORSE SPA",role:"Data & Analytics Specialist – Categorie protette L.68/99",area:"Data Analyst · BI · CRM Analytics · Data Engineering",location:"Milano Ovest",mode:"Ibrido",score:9,status:"Candidatura inviata",protected:true,url:"https://it.linkedin.com/jobs/view/data-analytics-specialist-categorie-protette-l-68-99-at-risorse-spa-4485096263",notes:"RAL €40–50k, tempo indeterminato, 2 giorni smart working. Reporting, analisi commerciali, ETL/ELT e data warehouse cloud.",next:"Attendere feedback"}
-];
-let jobs=JSON.parse(localStorage.getItem("jhc_jobs")||"null")||seed;
-// Aggiornamento ricerca lavoro del 11/11/2026: inserisce solo nuove offerte,
-// preservando le opportunità e gli stati già salvati nel browser.
-const scanDate="Ricerca aggiornata il 11/11/2026.";
-const latestScan=[
- {company:"Cerved",role:"Senior Data Analyst",area:"Data Analytics · BI · Business Intelligence",location:"Da verificare",mode:"Da verificare",score:9,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 9/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
- {company:"Shopfully",role:"Senior Data Analyst",area:"Data Analytics · Retail · Customer Analytics",location:"Da verificare",mode:"Da verificare",score:9,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 9/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
- {company:"Lexroom",role:"Analytics Engineer",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:8,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 8/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
- {company:"Satispay",role:"Analytics Engineer",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:8,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 8/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
- {company:"BIP",role:"Senior Data Scientist",area:"Data Science · Advanced Analytics",location:"Da verificare",mode:"Da verificare",score:6,status:"Da valutare",protected:false,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 6/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Aprire e verificare l'annuncio ufficiale"},
- {company:"Randstad",role:"Junior Analytics Engineer – L.68/99",area:"Analytics Engineering · Data Engineering",location:"Da verificare",mode:"Da verificare",score:6,status:"Da valutare",protected:true,url:"",notes:"Opportunità individuata nella ricerca del 11/11/2026. Compatibilità stimata 6/10. Annuncio, sede, modalità, RAL e requisiti puntuali da verificare prima della candidatura.",next:"Verificare annuncio, seniority e requisiti L.68/99"}
-];
-for(const item of latestScan){
- item.dateAdded="2026-11-11";
- const exists=jobs.some(j=>j.company.toLowerCase()===item.company.toLowerCase()&&j.role.toLowerCase()===item.role.toLowerCase());
- if(!exists) jobs.unshift(item);
-}
-for(const j of jobs){
- if(!j.dateAdded) j.dateAdded="";
- const isInScan=(j.company==="Satispay"&&(j.role.includes("Product")||j.role.includes("Growth & Marketing")))||(j.company==="Mollie"&&j.role==="Analytics Engineer")||(j.company.includes("BIP")&&j.role.includes("BI & Data Analytics Expert"));
- if(isInScan&&!j.dateAdded) j.dateAdded="2026-11-11";
- if(isInScan&&!j.notes.includes(scanDate)) j.notes+=" "+scanDate;
-}
-localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
-const statuses=["Da valutare","Interessante","Candidatura inviata","Colloquio","Scartata"];
-const $=id=>document.getElementById(id);
-
-function toggleTheme(){
- const light=document.documentElement.classList.toggle("light-glass");
- localStorage.setItem("jhc_light_glass",light?"yes":"no");
- const b=$("theme-toggle");if(b)b.textContent=light?"◑ Tema scuro":"◐ Tema chiaro";
-}
-(function initTheme(){
- const light=localStorage.getItem("jhc_light_glass")==="yes";
- if(light)document.documentElement.classList.add("light-glass");
- document.addEventListener("DOMContentLoaded",()=>{
-  const b=document.getElementById("theme-toggle");
-  if(b)b.textContent=light?"◑ Tema scuro":"◐ Tema chiaro";
- });
-})();
-function save(){localStorage.setItem("jhc_jobs",JSON.stringify(jobs));render()}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function cls(s){return s==="Candidatura inviata"?"sent":s==="Colloquio"?"interview":s==="Scartata"?"rejected":s==="Interessante"?"interesting":""}
-let queue = "review";
-function setQueue(view) {
- queue = view;
- $("queue-review").setAttribute("aria-pressed", String(view === "review"));
- $("queue-sent").setAttribute("aria-pressed", String(view === "sent"));
- render();
-}
-function formatAddedDate(value) {
- const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + "T12:00:00" : value || "");
- return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("it-IT", {timeZone: "Europe/Rome"});
-}
-function card(job, index) {
- const date=formatAddedDate(job.dateAdded);
- const context=[job.location,job.mode].map(x=>String(x||"").trim()).filter(x=>x&&!/^(da verificare|non specificat[ao])$/i.test(x)).join(" · ");
- const score=Number(job.score);
- const note=String(job.notes||"").replace(/\s+/g," ").trim();
- const next=String(job.next||"").trim();
- let safeUrl="";
- try {const u=new URL(job.url);if(["https:","http:"].includes(u.protocol))safeUrl=u.href;} catch {}
- return '<article class="job job-summary">'+
-  '<div class="job-card-heading"><div class="job-card-info"><span class="job-company-name">'+esc(job.company)+'</span><div class="jobtitle">'+esc(job.role)+'</div></div>'+
-  '<span class="job-match" title="Compatibilità indicativa, non verifica dei requisiti">'+(score>0?esc(score.toLocaleString("it-IT"))+'/10':'—')+' <small>MATCH</small></span></div>'+
-  '<div class="meta">'+(context?'<span class="tag">⌖ '+esc(context)+'</span>':'')+(job.protected?'<span class="tag">L.68/99</span>':'')+'</div>'+
-  (note?'<p class="job-card-note">'+esc(note.length>240?note.slice(0,240)+'…':note)+'</p>':'')+
-  '<div class="job-card-status"><span class="job-added">'+(date?'Inserita '+esc(date):'Data inserimento non disponibile')+'</span><span class="status '+cls(job.status)+'">'+esc(job.status)+'</span></div>'+
-  (next?'<div class="job-next"><strong>Prossima azione</strong><span>'+esc(next)+'</span></div>':'')+
-  '<div class="job-card-actions"><button type="button" class="ghost" onclick="detail('+Number(index)+')">Dettagli e stato</button>'+
-  (safeUrl?'<a class="job-original-link" href="'+esc(safeUrl)+'" target="_blank" rel="noopener noreferrer">Annuncio originale ↗</a>':'<span class="job-unverified">Link non disponibile</span>')+'</div>'+
- '</article>';
-}
-function geographyGroup(job) {
- const loc=String(job.location||"").toLowerCase();
- const remote=/^remot[oa]$/i.test(String(job.mode||"").trim());
- if(/milano|lombardia|assago|monza|san donato milanese|segrate|rho\b|bergamo|brianza/i.test(loc))return "milan";
- if(remote&&/italia|italy|italian|roma|bologna|torino|napoli|firenze|palermo|verona|bari|padova|genova|ancona|venezia|catania/i.test(loc))return "italy";
- if(remote&&!/^(non specificata|da verificare|)$/.test(loc))return "international";
- return "other";
-}
-function priorityScore(job) {
- const location = /milano|lombardia|assago|monza|bergamo|brescia|como|lecco|varese|sondrio|pavia|cremona|mantova|lodi/i.test(job.location);
- const preferredMode = /ibrid|hybrid|in presenza|on.site/i.test(job.mode);
- return (Number(job.score) || 0) + Number(location) + Number(location && preferredMode)
-  + Number(job.status === "Interessante");
-}
-function render(){
- $("today").textContent=new Intl.DateTimeFormat("it-IT",{day:"2-digit",month:"short",year:"numeric"}).format(new Date());
- let sent=jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length,review=jobs.filter(j=>j.status==="Da valutare"||j.status==="Interessante").length,inter=jobs.filter(j=>j.status==="Colloquio").length;
- $("s-total").textContent=jobs.length;$("s-sent").textContent=sent;$("s-review").textContent=review;$("s-interview").textContent=inter;
- const query = $("search1").value.trim().toLowerCase();
- const queueStatuses = queue === "sent" ? ["Candidatura inviata"] : ["Da valutare", "Interessante"];
- const visibleJobs = jobs.map((job, index) => ({job, index}))
-  .filter(({job}) => (queue==="sent" ? (job.status==="Candidatura inviata"||job.sent===true) : queueStatuses.includes(job.status)) && `${job.company} ${job.role}`.toLowerCase().includes(query))
-  .sort((a, b) => (b.job.dateAdded || "").localeCompare(a.job.dateAdded || ""));
- const priorityJobs = queue === "review" && !query
-  ? visibleJobs.filter(({job}) => /data analyst|data scientist|analytics|business intelligence|\bbi\b|power bi/i.test(job.role) &&
-      !/\b(junior|intern|internship|stage|tirocinio)\b/i.test(job.role))
-     .sort((a, b) => priorityScore(b.job) - priorityScore(a.job)).slice(0, 3)
-  : [];
- const priorityIndexes = new Set(priorityJobs.map(({index}) => index));
- $("priority-section").hidden = priorityJobs.length === 0;
- $("priority-jobs").innerHTML = priorityJobs.map(({job, index}) => card(job, index)).join("");
- $("latest").innerHTML = visibleJobs.filter(({index}) => !priorityIndexes.has(index))
-  .slice(0, Math.max(0, 6-priorityJobs.length))
-  .map(({job, index}) => card(job, index)).join("") ||
-  (priorityJobs.length ? "" : '<div class="empty">Nessuna opportunità in questa vista.</div>');
- $("shown").textContent = String(visibleJobs.length);
- const q2=($("search2")?.value||"").toLowerCase(),f2=$("filter2")?.value||"",sort=$("sort")?.value||"score";
- let all=jobs.map((j,i)=>({...j,_i:i})).filter(j=>(!f2||j.status===f2)&&(`${j.company} ${j.role} ${j.location} ${j.area}`.toLowerCase().includes(q2)));
- if($("verified-links")?.checked) all=all.filter(j=>{try{const u=new URL(j.url);return u.protocol==="https:"||u.protocol==="http:"}catch{return false}});
- if($("remote-only")?.checked) all=all.filter(j=>/remot|remote|home.office|work from anywhere/i.test(j.mode+" "+j.location));
- if($("protected-only")?.checked) all=all.filter(j=>j.protected||/68\/99|categorie protette/i.test(j.role));
- const geo=$("geo-filter")?.value;
- if(geo)all=all.filter(j=>geographyGroup(j)===geo);
- all.sort(sort==="company"?(a,b)=>a.company.localeCompare(b.company):sort==="recent"?(a,b)=>(b.dateAdded||"").localeCompare(a.dateAdded||""):((a,b)=>b.score-a.score));
- $("alljobs").innerHTML=all.map(j=>card(j,j._i)).join("")||'<div class="empty">Nessuna opportunità trovata.</div>';
- $("board").innerHTML=statuses.slice(0,4).map(s=>`<div class="column"><h4>${s}<span>${jobs.filter(j=>j.status===s).length}</span></h4>${jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status===s).map(j=>`<div class="job" onclick="detail(${j._i})"><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.company)}</div><div class="score">${j.score}/10 MATCH</div></div>`).join("")||'<div class="empty">Nessuna scheda</div>'}</div>`).join("");
- let iv=jobs.map((j,i)=>({...j,_i:i})).filter(j=>j.status==="Colloquio");
- $("interviewList").innerHTML=iv.length?iv.map(j=>card(j,j._i)).join(""):'<div class="empty">Non hai ancora colloqui registrati.<br>Quando un’azienda ti contatta, apri la relativa opportunità e cambia lo stato in “Colloquio”.</div>';
- renderGlassData();
-}
-
-function goTo(id){
- const button=document.querySelector('.nav button[data-tab="'+id+'"]');
- if(button)tab(id,button);
-}
-function quickSearch(value){
- const q=$("search2");if(q)q.value=value;
- goTo("opportunities");
-}
-function renderGlassData(){
- const counts={
-  review:jobs.filter(j=>j.status==="Da valutare").length,
-  interesting:jobs.filter(j=>j.status==="Interessante").length,
-  sent:jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length,
-  interview:jobs.filter(j=>j.status==="Colloquio").length,
-  rejected:jobs.filter(j=>j.status==="Scartata").length
- };
- const stages=[["Da valutare",counts.review],["Interessanti",counts.interesting],["Inviate",counts.sent],["Colloqui",counts.interview],["Scartate",counts.rejected]];
- const strip=$("overview-pipeline");
- if(strip)strip.innerHTML=stages.map(([name,n])=>'<div class="stage-item"><small>'+esc(name)+'</small><strong>'+n+'</strong></div>').join("");
- const focus=jobs.map((j,i)=>({j,i})).filter(({j})=>
-   ["Da valutare","Interessante"].includes(j.status)&&String(j.next||"").trim())
-   .sort((a,b)=>priorityScore(b.j)-priorityScore(a.j)||(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,4);
- if($("focus-count"))$("focus-count").textContent=focus.length+" priorità";
- if($("focus-list"))$("focus-list").innerHTML=focus.length?focus.map(({j,i})=>
-   '<div class="focus-entry"><span class="focus-bullet">✓</span><div class="entry-copy"><strong>'+esc(j.company)+'</strong><small>'+esc(j.next)+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
-   :'<div class="empty">Nessuna prossima azione registrata.</div>';
- const sentJobs=jobs.map((j,i)=>({j,i})).filter(({j})=>j.status==="Candidatura inviata"||j.sent===true).sort((a,b)=>(b.j.dateAdded||"").localeCompare(a.j.dateAdded||"")).slice(0,3);
- if($("recent-count"))$("recent-count").textContent=counts.sent+" inviate";
- if($("recent-sent"))$("recent-sent").innerHTML=sentJobs.length?sentJobs.map(({j,i})=>
-   '<div class="recent-entry"><span class="mini-logo">'+esc(String(j.company||"?").slice(0,1).toUpperCase())+'</span><div class="entry-copy"><strong>'+esc(j.company)+' — '+esc(j.role)+'</strong><small>'+esc(j.status==="Scartata"?"Candidatura inviata · esito negativo":j.status==="Colloquio"?"Candidatura inviata · colloquio":"Candidatura inviata")+'</small></div><button type="button" class="ghost" onclick="detail('+i+')" aria-label="Apri '+esc(j.company)+'">↗</button></div>').join("")
-   :'<div class="empty">Nessuna candidatura ancora registrata.</div>';
- const today=new Date(),fmt=new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Rome",year:"numeric",month:"2-digit",day:"2-digit"});
- const days=Array.from({length:7},(_,i)=>{
-  const d=new Date(today.getTime()-(6-i)*86400000);
-  return fmt.format(d);
- });
- const changes=days.map(day=>jobs.filter(j=>{
-  const d=new Date(j.dateAdded||"");return !Number.isNaN(d.getTime())&&fmt.format(d)===day;
- }).length);
- const weekAdded=changes.reduce((n,v)=>n+v,0);
- if($("analytics-tiles"))$("analytics-tiles").innerHTML=[
-  ["Inviate",counts.sent],["Da valutare",counts.review+counts.interesting],["Colloqui",counts.interview],["Nuove 7gg",weekAdded]
- ].map(([k,v])=>'<div class="analytics-tile"><strong>'+v+'</strong><small>'+esc(k)+'</small></div>').join("");
- const svg=$("analytics-line");
- if(svg){
-  const max=Math.max(1,...changes);
-  const pts=changes.map((n,i)=>[20+i*(380/6),128-(n/max)*104]);
-  const path=pts.map(([x,y],i)=>(i?"L":"M")+x.toFixed(1)+","+y.toFixed(1)).join(" ");
-  const fill=path+" L400,128 L20,128 Z";
-  const guides=[0,.5,1].map(t=>'<line x1="20" y1="'+(128-t*104)+'" x2="400" y2="'+(128-t*104)+'" stroke="rgba(158,218,247,.18)" stroke-dasharray="4 7"/>').join("");
-  svg.innerHTML='<defs><linearGradient id="trendArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#57ecf8" stop-opacity=".37"/><stop offset="1" stop-color="#57ecf8" stop-opacity="0"/></linearGradient></defs>'+guides+
-    '<path d="'+fill+'" fill="url(#trendArea)"/><path d="'+path+'" fill="none" stroke="#6ceff8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+
-    pts.map(([x,y])=>'<circle cx="'+x+'" cy="'+y+'" r="4" fill="#89ffff" stroke="#0d627a" stroke-width="2"/>').join("");
-  const localDay=d=>new Date(d+"T12:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"short"});
-  if($("analytics-dates"))$("analytics-dates").innerHTML="<span>"+localDay(days[0])+"</span><span>"+localDay(days[3])+"</span><span>"+localDay(days[6])+"</span>";
- }
- const maxStage=Math.max(1,...stages.map(([,n])=>n));
- if($("analytics-bars"))$("analytics-bars").innerHTML=stages.map(([name,n])=>
-   '<div class="analytics-bar"><strong>'+n+'</strong><span class="bar-shaft" style="--bar-height:'+Math.max(4,Math.round(104*n/maxStage))+'px"></span><small>'+esc(name==="Da valutare"?"Valutare":name)+'</small></div>').join("");
-}
-
-function tab(id,btn){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");render()}
-function closeModal(){$("modal").classList.remove("show")}
-function openAdd(){ $("dialog").innerHTML=`<div class="dialoghead"><h3>＋ Nuova opportunità</h3><button onclick="closeModal()">✕</button></div><div class="fields">
-<div class="field"><label>AZIENDA</label><input id="f-company" placeholder="Nome azienda"></div><div class="field"><label>RUOLO</label><input id="f-role" placeholder="Titolo posizione"></div>
-<div class="field"><label>SEDE</label><input id="f-location" value="Milano"></div><div class="field"><label>MODALITÀ</label><select id="f-mode"><option>Ibrido</option><option>Remoto</option><option>In presenza</option><option>Non specificata</option></select></div>
-<div class="field"><label>COMPATIBILITÀ (1–10)</label><input id="f-score" type="number" min="1" max="10" value="7"></div><div class="field"><label>STATO</label><select id="f-status">${statuses.map(s=>`<option>${s}</option>`).join("")}</select></div>
-<div class="field full"><label>LINK ANNUNCIO</label><input id="f-url" placeholder="https://..."></div><div class="field full"><label>NOTE</label><textarea id="f-notes" rows="3" placeholder="Requisiti, RAL, dettagli..."></textarea></div></div><div class="dialogactions"><button onclick="closeModal()">Annulla</button><button class="primary" onclick="addJob()">Salva opportunità</button></div>`;$("modal").classList.add("show")}
-async function addJob(){
- let company=$("f-company").value.trim(),role=$("f-role").value.trim();
- if(!company||!role){alert("Inserisci almeno azienda e ruolo.");return}
- const job={company,role,location:$("f-location").value,mode:$("f-mode").value,score:Math.min(10,Math.max(1,Number($("f-score").value)||7)),status:$("f-status").value,protected:false,url:$("f-url").value.trim(),notes:$("f-notes").value,area:"",next:"Definire prossima azione"};
- try{
-  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"create",job})});
-  const result=await response.json();if(!response.ok)throw new Error(result.error||"Creazione non riuscita");
-  closeModal();await loadNotionJobs();
- }catch(error){alert("Non sono riuscito a salvare su Notion: "+error.message)}
-}
-function detail(i){let j=jobs[i];$("dialog").innerHTML=`<div class="dialoghead"><div><div class="eyebrow">OPPORTUNITY PROFILE</div><h3 style="margin-top:5px">${esc(j.company)}</h3></div><button onclick="closeModal()">✕</button></div><div class="detailtop"><div><div class="jobtitle">${esc(j.role)}</div><div class="company">${esc(j.location)} · ${esc(j.mode)}</div></div><div class="score">${j.score}/10 MATCH</div></div><div class="detailmeta"><span class="tag">${esc(j.status)}</span><span class="tag">${j.protected?"L.68/99":"General"}</span><span class="tag">Inserita il: ${formatAddedDate(j.dateAdded)||"data non disponibile"}</span></div><p class="detailtext">${esc(j.notes||"Nessuna nota.")}</p><div class="field" style="margin-top:14px"><label>AGGIORNA STATO</label><select id="detail-status">${statuses.map(s=>`<option ${s===j.status?"selected":""}>${s}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>PROSSIMA AZIONE</label><input id="detail-next" value="${esc(j.next||"")}"></div><div class="dialogactions">${j.url?`<button onclick="window.open('${esc(j.url)}','_blank')">Apri annuncio ↗</button>`:""}<button class="primary" onclick="updateJob(${i})">Salva modifiche</button></div>`;$("modal").classList.add("show")}
-async function updateJob(i){
- const job=jobs[i];if(!job.id){alert("Questa scheda non ha un ID Notion valido: aggiornamento non disponibile.");return}
- try{
-  const response=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"update",id:job.id,status:$("detail-status").value,next:$("detail-next").value})});
-  const result=await response.json();if(!response.ok)throw new Error(result.error||"Aggiornamento non riuscito");
-  closeModal();await loadNotionJobs();
- }catch(error){alert("Non sono riuscito ad aggiornare Notion: "+error.message)}
-}
-function deleteJob(i){if(confirm("Eliminare questa opportunità?")){jobs.splice(i,1);closeModal();save()}}
-function exportData(){let blob=new Blob([JSON.stringify(jobs,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="job-hunting-opportunities.json";a.click();URL.revokeObjectURL(a.href)}
-$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
-render();
-
-async function loadNotionJobs(){
- const badge=document.getElementById("sync-status");
- try{
-  if(badge) badge.textContent="NOTION · SINCRONIZZAZIONE…";
-  const response=await fetch("/api/jobs",{cache:"no-store"});
-  const payload=await response.json();
-  if(!response.ok) throw new Error(payload.error||"Sincronizzazione non riuscita");
-  if(!Array.isArray(payload.jobs)) throw new Error("Risposta API non valida");
-  jobs=payload.jobs;
-  localStorage.setItem("jhc_jobs",JSON.stringify(jobs));
-  if(badge) badge.textContent="NOTION LIVE · "+jobs.length+" offerte · "+jobs.filter(j=>j.status==="Candidatura inviata"||j.sent===true).length+" inviate";
-  if($("source-label")) $("source-label").textContent="NOTION SINCRONIZZATO";
-  render();
- }catch(error){
-  console.error("Notion sync:",error);
-  if(badge) badge.textContent="SYNC NON DISPONIBILE";
-  if($("source-label")) $("source-label").textContent="DATI LOCALI · NOTION OFFLINE";
- }
-}
-
-loadNotionJobs();
-// Rileggi Notion periodicamente anche se la pagina rimane aperta sul Mac.
-setInterval(()=>{if(!document.hidden)loadNotionJobs()},90000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadNotionJobs()});
-window.addEventListener("online",()=>loadNotionJobs());
-</script>
+<!-- JOBDEX -->
+<section class="view" id="view-jobdex">
+ <div class="view-heading"><div><div class="overline">THE COMPLETE INDEX</div><h3>📕 Il JobDex</h3><p>Tutte le opportunità sincronizzate con Notion, organizzate come schede di un'enciclopedia. Apri le schede, controlla i dettagli e aggiorna gli stati reali.</p></div><button class="btn hot" data-action="new">＋ Aggiungi opportunità</button></div>
+ <div class="filters"><input id="job-search" class="field search" type="search" placeholder="Cerca azienda, ruolo, sede, competenze…  ( / )" aria-label="Cerca opportunità"><select id="job-status" class="field" aria-label="Filtra per stato"><option value="all">Tutti gli stati</option><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select><select id="job-mode" class="field" aria-label="Filtra modalità"><option value="all">Tutte le modalità</option><option>Remoto</option><option>Ibrido</option><option>In presenza</option><option>Non specificata</option></select><select id="job-sort" class="field" aria-label="Ordina"><option value="recent">Più recenti</option><option value="old">Meno recenti</option><option value="score">Compatibilità</option><option value="company">Azienda A–Z</option></select><span id="job-count" class="count">—</span></div>
+ <div id="jobs-list" class="job-grid"></div><div class="row-buttons" style="justify-content:center;margin:22px 0"><button class="btn small" id="job-prev">← Precedente</button><span id="job-page" class="pill">—</span><button class="btn small" id="job-next">Successiva →</button></div>
+</section>
+<!-- PIPELINE -->
+<section class="view" id="view-pipeline"><div class="view-heading"><div><div class="overline">PROGRESSION MAP</div><h3>🧭 Il percorso</h3><p>La pipeline usa i cinque stati realmente supportati dal tuo database Notion. Clicca una scheda per aggiornarne lo stato o la prossima azione.</p></div><button class="btn small blue" data-nav="jobdex">Apri JobDex</button></div><div id="pipeline-board" class="kanban"></div><div id="pipeline-foot" class="note notice"></div></section>
+<!-- ARENA -->
+<section class="view" id="view-arena"><div class="view-heading"><div><div class="overline">BATTLE PREPARATION</div><h3>⚔️ Interview Arena</h3><p>Colloqui confermati e informazioni fondamentali. Gli orari qui sotto sono uno snapshot: per modifiche o nuove convocazioni consulta il tuo calendario.</p></div><a class="btn gold" href="https://calendar.google.com/calendar/u/0/r/week" target="_blank" rel="noopener">Apri Google Calendar ↗</a></div><div id="arena-list" class="grid-two"></div><div class="panel panel-pad" style="margin-top:16px"><h3 class="panel-title">🎤 Battle Prep — mini checklist</h3><div class="grid-three" style="margin-top:15px"><div class="status-box"><div class="mini-label">01 · TRAINER INTRO</div><p class="panel-sub">Presentazione in 60 secondi, risultati e specializzazioni.</p></div><div class="status-box"><div class="mini-label">02 · PROJECT MOVES</div><p class="panel-sub">Tre esempi con problema, azione, strumenti, risultato.</p></div><div class="status-box"><div class="mini-label">03 · SMART QUESTIONS</div><p class="panel-sub">Chiedi stack, metriche di successo, roadmap e modalità di lavoro.</p></div></div></div></section>
+<!-- QUESTS -->
+<section class="view" id="view-quests"><div class="view-heading"><div><div class="overline">DAILY MISSIONS</div><h3>📜 Quest Log</h3><p>Una to-do semplice con missioni suggerite dal contesto e missioni personali. Le spunte qui sono salvate solo su questo browser, non su Structured.</p></div><span id="quest-total" class="pill yellow">—</span></div><div class="grid-two"><div class="panel panel-pad"><div class="section-head"><h3 class="panel-title">Missioni da completare</h3><div class="row-buttons"><button class="btn small" data-quest-filter="open">Da fare</button><button class="btn small" data-quest-filter="done">Fatte</button><button class="btn small" data-quest-filter="all">Tutte</button></div></div><div id="quest-list"></div><div class="compose"><input class="field" id="new-quest" maxlength="150" placeholder="Aggiungi una missione personale…" aria-label="Nuova missione"><button class="btn gold" data-action="add-quest">＋ Aggiungi</button></div></div><div class="panel panel-pad"><div class="mini-label">📡 QUEST SOURCE</div><h3 class="panel-title" style="margin-top:8px">L'agenda, ma leggibile.</h3><p class="panel-sub" style="margin:12px 0">Le missioni automatiche sono suggerimenti basati su colloqui e comunicazioni già verificate. Non vengono inviate mail né ripetute candidature quando completi una quest.</p><div class="divider"></div><div class="row-buttons"><a class="btn small blue" href="https://calendar.google.com/calendar/u/0/r/week" target="_blank" rel="noopener">Calendario</a><a class="btn small" href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener">Email</a></div><div class="divider"></div><button class="btn small ghost" data-action="reset-quests">Azzera i soli dati delle quest locali</button></div></div></section>
+<!-- INBOX -->
+<section class="view" id="view-inbox"><div class="view-heading"><div><div class="overline">COMMUNICATION CENTER</div><h3>✉️ Centro messaggi</h3><p>Le ultime comunicazioni rilevanti verificate durante il controllo Gmail. L'elenco è uno snapshot, non una casella email collegata in tempo reale a questo sito.</p></div><a class="btn blue" href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener">Apri inbox Gmail ↗</a></div><div class="note" id="inbox-snapshot" style="margin-bottom:17px"></div><div id="inbox-list" class="comms-grid"></div></section>
+<!-- ANALYTICS -->
+<section class="view" id="view-analytics"><div class="view-heading"><div><div class="overline">STATISTICS LAB</div><h3>📊 Analytics Lab</h3><p>Metriche calcolate sul database Notion live. Le date dei grafici rappresentano l'inserimento delle opportunità, non la data dell'invio delle candidature.</p></div><button class="btn blue" data-action="export-csv">↓ Esporta dataset CSV</button></div><div class="analytics-grid">
+<div class="panel panel-pad chart-area"><h3 class="panel-title">📈 Nuove opportunità inserite</h3><p class="panel-sub">Ultimi 9 giorni · per data di creazione scheda</p><div id="analytics-bar" class="chart-column"></div></div>
+<div class="panel panel-pad chart-area"><h3 class="panel-title">🧿 La distribuzione dei risultati</h3><p class="panel-sub">Stati attuali nel Career Dex</p><div class="ring-layout"><div id="analytics-ring" class="donut"><strong>—</strong></div><div id="analytics-legend" class="legend"></div></div></div>
+<div class="panel panel-pad"><h3 class="panel-title">🌍 Dove si lavora</h3><p class="panel-sub" style="margin-bottom:22px">Remoto, ibrido, presenza e modalità non dichiarata</p><div id="analytics-mode" class="mini-bars"></div></div>
+<div class="panel panel-pad"><h3 class="panel-title">🧮 Data quality radar</h3><p class="panel-sub">Metriche documentate, senza tassi di successo inventati</p><div id="analytics-rates" class="status-grid"></div></div>
+<div class="panel panel-pad"><h3 class="panel-title">🎨 Distribuzione delle aree</h3><p class="panel-sub">Categorie presenti nelle schede Notion</p><div id="analytics-areas" class="encounter-list" style="margin-top:15px"></div></div>
+<div class="panel panel-pad"><h3 class="panel-title">💡 Come leggere questi dati</h3><p class="panel-sub" style="margin-top:15px;line-height:1.9">Una candidatura inviata può successivamente passare allo stato Scartata: il flag di storico rimane, ma il conteggio della fase attiva scende. I colloqui confermati sono mostrati nell'Interview Arena separata e non vengono inventati come record Notion.</p></div>
+</div></section>
+<!-- RECRUITERS -->
+<section class="view" id="view-recruiters"><div class="view-heading"><div><div class="overline">TEAM COMMUNICATIONS</div><h3>🤝 Recruiter HQ</h3><p>Contatti professionali verificati, priorità e azioni di follow-up. Nessuna email viene inviata automaticamente da questa dashboard.</p></div><button class="btn gold" data-nav="inbox">Apri le comunicazioni</button></div><h3 class="panel-title" style="margin-bottom:13px">Contatti utili</h3><div id="recruiter-list" class="grid-three"></div><div class="panel panel-pad" style="margin-top:17px"><div class="section-head"><h3 class="panel-title">📌 Schede con prossimo passo</h3><button class="btn small" data-nav="jobdex">Apri JobDex</button></div><div id="recruiter-followups" class="encounter-list"></div></div></section>
+<!-- TRAINER -->
+<section class="view" id="view-trainer"><div class="view-heading"><div><div class="overline">TRAINER LICENSE</div><h3>👤 Trainer Profile</h3><p>La tua identità professionale: competenze, esperienza, strumenti e risultati tracciati.</p></div><a class="btn blue" href="https://www.linkedin.com/in/jacopo-soppelsa-7a2a17168/" target="_blank" rel="noopener">LinkedIn ↗</a></div><div class="panel profile-hero"><div class="trainer-avatar">👨‍💻</div><div><div class="overline" style="color:var(--gold)">✦ PROFESSIONAL TRAINER · LVL 07</div><h3>Jacopo Soppelsa</h3><p>Data Scientist · Data Analyst · Business Intelligence</p><p>📍 Milano · Master in Scienze Statistiche ed Economiche</p><p id="trainer-exp">—</p></div></div><div class="grid-two" style="margin-top:16px"><div class="panel panel-pad"><h3 class="panel-title">🔮 Skill Types & Evolutions</h3><p class="panel-sub">Competenze documentate nel CV condiviso</p><div id="trainer-types" class="type-badges"></div></div><div class="panel panel-pad"><h3 class="panel-title">🏅 Trainer Stats</h3><div id="trainer-profile-stats" class="status-grid"></div></div></div><div class="panel panel-pad" style="margin-top:16px"><h3 class="panel-title">Career Journey</h3><p class="panel-sub" style="margin-top:10px;line-height:1.8">Esperienze in Amazon, GameStop, Sky Italia e Reply/ING. Focus su analisi decisionale, customer analytics, forecasting, machine learning, BI e automazione. Il profilo è un riepilogo del CV, non una connessione live con LinkedIn.</p></div></section>
+<!-- VAULT -->
+<section class="view" id="view-vault"><div class="view-heading"><div><div class="overline">EQUIPMENT & ASSETS</div><h3>🗃️ Assets Vault</h3><p>Link e testi professionali pronti da copiare. Nessun CV viene pubblicato automaticamente sul sito.</p></div><button class="btn blue" data-nav="trainer">Trainer Profile</button></div><div class="tile-links">
+<a class="panel tile-link" href="https://www.linkedin.com/in/jacopo-soppelsa-7a2a17168/" target="_blank" rel="noopener"><span class="emoji">🌐</span><span><strong>Profilo LinkedIn</strong><small>Profilo professionale</small></span></a>
+<a class="panel tile-link" href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener"><span class="emoji">📕</span><span><strong>Database Notion</strong><small>Le opportunità di lavoro</small></span></a>
+<a class="panel tile-link" href="https://github.com/Bayes92/Job-Dashboard" target="_blank" rel="noopener"><span class="emoji">🛠️</span><span><strong>Repository GitHub</strong><small>Sorgenti e cronologia versioni</small></span></a>
+<a class="panel tile-link" href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener"><span class="emoji">✉️</span><span><strong>Gmail</strong><small>Comunicazioni dei recruiter</small></span></a>
+<a class="panel tile-link" href="https://calendar.google.com/calendar/u/0/r/week" target="_blank" rel="noopener"><span class="emoji">📅</span><span><strong>Google Calendar</strong><small>Agenda colloqui e impegni</small></span></a>
+<button class="panel tile-link" data-action="export-csv" style="color:inherit;text-align:left"><span class="emoji">📦</span><span><strong>Backup opportunità</strong><small>Scarica il CSV reale</small></span></button>
+</div><div class="view-heading" style="margin-top:27px"><div><h3 style="font-size:21px">📝 Text Kit</h3><p>Presentazione, follow-up e ringraziamento post-colloquio: copie pronte da personalizzare.</p></div></div><div id="vault-snippets" class="grid-three"></div><div class="note" style="margin-top:16px">Per i CV e la cover letter usa i PDF originali salvati nei tuoi file: non vengono incorporati in un sito pubblico senza il tuo consenso.</div></section>
+<!-- FOCUS -->
+<section class="view" id="view-focus"><div class="view-heading"><div><div class="overline">ONE MISSION AT A TIME</div><h3>🎯 Focus Mode</h3><p>Una sola azione alla volta, niente 30 filtri, niente distrazioni.</p></div></div><div class="panel focus-box" id="focus-content"></div></section>
+<!-- SETTINGS -->
+<section class="view" id="view-settings"><div class="view-heading"><div><div class="overline">MISSION PARAMETERS</div><h3>⚙️ Impostazioni</h3><p>Controlla la sorgente dei dati, lo stile e le esportazioni. Le modifiche alle candidature sono salvate su Notion quando il collegamento è online.</p></div></div><div class="grid-two"><div class="panel panel-pad"><h3 class="panel-title">📡 Notion Data Link</h3><p id="settings-dataset" class="panel-sub" style="margin:13px 0">—</p><p id="source-detail" class="panel-sub">In attesa dei dati…</p><p id="last-sync" class="panel-sub">—</p><div class="row-buttons" style="margin-top:18px"><button class="btn blue small" data-action="refresh">Sincronizza adesso</button><a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener" class="btn small">Apri database</a></div></div><div class="panel panel-pad"><h3 class="panel-title">🎨 Design System</h3><p class="panel-sub" style="margin:13px 0">Pokédex red · neon cyan · electric yellow · game HUD · pannelli glossy.</p><button id="theme-switch" class="btn gold" data-action="theme">☀ Cambia tema</button><p class="panel-sub" style="margin-top:14px">Il tema è salvato solo sul dispositivo.</p></div><div class="panel panel-pad"><h3 class="panel-title">📤 Export</h3><p class="panel-sub" style="margin:12px 0">Scarica copie dei dati senza modificare Notion.</p><div class="row-buttons"><button class="btn small blue" data-action="export-csv">Esporta CSV</button><button class="btn small" data-action="export-json">Backup JSON</button></div></div><div class="panel panel-pad"><h3 class="panel-title">🔒 Dati e limiti</h3><p class="panel-sub" style="margin:12px 0;line-height:1.8">I dati Notion sono letti da una API della dashboard; le azioni di modifica passano per la stessa API. Questa versione non invia candidature, non legge Gmail live e non scrive su Structured. La lista messaggi e i colloqui sono snapshot verificati; consultare le fonti per variazioni.</p></div></div></section>
+<footer class="footer">CAREER DEX · MISSION CONTROL V2 · VERCEL × NOTION · ORIGINAL TRAINER-INSPIRED UI · <span id="footer-year">2026</span></footer>
+</main></div>
+<!-- JOB DETAIL -->
+<dialog class="dialog" id="job-dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="mini-label">JOBDEX ENTRY</div><h3 id="dialog-company">Azienda</h3><p class="panel-sub" id="dialog-role"></p></div><button class="btn round" onclick="document.getElementById('job-dialog').close()" type="button" aria-label="Chiudi">✕</button></div><div class="row-buttons"><span class="pill blue" id="dialog-location"></span><span class="pill yellow" id="dialog-score"></span></div><div class="divider"></div><div class="mini-label">NOTE POSIZIONE</div><p id="dialog-note" class="text-xs" style="line-height:1.75;color:var(--muted);white-space:pre-wrap;max-height:180px;overflow:auto"></p><div class="row-buttons" id="dialog-links" style="margin:13px 0"></div><form id="job-edit-form"><div class="form-grid"><label>STATO NOTION<select class="field" id="dialog-state"><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select></label><label class="wide">PROSSIMA AZIONE<textarea class="field" id="dialog-next" maxlength="1900" rows="4"></textarea></label></div><div class="dialog-actions"><button type="button" class="btn" onclick="document.getElementById('job-dialog').close()">Annulla</button><button id="save-job" type="submit" class="btn hot">✓ Salva su Notion</button></div></form></div></dialog>
+<!-- ADD OPPORTUNITY -->
+<dialog class="dialog" id="new-dialog"><div class="dialog-inner"><div class="dialog-head"><div><div class="mini-label">NEW ENCOUNTER</div><h3>＋ Nuova opportunità</h3><p class="panel-sub">Crea direttamente una scheda Notion, evitando duplicati.</p></div><button class="btn round" type="button" onclick="document.getElementById('new-dialog').close()" aria-label="Chiudi">✕</button></div><form id="new-job-form"><div class="form-grid"><label>AZIENDA *<input class="field" name="company" maxlength="120" required placeholder="Es. Nuova azienda"></label><label>RUOLO *<input class="field" name="role" maxlength="160" required placeholder="Es. Senior Data Analyst"></label><label>SEDE<input class="field" name="location" value="Milano"></label><label>MODALITÀ<select class="field" name="mode"><option>Ibrido</option><option>Remoto</option><option>In presenza</option><option>Non specificata</option></select></label><label>COMPATIBILITÀ<input class="field" name="score" type="number" min="1" max="10" value="7"></label><label>STATO<select class="field" name="status"><option>Da valutare</option><option>Interessante</option><option>Candidatura inviata</option><option>Colloquio</option><option>Scartata</option></select></label><label class="wide">LINK ANNUNCIO<input class="field" name="url" type="url" placeholder="https://…"></label></div><div class="dialog-actions"><button type="button" class="btn" onclick="document.getElementById('new-dialog').close()">Annulla</button><button id="new-save" type="submit" class="btn hot">Crea su Notion</button></div></form></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body></html>
