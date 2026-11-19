@@ -48,7 +48,7 @@ try{currentId=localStorage.getItem(currentKey)||''}catch(_){currentId=''}
 const $=s=>document.getElementById(s);
 const isSent=j=>state[j.id]?.status==='sent';
 function save(){localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem(currentKey,currentId);localStorage.setItem(stateKey,String(order))}
-function h(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]))}
+function h(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function orderSent(){return jobs.filter(isSent).sort((a,b)=>(state[a.id].sequence||999999)-(state[b.id].sequence||999999))}
 function available(){return jobs.filter(j=>!isSent(j)&&!j.blocco)}
 function pending(){return jobs.filter(j=>!isSent(j))}
