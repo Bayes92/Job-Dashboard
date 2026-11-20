@@ -27,7 +27,7 @@ select,input[type="search"]{border-radius:12px;border:1px solid #b4d3f64b;backgr
 @media(max-width:880px){.grid{grid-template-columns:1fr}.queue{max-height:340px}}@media(max-width:580px){main{padding:13px 12px 50px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:25px}.focus{padding:19px;min-height:0}.hero{padding:19px}.focus-actions>.btn{flex-basis:100%}.header{gap:8px}}
 </style></head><body><main>
 <header class="header"><div class="brand">CAREER <span>OS</span> / COPILOT</div><nav><a href="/" target="_blank" rel="noopener">Mission Control</a><a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener">Notion</a></nav></header>
-<section class="hero glass"><div class="eyebrow">NUOVO LOTTO · 20 NOVEMBRE 2026 · INCROCIO GROK × NOTION</div><h1>3 da candidare · 2 da verificare</h1><p>Le <b>159 candidature già registrate restano escluse</b>. Invia solo dopo aver verificato il portale aziendale o la bozza Gmail. Premi <b>✓ Ho inviato → Prossima</b> solo dopo la conferma esterna. Le due offerte in verifica sono separate e non devono essere inviate senza nuove prove. Per Omicron esiste <b>una sola bozza email per due ruoli</b>: non inviare due volte.</p><div class="steps"><span class="step"><b>1</b> Apri offerta o bozza</span><span class="step"><b>2</b> Invia davvero</span><span class="step"><b>3</b> ✓ Ho inviato → Prossima</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
+<section class="hero glass"><div class="eyebrow">NUOVO LOTTO · 20 NOVEMBRE 2026 · INCROCIO GROK × NOTION</div><h1>3 inviate ✓ · 2 da verificare</h1><p>Le <b>3 candidature attive</b> (Zeta Service, Omicron Data Engineer/Analyst e SiliconDev) risultano <b>inviate su conferma dell'utente del 20/11</b>; la ricevuta esterna non è stata verificata. Le altre <b>2 opportunità restano in verifica</b> e non vanno inviate senza una nuova posizione attiva. Le 159 candidature precedenti restano nello storico Notion. Scarica il CSV dal filtro <b>Inviate</b>.</p><div class="steps"><span class="step"><b>1</b> Apri offerta o bozza</span><span class="step"><b>2</b> Invia davvero</span><span class="step"><b>3</b> ✓ Ho inviato → Prossima</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
 <section class="stats"><div class="stat glass"><small>Da lavorare</small><strong id="remaining">—</strong></div><div class="stat glass sent"><small>Inviate qui</small><strong id="done">—</strong></div><div class="stat glass blocked"><small>In attesa / esito incerto</small><strong id="blocked">—</strong></div><div class="stat glass"><small>Totale opportunità</small><strong id="total">—</strong></div></section>
 <div class="grid">
 <section class="focus glass" aria-live="polite"><div class="mini" id="currentNumber">CANDIDATURA</div><h2 id="role">—</h2><div class="co" id="company"></div><div class="badges" id="badges"></div><div class="notes" id="note"></div><div class="focus-actions"><a class="btn open" id="open" target="_blank" rel="noopener noreferrer">1. Apri candidatura ↗</a><button class="btn done" id="mark" type="button">2. ✓ Ho inviato → Prossima</button></div><div class="focus-actions"><button class="btn weak" id="later" type="button">Passa alla successiva senza segnare</button><a class="btn weak" id="notion" target="_blank" rel="noopener noreferrer">Apri scheda Notion</a></div><p class="caption" id="help">Premi «Ho inviato» SOLO dopo aver ricevuto conferma dal portale o aver inviato la mail.</p><div class="progress"><div id="bar"></div></div></section>
@@ -45,6 +45,40 @@ let state={};let order=0;let currentId='';let filter='todo';let toastTimer;
 try{state=JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch(_){state={}}
 try{order=Number(localStorage.getItem(stateKey)||0)||0}catch(_){order=0}
 try{currentId=localStorage.getItem(currentKey)||''}catch(_){currentId=''}
+
+// Registrazione definitiva del lotto Copilot del 20 novembre: l'utente conferma
+// in chat l'invio delle 3 posizioni attive. NESSUNA ricevuta aziendale presunta.
+// Le 2 posizioni in verifica NON vanno marcate come inviate.
+const verifiedUserStatementIds=[
+ '41e93ae6e18d81caa368fc219382a581',
+ '41e93ae6e18d81e88c4ef65e67ff33ef',
+ '41e93ae6e18d812a9755fb9f078df798'
+];
+const userConfirmationKey='career_os_copilot_grok_5_user_confirmed_20261120_v1';
+try {
+ if(localStorage.getItem(userConfirmationKey)!=='complete'){
+   const byNotion=new Map(jobs.map(j=>[(j.notion||'').split('/').pop()?.replace(/-/g,''),j]));
+   const allJobs=verifiedUserStatementIds.map(id=>byNotion.get(id));
+   if(allJobs.some(j=>!j||j.blocco)) throw new Error('Incoerenza offerte attive');
+   allJobs.forEach((j,i)=>{
+     if(state[j.id]?.status!=='sent'){
+       const maxSeq=Math.max(order,...Object.values(state).map(v=>Number(v?.sequence)||0),0);
+       order=maxSeq+1;
+       state[j.id]={status:'sent',updated:new Date().toISOString(),sequence:order,from:'user_statement_20261120'};
+     }
+   });
+   order=Math.max(order,...Object.values(state).map(v=>Number(v?.sequence)||0),0);
+   currentId='';filter='sent';
+   localStorage.setItem(storageKey,JSON.stringify(state));
+   localStorage.setItem(stateKey,String(order));
+   localStorage.setItem(currentKey,currentId);
+   localStorage.setItem(userConfirmationKey,'complete');
+ } else if(verifiedUserStatementIds.every(id=>{
+   const j=jobs.find(j=>(j.notion||'').split('/').pop()?.replace(/-/g,'')===id);
+   return j&&state[j.id]?.status==='sent';
+ })){filter='sent';}
+}catch(error){console.warn('Conferma candidature nuova coda:',error)}
+
 const $=s=>document.getElementById(s);
 const isSent=j=>state[j.id]?.status==='sent';
 function save(){localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem(currentKey,currentId);localStorage.setItem(stateKey,String(order))}
@@ -101,9 +135,9 @@ function localRome(iso){try{return new Intl.DateTimeFormat('sv-SE',{timeZone:'Eu
 function csvSafe(v){let s=String(v??'').replace(/\r\n?/g,'\n');if(/^\s*[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
 function downloadCSV(){
  const arr=orderSent();if(!arr.length){notify('Nessuna candidatura inviata da esportare');return}
- const cols=['progressivo','inviata_il_Europe_Rome','azienda','ruolo','stato','url_candidatura','url_notion','metodo','sede','modalita','fonte_registrazione'];
+ const cols=['progressivo','registrata_in_Copilot_il_Europe_Rome','azienda','ruolo','stato','url_candidatura','url_notion','metodo','sede','modalita','fonte_registrazione'];
  const lines=[cols.map(csvSafe).join(';')];
- arr.forEach((j,i)=>{const s=state[j.id];lines.push([s.sequence||i+1,localRome(s.updated),j.azienda,j.ruolo,'Candidatura inviata',j.url,j.notion,j.metodo,j.sede,j.modalita,'Flag confermato dall utente'].map(csvSafe).join(';'))});
+ arr.forEach((j,i)=>{const s=state[j.id];lines.push([s.sequence||i+1,localRome(s.updated),j.azienda,j.ruolo,'Candidatura inviata',j.url,j.notion,j.metodo,j.sede,j.modalita,'Invio dichiarato dall utente, ricevuta esterna non verificata'].map(csvSafe).join(';'))});
  const bom='\uFEFF',blob=new Blob([bom+lines.join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Candidature_inviate_Copilot_NuovoLotto_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
  notify('CSV scaricato: '+arr.length+' candidature inviate, in ordine di registrazione');
