@@ -1,7 +1,7 @@
 // Notion-backed Mission Control API. GET syncs rows; POST creates or updates records.
 const DATA_SOURCE_ID="e230210a-39f8-4ab3-b6f9-4ac7b50f0875";
 const NOTION_VERSION="2025-09-03";
-const STATUSES=["Da valutare","Interessante","Candidatura inviata","Colloquio","Scartata"];
+const STATUSES=["Da valutare","Interessante","Candidatura inviata","Colloquio","Scartata","Rifiutata"];
 const textValue=value=>String(value??"").slice(0,2000);
 const rich=value=>({rich_text:textValue(value)?[{text:{content:textValue(value)}}]:[]});
 function plain(prop){const value=prop?.title||prop?.rich_text||[];return Array.isArray(value)?value.map(x=>x.plain_text||x.text?.content||"").join(""):""}
@@ -15,7 +15,7 @@ function normalize(page){
   status:getSelect("Stato")||"Da valutare",sent:Boolean(p["📨 Inviata?"]?.checkbox),protected:Boolean(p["Categoria protetta / L.68/99"]?.checkbox),
   url:p["🔗 Link candidatura diretta"]?.url||p["Link annuncio"]?.url||"",
   notes:getText("Note"),next:getText("🧭 Prossima azione"),
-  dateAdded:p["Aggiunta alla dashboard"]?.created_time||page.created_time||"",
+  dateAdded:p["Aggiunta alla dashboard"]?.created_time||page.created_time||"",rejectionDate:p["Data rifiuto"]?.date?.start||"",rejectionEmail:p["Email rifiuto"]?.url||"",
   deadline:p["Scadenza"]?.date?.start||"",priority:getSelect("Priorità"),pageUrl:page.url
  };
 }
