@@ -360,6 +360,14 @@ function init(){
  if(localStorage.getItem('career_dex_light')==='1')document.body.classList.add('light');
  applyPokemonMotion();
  initEvents();APP.route=ROUTES[location.hash.slice(1)]?location.hash.slice(1):'home';setRoute(APP.route);statusSource(false);sync();
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&APP.source==='notion'&&Date.now()-new Date(APP.lastSync).getTime()>150000)sync()});
+ // Keep Notion data fresh while the dashboard is open, without interrupting form edits.
+ window.setInterval(()=>{
+  if(document.hidden||APP.source==='loading'||document.querySelector('dialog[open]')||document.querySelector('input:focus,textarea:focus'))return;
+  sync();
+ },300000);
+ document.addEventListener('visibilitychange',()=>{
+  if(document.hidden||APP.source==='loading')return;
+  if(APP.source!=='notion'||!APP.lastSync||Date.now()-new Date(APP.lastSync).getTime()>150000)sync();
+ });
 }
 document.addEventListener('DOMContentLoaded',init);
