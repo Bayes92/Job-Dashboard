@@ -58,3 +58,40 @@ body.light{--bg:#e6f0fa;--bg2:#e8f5ff;--panel:rgba(237,245,255,.94);--panel2:#e8
 .followup-card-main{min-width:0}.followup-card h4{font:800 18px var(--display);margin:7px 0 3px}.followup-card p{font-size:12px;color:var(--muted);margin:0 0 11px}.followup-card-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 @media(max-width:940px){.followup-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.followup-card{align-items:flex-start;flex-direction:column}.followup-card-actions{justify-content:flex-start}}
 @media(max-width:610px){.followup-summary{grid-template-columns:1fr}.followup-toolbar{align-items:stretch;flex-direction:column}.followup-toolbar .field{width:100%}.followup-card-actions{width:100%}.followup-card-actions .btn{flex:1}}
+
+/* Career Dex V4 — confirmed rejections, dark Liquid Glass */
+.stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.rejection-kpi{background:linear-gradient(135deg,rgba(131,35,63,.20),rgba(16,28,51,.86));border:1px solid rgba(249,106,136,.28)}
+.rejection-kpi strong,.rejection-total{color:#ff9aaf!important}
+.rejection-kpi .btn{margin-top:7px}
+.rejection-nav-count{margin-left:auto;padding:3px 8px;border-radius:20px;background:rgba(247,111,145,.18);color:#ff9aaf;font-size:11px}
+.recent-rejections{margin:0 0 15px;background:linear-gradient(120deg,rgba(133,41,69,.15),rgba(26,38,63,.7))}
+.rejection-mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.rejection-mini{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;cursor:pointer;padding:14px;border:1px solid rgba(252,127,157,.2);border-radius:16px;background:rgba(20,34,55,.8);color:var(--ink);font:inherit}
+.rejection-mini:hover{border-color:rgba(252,127,157,.65)}
+.rejection-mini .main{display:grid;gap:3px;min-width:0;flex:1}
+.rejection-mini .main strong{font-size:13px}
+.rejection-mini .main small{font-size:11px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rejection-mini-icon{font-size:18px}
+.rejection-overview{display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(115deg,rgba(112,34,62,.2),rgba(25,43,70,.85));border-color:rgba(249,116,148,.21);margin-bottom:16px}
+.rejection-total{display:block;font:900 clamp(38px,6vw,66px) var(--display);margin:5px 0}
+.rejection-summary-icon{font-size:44px;color:#ff9aaf;opacity:.7}
+.rejection-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.rejection-card{padding:20px;background:linear-gradient(145deg,rgba(37,50,74,.9),rgba(20,30,50,.9));backdrop-filter:blur(22px);border:1px solid rgba(247,111,145,.17);display:flex;flex-direction:column;gap:16px}
+.rejection-card-top{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.rejection-date{color:var(--muted);font-size:12px;font-weight:700}
+.rejection-card-identity{display:flex;gap:15px;align-items:center;min-width:0}
+.rejection-token{width:57px;height:57px;display:grid;place-items:center;font-size:27px;border-radius:17px;background:rgba(237,114,151,.15);border:1px solid rgba(237,114,151,.25)}
+.rejection-card-identity h4{font:850 20px var(--display);margin:0 0 6px}
+.rejection-card-identity p{font-size:13px;color:var(--muted);margin:0;line-height:1.5}
+.rejection-card-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.rejection-card-details>div{border-radius:12px;padding:11px 12px;background:rgba(255,255,255,.035)}
+.rejection-card-details span{font-size:10px;color:var(--muted);display:block;letter-spacing:.6px;margin-bottom:5px}
+.rejection-card-details strong{font-size:12px;line-height:1.5}
+.rejection-card-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.rejection-card-actions .btn{white-space:nowrap}
+body.light .rejection-card,body.light .rejection-mini{background:rgba(255,255,255,.72);color:#12354a}
+body.light .rejection-overview,body.light .recent-rejections{background:rgba(255,255,255,.72)}
+@media(max-width:1280px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:880px){.rejection-grid{grid-template-columns:1fr}.rejection-mini-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.rejection-card-actions .btn{flex:1}.rejection-card{padding:15px}}
