@@ -261,6 +261,19 @@ function renderFocus(){
  else if(meeting){$('focus-content').innerHTML='<div class="overline" style="color:var(--gold)">NEXT BATTLE</div><div class="large">'+html(meeting.company)+'</div><p>Le candidature attuali sono già registrate. Concentrati sul colloquio di '+html(dayTime(meeting.start))+'; prepara il tuo pitch e tre esempi concreti di progetti data.</p><div class="row-buttons"><a class="btn gold" target="_blank" rel="noopener" href="'+html(safeLink(meeting.link))+'">Apri '+html(meeting.platform)+'</a><button class="btn" data-nav="arena">Apri Interview Arena</button></div>'}
  else{$('focus-content').innerHTML='<div class="overline" style="color:var(--gold)">MISSION CLEAR</div><div class="large">Pokédex aggiornato.</div><p>Tutte le offerte registrate sono già state lavorate. Controlla le risposte dei recruiter e usa il Quest Log per i prossimi passi.</p><div class="row-buttons"><button class="btn gold" data-nav="quests">Apri Quest Log</button><a class="btn" href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener">Controlla Gmail</a></div>'}
 }
+const POKEMON_MOTION_KEY='career_dex_pokemon_motion_v1';
+function motionEnabled(){return localStorage.getItem(POKEMON_MOTION_KEY)!=='off'}
+function applyPokemonMotion(){
+ const enabled=motionEnabled();
+ document.body.classList.toggle('pokemon-motion-off',!enabled);
+ for(const id of ['pokemon-motion-toggle','motion-switch']){
+  const button=$(id);if(!button)continue;
+  button.setAttribute('aria-pressed',String(enabled));
+  button.title=enabled?'Ferma i Pokémon animati':'Riattiva i Pokémon animati';
+  button.textContent=id==='motion-switch'?(enabled?'⏸ Ferma i Pokémon':'▶ Riattiva i Pokémon'):(enabled?'⏸ Pokémon':'▶ Pokémon');
+ }
+}
+function togglePokemonMotion(){localStorage.setItem(POKEMON_MOTION_KEY,motionEnabled()?'off':'on');applyPokemonMotion()}
 function renderSettings(){
  const s=stats();$('settings-dataset').textContent=APP.source==='notion'?'NOTION LIVE · '+s.total+' righe · sincronizzato '+timeAgo(APP.lastSync):'SNAPSHOT LOCALE · '+s.total+' righe';
  $('theme-switch').textContent=document.body.classList.contains('light')?'☾ Passa a dark Pokédex':'☀ Passa a light mode';
@@ -312,6 +325,7 @@ function initEvents(){
   const b=e.target.closest('[data-action]');if(b){const x=b.dataset.action;
    if(x==='new'){$('new-dialog').showModal()}
    if(x==='theme'){document.body.classList.toggle('light');localStorage.setItem('career_dex_light',document.body.classList.contains('light')?'1':'0');renderSettings()}
+   if(x==='motion')togglePokemonMotion();
    if(x==='copy')copy(b.dataset.copy);
    if(x==='copy-template')copy(TEMPLATES[b.dataset.template]||'');
    if(x==='export-csv')exportCSV();
@@ -344,6 +358,7 @@ function initEvents(){
 }
 function init(){
  if(localStorage.getItem('career_dex_light')==='1')document.body.classList.add('light');
+ applyPokemonMotion();
  initEvents();APP.route=ROUTES[location.hash.slice(1)]?location.hash.slice(1):'home';setRoute(APP.route);statusSource(false);sync();
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&APP.source==='notion'&&Date.now()-new Date(APP.lastSync).getTime()>150000)sync()});
 }
