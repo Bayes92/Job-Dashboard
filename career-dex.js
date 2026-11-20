@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const APP={jobs:[],source:'loading',lastSync:null,route:'home',jobPage:0,pageSize:24,sort:'recent',filter:'all',mode:'all',query:'',questFilter:'open',toastTimer:null,selected:null};
-const STATUSES=['Da valutare','Interessante','Candidatura inviata','Colloquio','Scartata'];
+const STATUSES=['Da valutare','Interessante','Candidatura inviata','Colloquio','Scartata','Rifiutata'];
 // Dated snapshot, not a live connection to Calendar.
 const INTERVIEWS=[
  {id:'agile-20261120',company:'Agile Lab',role:'Colloquio conoscitivo',start:'2026-11-20T16:00:00+01:00',end:'2026-11-20T17:00:00+01:00',platform:'Microsoft Teams',link:'https://teams.microsoft.com/meet/3758614920785439?p=RRoBJ1PZ8TL6ci2lW2',contact:'Leila Gresti',verified:'19/11/2026'},
@@ -29,9 +29,9 @@ intro:'I am a data professional with nearly seven years of experience in Data An
 followup:'Dear Hiring Team,\n\nI hope you are doing well. I am following up on my application for the [ROLE] position at [COMPANY]. I remain very interested in the opportunity and would be glad to provide any additional information.\n\nThank you for your time.\n\nKind regards,\nJacopo Soppelsa',
 thanks:'Dear [NAME],\n\nThank you for taking the time to speak with me today. I enjoyed learning more about [COMPANY] and the opportunity. Our conversation strengthened my interest in contributing to your team.\n\nBest regards,\nJacopo Soppelsa'
 };
-const STATUS_NAMES={'Da valutare':'Nuovo incontro','Interessante':'Da esplorare','Candidatura inviata':'Catturata','Colloquio':'Arena','Scartata':'Archiviata'};
-const STATUS_COLORS={'Da valutare':'yellow','Interessante':'blue','Candidatura inviata':'green','Colloquio':'purple','Scartata':'red'};
-const ROUTES={home:'Command Center',jobdex:'JobDex',pipeline:'Percorso',arena:'Interview Arena',followup:'Follow-up Center',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
+const STATUS_NAMES={'Da valutare':'Nuovo incontro','Interessante':'Da esplorare','Candidatura inviata':'Catturata','Colloquio':'Arena','Scartata':'Archiviata','Rifiutata':'Rifiutata'};
+const STATUS_COLORS={'Da valutare':'yellow','Interessante':'blue','Candidatura inviata':'green','Colloquio':'purple','Scartata':'yellow','Rifiutata':'red'};
+const ROUTES={home:'Command Center',jobdex:'JobDex',pipeline:'Percorso',arena:'Interview Arena',followup:'Follow-up Center',rifiutate:'Rifiutate',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
 const CACHE='career_dex_live_cache_v1',QUEST_KEY='career_dex_quests_v1',QUEST_DONE='career_dex_quest_done_v1';
 function html(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function safeLink(x){try{const u=new URL(String(x));return ['https:','http:','mailto:'].includes(u.protocol)?u.href:''}catch{return ''}}
@@ -44,7 +44,7 @@ function timeAgo(s){if(!s)return'';const diff=Date.now()-new Date(s).getTime();i
 function pct(n,total){return total>0?Math.round(n/total*100):0}
 function toast(s){const el=$('toast');el.textContent=s;el.style.display='block';clearTimeout(APP.toastTimer);APP.toastTimer=setTimeout(()=>{el.style.display='none'},4200)}
 function countStatus(s){return APP.jobs.filter(j=>j.status===s).length}
-function stats(){return {total:APP.jobs.length,history:APP.jobs.filter(j=>j.sent===true).length,active:countStatus('Candidatura inviata'),rejected:countStatus('Scartata'),review:countStatus('Da valutare')+countStatus('Interessante'),interviews:countStatus('Colloquio'),fresh:INTERVIEWS.filter(x=>new Date(x.end)>new Date()).length}}
+function stats(){return {total:APP.jobs.length,history:APP.jobs.filter(j=>j.sent===true).length,active:countStatus('Candidatura inviata'),rejected:countStatus('Scartata'),refused:countStatus('Rifiutata'),review:countStatus('Da valutare')+countStatus('Interessante'),interviews:countStatus('Colloquio'),fresh:INTERVIEWS.filter(x=>new Date(x.end)>new Date()).length}}
 function jobIndex(id){return APP.jobs.findIndex(j=>j.id===id)}
 function jobBy(id){return APP.jobs.find(j=>j.id===id)}
 function badge(status){return '<span class="pill '+(STATUS_COLORS[status]||'blue')+'">'+html(STATUS_NAMES[status]||status||'Sconosciuto')+'</span>'}
@@ -53,8 +53,8 @@ function category(j){const s=(j.role+' '+j.area).toLowerCase();return /scientist
 function appAction(label,action,cls){return '<button class="btn '+(cls||'small')+'" type="button" data-action="'+html(action)+'">'+html(label)+'</button>'}
 function empty(t,details){return '<div class="empty"><strong>'+html(t)+'</strong><div>'+html(details||'')+'</div></div>'}
 function setRoute(route){if(!ROUTES[route])route='home';APP.route=route;location.hash=route;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+route));document.querySelectorAll('[data-nav]').forEach(b=>{const yes=b.dataset.nav===route;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});$('page-title').textContent=ROUTES[route];$('page-eyebrow').textContent='CAREER DEX / '+route.toUpperCase();document.title=ROUTES[route]+' · Career Dex';$('sidebar').classList.remove('open');window.scrollTo({top:0,behavior:'auto'});renderView(route)}
-function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'followup':renderFollowups();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
-function redraw(){renderHome();renderJobs();renderPipeline();renderArena();renderFollowups();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
+function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'followup':renderFollowups();break;case'rifiutate':renderRejections();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
+function redraw(){renderHome();renderJobs();renderPipeline();renderArena();renderFollowups();renderRejections();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
 function statusSource(live){$('sync-status').classList.toggle('offline',!live);$('sync-status').innerHTML='<span class="sync-dot"></span>'+html(live?'NOTION LIVE':APP.source==='loading'?'SINCRONIZZAZIONE':'COPIA LOCALE');$('last-sync').textContent=APP.lastSync?'Ultima sincronizzazione: '+timeAgo(APP.lastSync):'In attesa dei dati';$('source-detail').textContent=live?'Collegamento attivo: Notion via /api/jobs. Le modifiche si salvano sul database.':'Dati di riserva salvati nel browser. I salvataggi sono sospesi finché Notion non torna raggiungibile.'}
 async function sync(){
  $('refresh').disabled=true;APP.source='loading';statusSource(false);
@@ -77,15 +77,17 @@ function card(j){
  '<div class="bottom"><span class="place" title="'+html(j.location)+'">'+html(j.location||'Sede da confermare')+'</span><button class="btn small soft" type="button" data-job="'+html(j.id)+'">Scheda ↗</button></div></article>';
 }
 function renderHome(){
- const s=stats();$('kpi-captured').textContent=s.history;$('kpi-pending').textContent=s.active;$('kpi-arena').textContent=s.fresh;$('kpi-fainted').textContent=s.rejected;
+ const s=stats();$('kpi-captured').textContent=s.history;$('kpi-pending').textContent=s.active;$('kpi-arena').textContent=s.fresh;$('kpi-fainted').textContent=s.rejected;$('kpi-refused').textContent=s.refused;$('nav-rejected-count').textContent=s.refused;
  $('hero-caption').textContent=s.review?'Ci sono '+s.review+' nuove opportunità da valutare. Scegli la prossima missione.':'Il Pokédex è aggiornato: '+s.history+' candidature storiche inviate. Ora la missione è trasformarle in colloqui e offerte.';
  $('home-xp').style.width=(s.total?pct(s.history,s.total):0)+'%';$('home-xp-label').textContent=s.history+' / '+s.total+' candidature tracciate';
  $('home-notion').textContent=s.total+' opportunità nel database';
+ const recentRejects=APP.jobs.filter(j=>j.status==='Rifiutata').sort((a,b)=>Date.parse(b.rejectionDate||0)-Date.parse(a.rejectionDate||0)).slice(0,3);
+ $('home-rejections').innerHTML=recentRejects.length?recentRejects.map(j=>'<button type="button" class="rejection-mini" data-job="'+html(j.id)+'"><span class="rejection-mini-icon">❌</span><span class="main"><strong>'+html(j.company)+'</strong><small>'+html(j.role)+'</small></span><span class="pill red">'+html(dateIt(j.rejectionDate))+'</span></button>').join(''):empty('Nessun rifiuto registrato','La sezione si aggiorna dai dati Notion.');
  const latest=APP.jobs.slice().sort((a,b)=>(Date.parse(b.dateAdded)||0)-(Date.parse(a.dateAdded)||0)).slice(0,5);
  $('home-encounters').innerHTML=latest.length?latest.map(j=>'<div class="encounter"><div class="monster-token">'+category(j)+'</div><div class="main"><div class="name">'+html(j.company)+'</div><div class="meta">'+html(j.role)+' · '+html(dateIt(j.dateAdded))+'</div></div>'+badge(j.status)+'<button class="btn small" data-job="'+html(j.id)+'">Dettagli</button></div>').join(''):empty('Nessuna opportunità caricata','Controlla il collegamento a Notion.');
  const imminent=INTERVIEWS.filter(i=>new Date(i.end)>new Date()).sort((a,b)=>new Date(a.start)-new Date(b.start))[0];
  $('home-interview').innerHTML=imminent?'<div class="mini-label">PROSSIMA BATTLE</div><h3 style="font:800 24px var(--display);margin:9px 0">'+html(imminent.company)+'</h3><p class="muted text-xs">'+html(imminent.role)+'</p><p style="color:var(--gold);font-size:12px;font-weight:900">'+html(dayTime(imminent.start))+' – '+html(hr(imminent.end))+'</p><div class="row-buttons"><a class="btn gold small" target="_blank" rel="noopener" href="'+html(safeLink(imminent.link))+'">Apri '+html(imminent.platform)+'</a><button class="btn small" data-nav="arena">Tutti i colloqui</button></div>':empty('Nessun colloquio futuro nello snapshot','Apri il calendario per verificare nuove convocazioni.');
- const items=[{name:'Da valutare',n:countStatus('Da valutare')},{name:'Interessante',n:countStatus('Interessante')},{name:'Inviata',n:s.active},{name:'Colloquio',n:s.interviews},{name:'Scartata',n:s.rejected}];
+ const items=[{name:'Da valutare',n:countStatus('Da valutare')},{name:'Interessante',n:countStatus('Interessante')},{name:'Inviata',n:s.active},{name:'Colloquio',n:s.interviews},{name:'Scartata',n:s.rejected},{name:'Rifiutata',n:s.refused}];
  const max=Math.max(...items.map(x=>x.n),1);
  $('home-pipeline').innerHTML=items.map(x=>'<div class="bar-row"><span>'+html(x.name)+'</span><div class="bar"><span style="width:'+pct(x.n,max)+'%"></span></div><b>'+x.n+'</b></div>').join('');
  const upcoming=autoQuests().filter(q=>!getLocal(QUEST_DONE,[]).includes(q.id)).slice(0,3);
@@ -119,7 +121,7 @@ function renderPipeline(){
  (l.length?l.slice(0,maxPreview).map(j=>'<button class="kan-card" type="button" data-job="'+html(j.id)+'"><strong>'+html(j.company)+'</strong><span>'+html(j.role)+'</span></button>').join('')+(l.length>maxPreview?'<button class="btn small block" data-action="filter-status" data-status="'+html(status)+'">Vedi tutte ('+l.length+')</button>':''):empty('Nessuna scheda'))+'</div></div>';
  }).join('');
  $('pipeline-board').innerHTML=body;
- const s=stats();$('pipeline-foot').textContent=s.history+' candidature inviate nello storico · '+s.active+' ancora nella fase inviata · '+s.rejected+' scartate (inclusi eventuali invii precedenti).';
+ const s=stats();$('pipeline-foot').textContent=s.history+' candidature inviate nello storico · '+s.active+' ancora nella fase inviata · '+s.rejected+' scartate per altri motivi · '+s.refused+' rifiutate dalle aziende.';
 }
 // The creation date is a triage signal, NOT proof of application date.
 function followupAge(job){
@@ -140,6 +142,18 @@ function renderFollowups(){
   const draft='Buongiorno,\\n\\nvi scrivo per chiedere gentilmente un aggiornamento sulla mia candidatura per la posizione di '+j.role+' presso '+j.company+'. Resto molto interessato all’opportunità e disponibile per eventuali approfondimenti.\\n\\nGrazie per il tempo dedicato.\\n\\nCordiali saluti,\\nJacopo Soppelsa';
   return '<article class="panel followup-card"><div class="followup-card-main"><div class="mini-label">FOLLOW-UP · '+html(j.mode||'MODALITÀ DA VERIFICARE')+'</div><h4>'+html(j.company)+'</h4><p>'+html(j.role)+'</p><span class="pill yellow">'+html(age===null?'Data mancante':age+' giorni dalla creazione')+'</span></div><div class="followup-card-actions"><button type="button" class="btn small" data-job="'+html(j.id)+'">Scheda Notion</button>'+(url?'<a class="btn small blue" href="'+html(url)+'" target="_blank" rel="noopener noreferrer">Annuncio ↗</a>':'')+'<button type="button" class="btn small gold" data-action="copy" data-copy="'+html(draft)+'">Copia follow-up</button></div></article>';
  }).join(''):empty('Nessuna candidatura in questo filtro','Per le candidature recenti non è ancora il momento di sollecitare. Cambia filtro per vedere tutte le posizioni.');
+}
+
+function renderRejections(){
+ const list=APP.jobs.filter(j=>j.status==='Rifiutata').sort((a,b)=>(Date.parse(b.rejectionDate)||0)-(Date.parse(a.rejectionDate)||0));
+ $('rejected-count').textContent=list.length;
+ $('rejected-list').innerHTML=list.length?list.map(j=>{
+  const mail=safeLink(j.rejectionEmail),notion=safeLink(j.pageUrl);
+  return '<article class="panel rejection-card"><div class="rejection-card-top"><span class="pill red">✕ NON SELEZIONATA</span><span class="rejection-date">'+html(j.rejectionDate?dateIt(j.rejectionDate):'Data non registrata')+'</span></div>'+
+  '<div class="rejection-card-identity"><div class="rejection-token">'+category(j)+'</div><div><h4>'+html(j.company)+'</h4><p>'+html(j.role)+'</p></div></div>'+
+  '<div class="rejection-card-details"><div><span>STATO</span><strong>Rifiutata dall’azienda</strong></div><div><span>INVIO ORIGINALE</span><strong>'+(j.sent?'Conservato nello storico':'Da verificare')+'</strong></div></div>'+
+  '<div class="rejection-card-actions">'+(mail?'<a class="btn small blue" href="'+html(mail)+'" target="_blank" rel="noopener noreferrer">✉ Email originale ↗</a>':'')+(notion?'<a class="btn small" href="'+html(notion)+'" target="_blank" rel="noopener noreferrer">Scheda Notion ↗</a>':'')+'<button class="btn small" type="button" data-job="'+html(j.id)+'">Dettagli</button></div></article>';
+ }).join(''):empty('Nessun rifiuto confermato','Quando registri un rifiuto in Notion con stato Rifiutata, apparirà qui automaticamente.');
 }
 function renderArena(){
  const now=new Date();
@@ -188,7 +202,7 @@ function barSeries(){
 function renderAnalytics(){
  const s=stats();const done=APP.jobs.filter(j=>j.sent),total=s.total;
  $('analytics-bar').innerHTML=barSeries();
- const breakdown=[{title:'Candidature ancora in corso',n:s.active,color:'var(--green)'},{title:'Scartate',n:s.rejected,color:'var(--red)'},{title:'Da valutare / interessanti',n:s.review,color:'var(--gold)'},{title:'Colloquio in Notion',n:s.interviews,color:'var(--purple)'}];
+ const breakdown=[{title:'Candidature ancora in corso',n:s.active,color:'var(--green)'},{title:'Scartate da te / archiviate',n:s.rejected,color:'var(--gold)'},{title:'Rifiutate dalle aziende',n:s.refused,color:'var(--red)'},{title:'Da valutare / interessanti',n:s.review,color:'var(--gold)'},{title:'Colloquio in Notion',n:s.interviews,color:'var(--purple)'}];
  const sizes=breakdown.map(b=>Math.round(pct(b.n,total)*100)/100);
  let angle=0;const stops=breakdown.map((b,i)=>{const lo=angle,hi=angle+sizes[i];angle=hi;return b.color+' '+lo+'% '+hi+'%'}).join(',');
  $('analytics-ring').style.background=total?'conic-gradient('+stops+')':'conic-gradient(#264c63 0 100%)';
@@ -223,7 +237,7 @@ function openJob(id){
  APP.selected=j.id;$('dialog-company').textContent=j.company;$('dialog-role').textContent=j.role;$('dialog-note').textContent=j.notes||'Nessuna nota';
  $('dialog-location').textContent=(j.location||'Sede da verificare')+' · '+(j.mode||'Modalità non specificata');
  $('dialog-score').textContent=j.score?j.score+'/10 MATCH':'Compatibilità non valutata';$('dialog-state').value=j.status;$('dialog-next').value=j.next||'';
- $('dialog-links').innerHTML=(j.url?'<a class="btn blue small" href="'+html(safeLink(j.url))+'" target="_blank" rel="noopener noreferrer">🔗 Apri candidatura</a>':'')+(j.pageUrl?'<a class="btn small" href="'+html(safeLink(j.pageUrl))+'" target="_blank" rel="noopener noreferrer">Scheda Notion</a>':'');
+ $('dialog-links').innerHTML=(j.url?'<a class="btn blue small" href="'+html(safeLink(j.url))+'" target="_blank" rel="noopener noreferrer">🔗 Apri candidatura</a>':'')+(j.pageUrl?'<a class="btn small" href="'+html(safeLink(j.pageUrl))+'" target="_blank" rel="noopener noreferrer">Scheda Notion</a>':'')+(j.rejectionEmail?'<a class="btn small" href="'+html(safeLink(j.rejectionEmail))+'" target="_blank" rel="noopener noreferrer">Email rifiuto</a>':'');
  $('job-dialog').showModal();
 }
 async function updateJob(e){
