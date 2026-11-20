@@ -1,7 +1,7 @@
 
 'use strict';
 const $=id=>document.getElementById(id);
-const APP={jobs:[],source:'loading',lastSync:null,route:'home',jobPage:0,pageSize:24,sort:'recent',filter:'all',mode:'all',query:'',questFilter:'open',toastTimer:null,selected:null};
+const APP={jobs:[],source:'loading',lastSync:null,route:'home',jobPage:0,pageSize:24,sort:'recent',filter:'all',mode:'all',query:'',protectedFilter:'all',protectedQuery:'',questFilter:'open',toastTimer:null,selected:null};
 const STATUSES=['Da valutare','Interessante','Candidatura inviata','Colloquio','Scartata','Rifiutata'];
 // Dated snapshot, not a live connection to Calendar.
 const INTERVIEWS=[
@@ -31,7 +31,7 @@ thanks:'Dear [NAME],\n\nThank you for taking the time to speak with me today. I 
 };
 const STATUS_NAMES={'Da valutare':'Nuovo incontro','Interessante':'Da esplorare','Candidatura inviata':'Catturata','Colloquio':'Arena','Scartata':'Archiviata','Rifiutata':'Rifiutata'};
 const STATUS_COLORS={'Da valutare':'yellow','Interessante':'blue','Candidatura inviata':'green','Colloquio':'purple','Scartata':'yellow','Rifiutata':'red'};
-const ROUTES={home:'Command Center',jobdex:'JobDex',pipeline:'Percorso',arena:'Interview Arena',followup:'Follow-up Center',rifiutate:'Rifiutate',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
+const ROUTES={home:'Command Center',jobdex:'JobDex',protected:'Categorie protette',pipeline:'Percorso',arena:'Interview Arena',followup:'Follow-up Center',rifiutate:'Rifiutate',quests:'Quest Log',inbox:'Centro messaggi',analytics:'Analytics Lab',recruiters:'Recruiter HQ',trainer:'Profilo Trainer',vault:'Assets Vault',focus:'Focus Mode',settings:'Impostazioni'};
 const CACHE='career_dex_live_cache_v1',QUEST_KEY='career_dex_quests_v1',QUEST_DONE='career_dex_quest_done_v1';
 function html(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function safeLink(x){try{const u=new URL(String(x));return ['https:','http:','mailto:'].includes(u.protocol)?u.href:''}catch{return ''}}
@@ -45,6 +45,10 @@ function pct(n,total){return total>0?Math.round(n/total*100):0}
 function toast(s){const el=$('toast');el.textContent=s;el.style.display='block';clearTimeout(APP.toastTimer);APP.toastTimer=setTimeout(()=>{el.style.display='none'},4200)}
 function countStatus(s){return APP.jobs.filter(j=>j.status===s).length}
 function stats(){return {total:APP.jobs.length,history:APP.jobs.filter(j=>j.sent===true).length,active:countStatus('Candidatura inviata'),rejected:countStatus('Scartata'),refused:countStatus('Rifiutata'),review:countStatus('Da valutare')+countStatus('Interessante'),interviews:countStatus('Colloquio'),fresh:INTERVIEWS.filter(x=>new Date(x.end)>new Date()).length}}
+function dedicatedProtected(j){return /categor(?:ie|ia)\s+protett|68\s*\/\s*99|collocamento\s+mirato/i.test(String(j.role||''))}
+function dedicatedJobs(){return APP.jobs.filter(dedicatedProtected)}
+function dedicatedSort(list){const rank={Interessante:0,'Da valutare':1,Colloquio:2,'Candidatura inviata':3,Scartata:4,Rifiutata:5};return list.sort((a,b)=>(rank[a.status]??6)-(rank[b.status]??6)||(Date.parse(b.dateAdded)||0)-(Date.parse(a.dateAdded)||0))}
+function matchScore(n){n=Number(n);return Number.isFinite(n)&&n>0?'Match '+(n>10?n.toFixed(0)+'%':String(n).replace('.',',')+'/10'):'Match non indicato'}
 function jobIndex(id){return APP.jobs.findIndex(j=>j.id===id)}
 function jobBy(id){return APP.jobs.find(j=>j.id===id)}
 function badge(status){return '<span class="pill '+(STATUS_COLORS[status]||'blue')+'">'+html(STATUS_NAMES[status]||status||'Sconosciuto')+'</span>'}
@@ -53,8 +57,8 @@ function category(j){const s=(j.role+' '+j.area).toLowerCase();return /scientist
 function appAction(label,action,cls){return '<button class="btn '+(cls||'small')+'" type="button" data-action="'+html(action)+'">'+html(label)+'</button>'}
 function empty(t,details){return '<div class="empty"><strong>'+html(t)+'</strong><div>'+html(details||'')+'</div></div>'}
 function setRoute(route){if(!ROUTES[route])route='home';APP.route=route;location.hash=route;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id==='view-'+route));document.querySelectorAll('[data-nav]').forEach(b=>{const yes=b.dataset.nav===route;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});$('page-title').textContent=ROUTES[route];$('page-eyebrow').textContent='CAREER DEX / '+route.toUpperCase();document.title=ROUTES[route]+' · Career Dex';$('sidebar').classList.remove('open');window.scrollTo({top:0,behavior:'auto'});renderView(route)}
-function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'followup':renderFollowups();break;case'rifiutate':renderRejections();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
-function redraw(){renderHome();renderJobs();renderPipeline();renderArena();renderFollowups();renderRejections();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
+function renderView(route){switch(route){case'home':renderHome();break;case'jobdex':renderJobs();break;case'protected':renderProtected();break;case'pipeline':renderPipeline();break;case'arena':renderArena();break;case'followup':renderFollowups();break;case'rifiutate':renderRejections();break;case'quests':renderQuests();break;case'inbox':renderInbox();break;case'analytics':renderAnalytics();break;case'recruiters':renderRecruiters();break;case'trainer':renderTrainer();break;case'vault':renderVault();break;case'focus':renderFocus();break;case'settings':renderSettings();break;}}
+function redraw(){renderHome();renderJobs();renderProtected();renderPipeline();renderArena();renderFollowups();renderRejections();renderQuests();renderInbox();renderAnalytics();renderRecruiters();renderTrainer();renderVault();renderFocus();renderSettings()}
 function statusSource(live){$('sync-status').classList.toggle('offline',!live);$('sync-status').innerHTML='<span class="sync-dot"></span>'+html(live?'NOTION LIVE':APP.source==='loading'?'SINCRONIZZAZIONE':'COPIA LOCALE');$('last-sync').textContent=APP.lastSync?'Ultima sincronizzazione: '+timeAgo(APP.lastSync):'In attesa dei dati';$('source-detail').textContent=live?'Collegamento attivo: Notion via /api/jobs. Le modifiche si salvano sul database.':'Dati di riserva salvati nel browser. I salvataggi sono sospesi finché Notion non torna raggiungibile.'}
 async function sync(){
  $('refresh').disabled=true;APP.source='loading';statusSource(false);
@@ -77,10 +81,12 @@ function card(j){
  '<div class="bottom"><span class="place" title="'+html(j.location)+'">'+html(j.location||'Sede da confermare')+'</span><button class="btn small soft" type="button" data-job="'+html(j.id)+'">Scheda ↗</button></div></article>';
 }
 function renderHome(){
- const s=stats();$('kpi-captured').textContent=s.history;$('kpi-pending').textContent=s.active;$('kpi-arena').textContent=s.fresh;$('kpi-fainted').textContent=s.rejected;$('kpi-refused').textContent=s.refused;$('nav-rejected-count').textContent=s.refused;
+ const s=stats();$('kpi-captured').textContent=s.history;$('kpi-pending').textContent=s.active;$('kpi-arena').textContent=s.fresh;$('kpi-fainted').textContent=s.rejected;$('kpi-refused').textContent=s.refused;$('nav-rejected-count').textContent=s.refused;$('nav-protected-count').textContent=dedicatedJobs().length;
  $('hero-caption').textContent=s.review?'Ci sono '+s.review+' nuove opportunità da valutare. Scegli la prossima missione.':'Il Pokédex è aggiornato: '+s.history+' candidature storiche inviate. Ora la missione è trasformarle in colloqui e offerte.';
  $('home-xp').style.width=(s.total?pct(s.history,s.total):0)+'%';$('home-xp-label').textContent=s.history+' / '+s.total+' candidature tracciate';
  $('home-notion').textContent=s.total+' opportunità nel database';
+ const protectedRows=dedicatedSort(dedicatedJobs());$('home-protected-count').textContent=protectedRows.length;$('home-protected-sent').textContent=protectedRows.filter(j=>j.sent).length;
+ $('home-protected-list').innerHTML=protectedRows.length?protectedRows.slice(0,3).map(j=>'<button type="button" class="home-protected-job" data-job="'+html(j.id)+'"><span class="protected-emblem">🛡️</span><span class="main"><strong>'+html(j.company)+'</strong><small>'+html(j.role)+'</small></span>'+badge(j.status)+'</button>').join(''):empty('Nessun annuncio dedicato','Controlla i dati Notion.');
  const recentRejects=APP.jobs.filter(j=>j.status==='Rifiutata').sort((a,b)=>Date.parse(b.rejectionDate||0)-Date.parse(a.rejectionDate||0)).slice(0,3);
  $('home-rejections').innerHTML=recentRejects.length?recentRejects.map(j=>'<button type="button" class="rejection-mini" data-job="'+html(j.id)+'"><span class="rejection-mini-icon">❌</span><span class="main"><strong>'+html(j.company)+'</strong><small>'+html(j.role)+'</small></span><span class="pill red">'+html(dateIt(j.rejectionDate))+'</span></button>').join(''):empty('Nessun rifiuto registrato','La sezione si aggiorna dai dati Notion.');
  const latest=APP.jobs.slice().sort((a,b)=>(Date.parse(b.dateAdded)||0)-(Date.parse(a.dateAdded)||0)).slice(0,5);
@@ -113,6 +119,33 @@ function renderJobs(){
  $('jobs-list').innerHTML=chunk.length?chunk.map(card).join(''):empty('Nessuna corrispondenza','Modifica la ricerca o i filtri.');
  $('job-page').textContent=(all.length?'Pagina '+(APP.jobPage+1)+' / '+Math.ceil(all.length/APP.pageSize):'0 risultati');
  $('job-prev').disabled=APP.jobPage===0;$('job-next').disabled=start+APP.pageSize>=all.length;
+}
+
+function renderProtected(){
+ const all=dedicatedSort(dedicatedJobs());
+ const active=all.filter(j=>['Da valutare','Interessante'].includes(j.status)).length;
+ const sent=all.filter(j=>j.sent).length;
+ const closed=all.filter(j=>['Scartata','Rifiutata'].includes(j.status)).length;
+ $('protected-count').textContent=all.length;$('protected-open').textContent=active;$('protected-sent').textContent=sent;$('protected-closed').textContent=closed;
+ const flagged=APP.jobs.filter(j=>j.protected&&!dedicatedProtected(j)).length;
+ $('protected-unverified').textContent=flagged+' schede contrassegnate con il flag L.68/99 non sono incluse: dal titolo non risulta chiaro che siano offerte riservate.';
+ const q=APP.protectedQuery.trim().toLowerCase();
+ const filtered=all.filter(j=>{
+  if(APP.protectedFilter==='actionable'&&!['Da valutare','Interessante'].includes(j.status))return false;
+  if(APP.protectedFilter==='sent'&&!j.sent)return false;
+  if(APP.protectedFilter==='closed'&&!['Scartata','Rifiutata'].includes(j.status))return false;
+  return !q||(j.company+' '+j.role+' '+j.location).toLowerCase().includes(q);
+ });
+ $('protected-visible').textContent=filtered.length+' risultati';
+ $('protected-caption').textContent=filtered.length+' su '+all.length+' annunci esplicitamente dedicati';
+ $('protected-list').innerHTML=filtered.length?filtered.map(j=>{
+  const url=safeLink(j.url),page=safeLink(j.pageUrl);
+  return '<article class="panel protected-job-card"><div class="protected-card-top"><span class="pill purple">🛡️ L.68/99</span><span class="protected-match">'+html(matchScore(j.score))+'</span></div>'+
+  '<div class="protected-card-heading"><span class="protected-avatar">'+html(initials(j.company))+'</span><div><h4>'+html(j.role)+'</h4><p>'+html(j.company)+'</p></div></div>'+
+  '<div class="protected-card-facts"><span>📍 '+html(j.location||'Sede da confermare')+'</span><span>◈ '+html(j.mode||'Non specificata')+'</span></div>'+
+  '<div class="protected-card-badges">'+badge(j.status)+(j.sent?'<span class="pill green">✓ Storico invio</span>':'')+'</div>'+
+  '<div class="protected-card-actions"><button class="btn gold small" type="button" data-job="'+html(j.id)+'">Dettagli</button>'+(url?'<a class="btn small" target="_blank" rel="noopener noreferrer" href="'+html(url)+'">Annuncio ↗</a>':page?'<a class="btn small" target="_blank" rel="noopener noreferrer" href="'+html(page)+'">Notion ↗</a>':'')+'</div></article>';
+ }).join(''):empty('Nessuna offerta in questo filtro',APP.protectedFilter==='actionable'?'Le offerte riservate già registrate risultano lavorate o archiviate. Seleziona “Tutte” per vederle.':'Prova un filtro diverso o elimina il testo cercato.');
 }
 function renderPipeline(){
  const columns=STATUSES;const maxPreview=10;const body=columns.map(status=>{
@@ -296,6 +329,8 @@ function initEvents(){
  $('job-search').addEventListener('input',e=>{APP.query=e.target.value.trim();APP.jobPage=0;renderJobs()});
  $('job-status').addEventListener('change',e=>{APP.filter=e.target.value;APP.jobPage=0;renderJobs()});
  $('job-mode').addEventListener('change',e=>{APP.mode=e.target.value;APP.jobPage=0;renderJobs()});
+ $('protected-search').addEventListener('input',e=>{APP.protectedQuery=e.target.value;renderProtected()});
+ document.querySelectorAll('[data-protected-filter]').forEach(b=>b.addEventListener('click',()=>{APP.protectedFilter=b.dataset.protectedFilter;document.querySelectorAll('[data-protected-filter]').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))});renderProtected()}));
  $('followup-filter').addEventListener('change',renderFollowups);
  $('job-sort').addEventListener('change',e=>{APP.sort=e.target.value;APP.jobPage=0;renderJobs()});
  $('job-prev').addEventListener('click',()=>{APP.jobPage--;renderJobs()});
