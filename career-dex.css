@@ -95,3 +95,93 @@ body.light .rejection-overview,body.light .recent-rejections{background:rgba(255
 @media(max-width:1280px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:880px){.rejection-grid{grid-template-columns:1fr}.rejection-mini-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.rejection-card-actions .btn{flex:1}.rejection-card{padding:15px}}
+
+/* Career Dex V5 — premium liquid glass, L.68/99 hub and Pokémon accents */
+:root{--protected-mint:#a6f4de;--protected-glow:#58dabf}
+body{background:radial-gradient(circle at 82% 7%,rgba(45,137,168,.21),transparent 30%),radial-gradient(circle at 9% 18%,rgba(241,62,103,.14),transparent 38%),radial-gradient(circle at 67% 82%,rgba(97,66,175,.13),transparent 35%),linear-gradient(153deg,#08111e,#0d182b 56%,#071321)}
+.panel{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.12)}
+.topbar{position:sticky;top:10px;z-index:15;padding:13px 16px;border:1px solid rgba(219,244,255,.12);background:linear-gradient(125deg,rgba(21,37,56,.90),rgba(12,27,45,.86));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:19px;box-shadow:0 10px 34px #05101d4d}
+.nav-link-protected{color:#a5f6dc;border:1px solid rgba(95,225,183,.20);background:rgba(62,180,153,.09)}
+.nav-count{margin-left:auto;min-width:23px;text-align:center;border-radius:99px;padding:3px 7px;font-size:10px;background:rgba(76,226,190,.19);color:var(--protected-mint)}
+.sidebar-pokemon{display:flex;gap:0;align-items:center;justify-content:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.07);margin:12px 0 2px}
+.sidebar-pokemon img{object-fit:contain;filter:drop-shadow(0 8px 10px #0008);transition:transform .2s ease}
+.sidebar-pokemon img:nth-child(2){transform:translateY(-5px)}
+.sidebar-pokemon img:hover{transform:translateY(-10px) scale(1.08)}
+.hero{background:radial-gradient(circle at 80% 52%,rgba(255,222,96,.19),transparent 40%),linear-gradient(117deg,#aa2e53,#653066 49%,#164b66);box-shadow:0 20px 65px #651b3b44,inset 0 1px rgba(255,255,255,.22)}
+.hero-copy{position:relative;z-index:2}
+.hero-art .pokemon-hero-img{position:absolute;z-index:3;width:min(270px,24vw);height:auto;object-fit:contain;filter:drop-shadow(0 22px 17px rgba(10,19,40,.42));animation:pokemonFloat 4.3s ease-in-out infinite}
+.hero-art .orb-label{position:absolute;bottom:10px;z-index:4;white-space:nowrap;background:rgba(11,24,43,.52);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:7px 12px}
+@keyframes pokemonFloat{0%,100%{transform:translateY(2px) rotate(-1deg)}50%{transform:translateY(-11px) rotate(1deg)}}
+.home-protected-panel{position:relative;overflow:hidden;margin:0 0 16px;border:1px solid rgba(136,248,216,.30);background:linear-gradient(120deg,rgba(14,72,78,.85),rgba(19,43,66,.93) 60%,rgba(22,41,72,.94));box-shadow:0 16px 47px #052a2d3b,inset 0 1px rgba(255,255,255,.15)}
+.home-protected-panel:before{content:'';position:absolute;right:-80px;top:-108px;width:295px;height:295px;border:35px solid rgba(120,245,204,.06);border-radius:50%;pointer-events:none}
+.home-protected-head{position:relative;display:flex;justify-content:space-between;gap:15px;align-items:center}
+.home-protected-copy{flex:1;min-width:0}
+.home-protected-copy .overline{font-weight:950;font-size:10px;letter-spacing:1.5px;color:var(--protected-mint)}
+.home-protected-copy h3{font:850 clamp(22px,2.5vw,30px) var(--display);letter-spacing:-.7px;margin:9px 0 7px}
+.home-protected-copy p{font-size:12px;color:#b8d9d6;line-height:1.55;margin:0 0 12px}
+.home-protected-metrics{display:flex;flex-wrap:wrap;gap:13px 20px}
+.home-protected-metrics span{font-size:11px;color:#d7ecec;display:flex;align-items:baseline;gap:7px}
+.home-protected-metrics b{font:850 23px var(--display);color:var(--protected-mint)}
+.home-eevee-img{position:relative;width:clamp(90px,12vw,145px);height:auto;object-fit:contain;filter:drop-shadow(0 13px 16px #061b2b84);animation:pokemonFloat 5s ease-in-out infinite}
+.home-protected-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:17px;position:relative}
+.home-protected-job{min-width:0;display:flex;gap:9px;align-items:center;text-align:left;border:1px solid rgba(156,239,221,.20);background:rgba(11,37,54,.65);border-radius:14px;padding:11px;color:var(--ink);transition:transform .2s,border-color .2s}
+.home-protected-job:hover{transform:translateY(-2px);border-color:rgba(152,251,218,.58)}
+.home-protected-job .main{display:grid;gap:5px;flex:1;min-width:0}
+.home-protected-job .main strong,.home-protected-job .main small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-protected-job .main strong{font-size:12px}.home-protected-job .main small{font-size:10px;color:var(--muted)}
+.protected-emblem{display:grid;place-items:center;flex-shrink:0;width:31px;height:31px;border-radius:10px;background:rgba(98,216,184,.13)}
+.home-protected-link{width:100%;display:flex;justify-content:center;margin-top:12px;font-size:12px;color:var(--protected-mint);border-color:rgba(164,247,221,.38);background:rgba(56,173,161,.10)}
+.tiny-pokemon,.heading-pokemon{vertical-align:middle;margin-left:5px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}
+.protected-hero{min-height:270px;position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,.7fr);gap:16px;align-items:center;padding:32px 35px;border:1px solid rgba(151,250,224,.38);background:radial-gradient(circle at 84% 40%,rgba(145,243,205,.17),transparent 43%),linear-gradient(114deg,#104553,#173c56 50%,#28365c);box-shadow:0 26px 70px rgba(3,46,56,.28)}
+.protected-hero:after{content:'';position:absolute;inset:0;background:radial-gradient(#ffffff20 1px,transparent 1px);background-size:21px 21px;mask-image:linear-gradient(100deg,transparent,black);pointer-events:none}
+.protected-hero-copy{position:relative;z-index:2}
+.protected-hero-copy .overline{font-size:10px;font-weight:950;letter-spacing:2px;color:var(--protected-mint)}
+.protected-hero h3{font:850 clamp(30px,4vw,51px)/1.05 var(--display);letter-spacing:-2px;margin:12px 0 15px}
+.protected-hero h3 em{font-style:normal;color:var(--protected-mint);text-shadow:0 0 27px rgba(76,218,192,.34)}
+.protected-hero-copy p{font-size:13px;line-height:1.7;color:#d0e9e6;max-width:570px;margin:0}
+.protected-hero-pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.protected-eevee{height:235px;position:relative;display:grid;place-items:center}
+.protected-eevee-ring{position:absolute;width:215px;height:215px;border:2px dashed rgba(149,241,222,.35);border-radius:50%;box-shadow:0 0 0 20px #ffffff06,0 0 0 42px #ffffff05}
+.protected-eevee img{position:relative;z-index:2;max-width:236px;width:100%;height:auto;filter:drop-shadow(0 22px 18px rgba(0,18,35,.4));animation:pokemonFloat 4.9s ease-in-out infinite}
+.protected-eevee span{position:absolute;bottom:-3px;white-space:nowrap;z-index:3;color:var(--protected-mint);font-size:10px;font-weight:950;letter-spacing:1.3px}
+.protected-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+.protected-stat{padding:19px 20px;border-top:2px solid rgba(129,231,202,.39)}
+.protected-stat>span{font-size:10px;font-weight:950;letter-spacing:.5px;color:var(--muted)}
+.protected-stat strong{display:block;font:850 clamp(28px,3vw,40px) var(--display);color:var(--protected-mint);margin:8px 0 3px}
+.protected-stat small{font-size:11px;color:var(--muted)}
+.protected-controls{display:flex;gap:13px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px;margin:15px 0;background:linear-gradient(110deg,rgba(25,44,68,.90),rgba(12,32,51,.86))}
+.protected-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.protected-tab{border:1px solid rgba(146,219,206,.15);background:rgba(255,255,255,.05);color:var(--muted);padding:10px 14px;border-radius:99px;font-size:11px;font-weight:900;transition:.18s}
+.protected-tab.active{background:linear-gradient(135deg,#9df1d8,#72dee1);border-color:transparent;color:#0b2e35;box-shadow:0 7px 22px #59c8ae2d}
+.protected-tab:hover:not(.active){border-color:rgba(131,243,216,.55);color:var(--ink)}
+.protected-search{max-width:265px;min-width:195px;flex:1}
+.protected-results-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:19px 0 12px}
+.protected-results-head h4{font:800 18px var(--display);margin:0 0 5px}.protected-results-head p{color:var(--muted);font-size:11px;margin:0}
+.protected-job-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.protected-job-card{display:flex;flex-direction:column;gap:15px;padding:20px;border:1px solid rgba(140,240,212,.18);background:linear-gradient(137deg,rgba(26,51,65,.93),rgba(17,32,56,.94));transition:transform .22s,border-color .22s,box-shadow .22s}
+.protected-job-card:hover{transform:translateY(-3px);border-color:rgba(136,236,220,.61);box-shadow:0 22px 44px rgba(1,18,26,.33),0 0 33px rgba(87,211,176,.08)}
+.protected-card-top,.protected-card-facts,.protected-card-badges,.protected-card-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.protected-card-top{justify-content:space-between}
+.protected-match{color:var(--protected-mint);font-size:11px;font-weight:900}
+.protected-card-heading{display:flex;gap:13px;align-items:center}
+.protected-avatar{display:grid;place-items:center;flex-shrink:0;width:52px;height:52px;border-radius:17px;background:linear-gradient(145deg,rgba(129,239,192,.23),rgba(71,139,222,.25));border:1px solid rgba(165,246,222,.20);color:var(--protected-mint);font:900 16px var(--display)}
+.protected-card-heading>div{min-width:0}
+.protected-card-heading h4{font:800 16px/1.38 var(--display);margin:0 0 6px}
+.protected-card-heading p{color:var(--cyan);font-size:12px;font-weight:900;margin:0}
+.protected-card-facts{font-size:11px;color:var(--muted);gap:8px}
+.protected-card-facts span{padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.protected-card-badges{margin-top:auto}
+.protected-card-actions{padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.protected-note{margin:16px 0;padding:11px 20px;display:flex;align-items:center;gap:16px}
+.protected-note img{flex-shrink:0;object-fit:contain;filter:drop-shadow(0 5px 9px #0007)}
+.protected-note p{font-size:11px;color:var(--muted);line-height:1.7;margin:0}.protected-note strong{color:var(--ink)}
+body.light .home-protected-panel{background:linear-gradient(120deg,#e1fbf2,#d7edf4);color:#123c44}
+body.light .home-protected-copy p,body.light .home-protected-metrics span{color:#46666b}
+body.light .home-protected-job{background:#ffffffba;color:#163743}
+body.light .protected-job-card,body.light .protected-stat,body.light .protected-controls,body.light .protected-note{background:rgba(238,252,251,.92);color:#123747}
+body.light .protected-card-heading p{color:#247d85}
+body.light .protected-note strong{color:#123747}
+@media(max-width:1200px){.protected-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.home-protected-list{grid-template-columns:1fr}}
+@media(max-width:780px){.topbar{top:0;border-radius:0 0 18px 18px;margin:0 -15px 18px;padding:13px 15px}.hero-art{display:block;position:absolute;right:-15px;bottom:-12px;width:190px;height:190px;opacity:.30;pointer-events:none}.hero-art .pokemon-hero-img{width:205px;right:0;bottom:0}.hero-art .dex-orb,.hero-art .orb-label{display:none}.protected-hero{grid-template-columns:1fr 165px;padding:25px}.protected-eevee{height:175px}.protected-eevee img{max-width:170px}.protected-eevee-ring{width:155px;height:155px}.protected-eevee span{font-size:7px;bottom:-1px}}
+@media(max-width:670px){.protected-job-grid{grid-template-columns:1fr}.protected-hero{grid-template-columns:1fr}.protected-eevee{position:absolute;right:-5px;bottom:-20px;width:155px;height:155px;opacity:.26;pointer-events:none}.protected-eevee img{width:145px}.protected-eevee-ring,.protected-eevee span{display:none}.protected-stats{gap:8px}.protected-stat{padding:13px}.protected-controls{align-items:stretch}.protected-search{max-width:none;width:100%}.protected-tab{padding:9px 12px}.home-eevee-img{width:95px}.home-protected-copy h3{font-size:21px}.home-protected-metrics{gap:9px 13px}}
+@media(prefers-reduced-motion:reduce){.hero-art .pokemon-hero-img,.home-eevee-img,.protected-eevee img{animation:none!important}}
