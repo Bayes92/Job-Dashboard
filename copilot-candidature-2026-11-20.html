@@ -27,7 +27,7 @@ select,input[type="search"]{border-radius:12px;border:1px solid #b4d3f64b;backgr
 @media(max-width:880px){.grid{grid-template-columns:1fr}.queue{max-height:340px}}@media(max-width:580px){main{padding:13px 12px 50px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:25px}.focus{padding:19px;min-height:0}.hero{padding:19px}.focus-actions>.btn{flex-basis:100%}.header{gap:8px}}
 </style></head><body><main>
 <header class="header"><div class="brand">CAREER <span>OS</span> / COPILOT</div><nav><a href="/" target="_blank" rel="noopener">Mission Control</a><a href="https://app.notion.com/p/64d82849f65447a4ad8bc492e92e567d" target="_blank" rel="noopener">Notion</a></nav></header>
-<section class="hero glass"><div class="eyebrow">NUOVE OPPORTUNITÀ · 20 NOVEMBRE 2026</div><h1>12 nuove candidature, una alla volta</h1><p>Le 12 opportunità nuove sono pronte. Apri l'annuncio, compila e <b>invia sul portale aziendale</b>. Solo dopo la conferma premi <b>✓ Ho inviato → Prossima</b>: avanzerai subito alla prossima scheda. A fine sessione scarica il CSV e allegalo in chat per aggiornare Notion e Mission Control. Il pulsante non invia candidature da solo.</p><div class="steps"><span class="step"><b>1</b> Apri il modulo</span><span class="step"><b>2</b> Invia sul sito</span><span class="step"><b>3</b> ✓ Ho inviato</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
+<section class="hero glass"><div class="eyebrow">INVII COMPLETATI · 20 NOVEMBRE 2026</div><h1>12 candidature inviate ✓</h1><p>Ho importato il tuo CSV del 20 novembre: <b>12/12 candidature dichiarate inviate</b>, registrate su Notion. <b>5 ricevute aziendali verificate</b> in Gmail, mentre per le altre 7 la prova è il tuo flag. Nessun nuovo invio automatico; usa la vista Inviate e scarica nuovamente il CSV quando serve.</p><div class="steps"><span class="step"><b>1</b> Apri il modulo</span><span class="step"><b>2</b> Invia sul sito</span><span class="step"><b>3</b> ✓ Ho inviato</span><span class="step"><b>4</b> Scarica CSV</span></div></section>
 <section class="stats"><div class="stat glass"><small>Da lavorare</small><strong id="remaining">—</strong></div><div class="stat glass sent"><small>Inviate qui</small><strong id="done">—</strong></div><div class="stat glass blocked"><small>In attesa / esito incerto</small><strong id="blocked">—</strong></div><div class="stat glass"><small>Totale opportunità</small><strong id="total">—</strong></div></section>
 <div class="grid">
 <section class="focus glass" aria-live="polite"><div class="mini" id="currentNumber">CANDIDATURA</div><h2 id="role">—</h2><div class="co" id="company"></div><div class="badges" id="badges"></div><div class="notes" id="note"></div><div class="focus-actions"><a class="btn open" id="open" target="_blank" rel="noopener noreferrer">1. Apri candidatura ↗</a><button class="btn done" id="mark" type="button">2. ✓ Ho inviato → Prossima</button></div><div class="focus-actions"><button class="btn weak" id="later" type="button">Passa alla successiva senza segnare</button><a class="btn weak" id="notion" target="_blank" rel="noopener noreferrer">Apri scheda Notion</a></div><p class="caption" id="help">Premi «Ho inviato» SOLO dopo aver ricevuto conferma dal portale o aver inviato la mail.</p><div class="progress"><div id="bar"></div></div></section>
@@ -45,6 +45,28 @@ let state={};let order=0;let currentId='';let filter='todo';let toastTimer;
 try{state=JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch(_){state={}}
 try{order=Number(localStorage.getItem(stateKey)||0)||0}catch(_){order=0}
 try{currentId=localStorage.getItem(currentKey)||''}catch(_){currentId=''}
+// Import verificato del CSV Copilot 20/11/2026: tutte e 12 confermate dall'utente.
+// Questo aggiorna esclusivamente il registro locale di Copilot: non invia moduli ai siti esterni.
+const csvConfirmed=[["41e93ae6e18d81c0b161c6552feddd20","13:34:58"],["41e93ae6e18d8119b64dff27344196d0","13:35:54"],["41e93ae6e18d81919b49e2eb6068ba30","13:40:18"],["41e93ae6e18d813ea25fe1a09d4fd1a9","13:42:20"],["41e93ae6e18d8179afd1f9ffd8f76eac","13:42:27"],["41e93ae6e18d810995a8fee5e0fe5b96","13:43:48"],["41e93ae6e18d8140b921ebc745e0dbd9","13:44:20"],["41e93ae6e18d812b9d08d13c20b5ec58","13:45:27"],["41e93ae6e18d81c08c64f6e3b67b4964","13:45:31"],["41e93ae6e18d810c9c12c8b568d8747d","13:47:03"],["41e93ae6e18d81dab03be2b1b59b9847","13:47:51"],["41e93ae6e18d81edb916f4960c2dbeeb","13:47:56"]];
+const csvImportKey='career_os_copilot_12_csv_20261120_import_v1';
+try {
+  if(localStorage.getItem(csvImportKey)!=='complete'){
+    const byNotion=new Map(jobs.map(j=>[(j.notion||'').split('/').pop()?.replace(/-/g,''),j]));
+    let recognized=0;
+    csvConfirmed.forEach(([pageId,clock],i)=>{
+      const j=byNotion.get(pageId);if(!j)return;
+      recognized++;
+      if(state[j.id]?.status!=='sent') state[j.id]={status:'sent',updated:'2026-11-20T'+clock+'+01:00',sequence:i+1,from:'csv_user_confirmed'};
+    });
+    if(recognized!==csvConfirmed.length) throw Error('Mancano '+(csvConfirmed.length-recognized)+' posizioni; import non completo');
+    order=Math.max(order,...Object.values(state).map(x=>Number(x?.sequence)||0),12);
+    currentId='';filter='sent';
+    localStorage.setItem(storageKey,JSON.stringify(state));
+    localStorage.setItem(stateKey,String(order));
+    localStorage.setItem(currentKey,currentId);
+    localStorage.setItem(csvImportKey,'complete');
+  } else if(jobs.every(j=>state[j.id]?.status==='sent')){filter='sent'}
+}catch(error){console.warn('Import CSV Copilot 20/11:',error)}
 const $=s=>document.getElementById(s);
 const isSent=j=>state[j.id]?.status==='sent';
 function save(){localStorage.setItem(storageKey,JSON.stringify(state));localStorage.setItem(currentKey,currentId);localStorage.setItem(stateKey,String(order))}
@@ -94,7 +116,7 @@ function render(){
  $('bar').style.width=(100*sent.length/jobs.length).toFixed(1)+'%';
  $('download').textContent='↓ Scarica CSV ('+sent.length+')';$('download').disabled=sent.length===0;
  $('saved').textContent=sent.length+' candidature in registro · salvataggio automatico';
- $('history').innerHTML=sent.length?sent.slice().reverse().map(j=>'<div class="logrow"><div><b>#'+h(state[j.id].sequence||'')+' · '+h(j.azienda)+'</b> — '+h(j.ruolo)+'<br><small>'+h(state[j.id].updated||'')+'</small></div>'+(state[j.id]?.from==='csv_user_confirmed'?'<span class="sub">Importata da CSV</span>':'<button class="undo" type="button" data-undo="'+h(j.id)+'">Annulla flag</button>')+'</div>').join(''):'<div class="sub">Nessuna candidatura flaggata come inviata da questa dashboard.</div>';
+ $('history').innerHTML=sent.length?sent.slice().reverse().map(j=>'<div class="logrow"><div><b>#'+h(state[j.id].sequence||'')+' · '+h(j.azienda)+'</b> — '+h(j.ruolo)+'<br><small>'+h(state[j.id].updated||'')+'</small></div>'+(state[j.id]?.from==='csv_user_confirmed'?'<span class="sub">Importata da CSV</span>':'<button class="undo" type="button" data-undo="'+h(j.id)+'">Annulla flag</button>')+'</div>').join(''):'<div class="sub">Nessuna candidatura contrassegnata come inviata.</div>';
  loadQueue();
 }
 function localRome(iso){try{return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(new Date(iso))}catch(_){return iso}}
@@ -112,5 +134,6 @@ $('mark').addEventListener('click',mark);$('later').addEventListener('click',lat
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));loadQueue()}));
 $('queue').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)choose(b.dataset.id)});
 $('history').addEventListener('click',e=>{const b=e.target.closest('button[data-undo]');if(b)undo(b.dataset.undo)});
+document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
 render();
 </script></body></html>
