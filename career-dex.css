@@ -185,3 +185,27 @@ body.light .protected-note strong{color:#123747}
 @media(max-width:780px){.topbar{top:0;border-radius:0 0 18px 18px;margin:0 -15px 18px;padding:13px 15px}.hero-art{display:block;position:absolute;right:-15px;bottom:-12px;width:190px;height:190px;opacity:.30;pointer-events:none}.hero-art .pokemon-hero-img{width:205px;right:0;bottom:0}.hero-art .dex-orb,.hero-art .orb-label{display:none}.protected-hero{grid-template-columns:1fr 165px;padding:25px}.protected-eevee{height:175px}.protected-eevee img{max-width:170px}.protected-eevee-ring{width:155px;height:155px}.protected-eevee span{font-size:7px;bottom:-1px}}
 @media(max-width:670px){.protected-job-grid{grid-template-columns:1fr}.protected-hero{grid-template-columns:1fr}.protected-eevee{position:absolute;right:-5px;bottom:-20px;width:155px;height:155px;opacity:.26;pointer-events:none}.protected-eevee img{width:145px}.protected-eevee-ring,.protected-eevee span{display:none}.protected-stats{gap:8px}.protected-stat{padding:13px}.protected-controls{align-items:stretch}.protected-search{max-width:none;width:100%}.protected-tab{padding:9px 12px}.home-eevee-img{width:95px}.home-protected-copy h3{font-size:21px}.home-protected-metrics{gap:9px 13px}}
 @media(prefers-reduced-motion:reduce){.hero-art .pokemon-hero-img,.home-eevee-img,.protected-eevee img{animation:none!important}}
+
+/* V6 • Pokemon choreography */
+@keyframes pikachuLeap{0%,14%,100%{transform:translate3d(0,7px,0) rotate(-5deg) scale(1)}23%{transform:translate3d(-5px,0,0) rotate(-9deg) scale(.96,1.04)}43%{transform:translate3d(9px,-42px,0) rotate(8deg) scale(1.08)}57%{transform:translate3d(10px,-30px,0) rotate(1deg) scale(1.03)}71%{transform:translate3d(0,9px,0) rotate(-5deg) scale(1.07,.89)}82%{transform:translate3d(0,1px,0) rotate(-3deg) scale(.99,1.03)}}
+@keyframes eeveeBounce{0%,18%,100%{transform:translate3d(0,0,0) rotate(-4deg)}30%{transform:translate3d(-6px,-16px,0) rotate(-10deg)}46%{transform:translate3d(1px,-22px,0) rotate(6deg)}61%{transform:translate3d(6px,0,0) rotate(8deg)}73%{transform:translate3d(0,-6px,0) rotate(-5deg)}}
+@keyframes bulbasaurBreathe{0%,100%{transform:translateY(1px) rotate(-3deg) scale(1)}50%{transform:translateY(-6px) rotate(3deg) scale(1.13)}}
+@keyframes squirtleDance{0%,100%{transform:translateY(0) rotate(-8deg)}24%{transform:translateY(-9px) rotate(9deg)}50%{transform:translateY(0) rotate(-7deg)}76%{transform:translateY(-6px) rotate(8deg)}}
+@keyframes charmanderWiggle{0%,100%{transform:translateY(0) rotate(-7deg)}20%{transform:translateY(-10px) rotate(8deg)}40%{transform:translateY(-3px) rotate(-6deg)}60%{transform:translateY(-11px) rotate(7deg)}80%{transform:translateY(-3px) rotate(-4deg)}}
+@keyframes pokemonGlow{0%,100%{opacity:.3;transform:scale(.97)}50%{opacity:.75;transform:scale(1.1)}}
+.hero-art .pokemon-hero-img{animation:pikachuLeap 3.7s cubic-bezier(.4,0,.22,1) infinite;transform-origin:50% 88%;will-change:transform}
+.home-eevee-img{animation:eeveeBounce 4.4s ease-in-out infinite;transform-origin:50% 85%;will-change:transform}
+.protected-eevee img{animation:eeveeBounce 4.1s ease-in-out infinite;transform-origin:50% 85%;will-change:transform}
+.sidebar-pokemon img{will-change:transform;transform-origin:50% 85%}
+.sidebar-pokemon img:nth-child(1){animation:bulbasaurBreathe 4.2s ease-in-out infinite}
+.sidebar-pokemon img:nth-child(2){animation:squirtleDance 3.8s ease-in-out -.9s infinite}
+.sidebar-pokemon img:nth-child(3){animation:charmanderWiggle 4s ease-in-out -1.3s infinite}
+.tiny-pokemon{animation:bulbasaurBreathe 3.6s ease-in-out infinite;transform-origin:50% 85%}
+.heading-pokemon{animation:charmanderWiggle 3.8s ease-in-out infinite;transform-origin:50% 85%}
+.protected-eevee-ring{animation:pokemonGlow 5s ease-in-out infinite}
+.pokemon-motion-toggle{border-color:rgba(150,234,219,.35);color:var(--protected-mint);white-space:nowrap}
+#motion-switch{margin-left:8px}
+body.pokemon-motion-off .pokemon-hero-img,body.pokemon-motion-off .home-eevee-img,body.pokemon-motion-off .protected-eevee img,body.pokemon-motion-off .sidebar-pokemon img,body.pokemon-motion-off .tiny-pokemon,body.pokemon-motion-off .heading-pokemon,body.pokemon-motion-off .protected-eevee-ring{animation:none!important;will-change:auto!important;transform:none!important}
+@media(max-width:780px){.hero-art{opacity:.55;right:-5px;bottom:-14px}.hero-art .pokemon-hero-img{width:180px}}
+@media(max-width:550px){.pokemon-motion-toggle{padding:7px 9px;font-size:10px}#motion-switch{margin:10px 0 0}}
+@media(prefers-reduced-motion:reduce){.hero-art .pokemon-hero-img,.home-eevee-img,.protected-eevee img,.sidebar-pokemon img,.tiny-pokemon,.heading-pokemon,.protected-eevee-ring{animation:none!important;will-change:auto!important}}
