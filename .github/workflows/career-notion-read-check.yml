@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          status="$(curl --location --silent --show-error --max-time 30 --output /tmp/notion-check.json --write-out '%{http_code}' 'https://missioncontrolcareeros2026-11-12.vercel.app/api/jobs')"
+          status="$(curl --location --silent --show-error --max-time 30 --output /tmp/notion-check.json --write-out '%{http_code}' 'https://mission-control-jacopo.vercel.app/api/jobs')"
           if [[ "$status" != "200" ]]; then
             echo "Career OS API returned HTTP $status"
             exit 1
